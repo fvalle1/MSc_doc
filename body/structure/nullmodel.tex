@@ -1,5 +1,5 @@
 \section{Null model construction}\label{sec:nullmodel}
-The kind of data considered in this work comes from RNA Sequencing experiments. This experiments use wet biology methods to extract information from samples. If one imagine it exists an unknown function that describes the gene expression across the samples considered, what experimenters people do is to sample  this function, picking up some genes.
+The kind of data considered in this work comes from RNA Sequencing experiments. This experiments use wet biology methods to extract information from samples. If one imagines it exists an unknown function that describes the gene expression across the samples considered, what experimenters people do is to sample  this function, picking up some genes.
 
 In this section it is described a null model of sampling, this is useful to verify if the data distributions seen are just an effect of this experimental sample or if they carry some useful and interesting information.
 
@@ -12,7 +12,7 @@ P\left({n_i};M\right)=\frac{M!}{\prod_{i=1}^{N} n_i}\prod_{i=1}^N f_i^{n_i}
 where $n_i$ is the number of components with frequency $f_i$, being $f_i=\frac{a_i}{\sum_{i=1}^{N}a_{i}}$ as defined in~\ref{eq:fi}.
 
 Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up with respect to their frequency in the dataset. The most abundant components, which are also the ones with higher frequency (frequency is nothing but the normalized abundance), have a greater probability to be picked up.
-\begin{figure}
+\begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/structure/randomsampling.png}
     \caption{Random sampling of components to build a realization of size $M$}
