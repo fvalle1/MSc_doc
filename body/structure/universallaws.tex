@@ -49,18 +49,18 @@ Going further in the analysis it is possible make an histogram of occurrences de
 \end{figure}
 
 Also in this kind of analysis it is possible to see the different behaviour of coding and not coding genes. The protein coding genes express almost in every sample, so their occurrence is near to $1$, non coding genes are more specific, so they are present only in a subset of the dataset and many of the have small occurrence.
-
-\begin{figure}
+\begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
-    \includegraphics{pictures/structure/tcga/globalzipf_null.pdf}
+    \includegraphics[width=0.95\linewidth]{pictures/structure/gtex/U_Breast.png}
     \end{minipage}
     \hspace{2mm}
     \begin{minipage}{0.45\textwidth}
-    
+    \includegraphics[width=0.95\linewidth]{pictures/structure/gtex/U_Brain.png}
     \end{minipage}
-    \caption{Caption}
-    \label{fig:my_label}
+    \caption{Same behaviour is observed looking at one tissue a time.}
+    \label{fig:structure/gtex/U_tissues}
 \end{figure}
+The same behaviour can be observed considering just all samples of a given tissue. In this case $O_i=0$ means that the genes has a non zero expression in just one of the samples of the tissue considered; in other words if a gene never express in a tissue it is not considered when constructing these tissue specific $U$ distributions.
 
 From now on except were explicitly declared analysis will be made considering protein coding genes and counts with no normalisation.
