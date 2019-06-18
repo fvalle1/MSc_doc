@@ -1,0 +1,184 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	MSc THESIS TEMPLATE
+%	developed for my master thesis at the Universitá di Torino
+%
+%	by Eugenio Senes (eugenio.senes@gmail.com)
+%
+%	released under MIT license, so share, modify and enjoy, but quoting the author !
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% DOCUMENT CLASS (alternative to book is 'report')
+% Print just right page or both sides (comment the other one)
+%\documentclass[12pt,a4paper,openright,oneside]{book}	%%One sided
+%\documentclass[12pt,a4paper,openright,twoside]{book}	%%Double sided
+\documentclass[12pt,a4paper,oneside]{book}
+
+%% SET MARGINS OF THE PAGES
+\usepackage[a4paper,portrait, left=35mm, right=20mm, top=35mm, bottom=30mm]{geometry}
+
+%% HEADERS AND FOOTERS
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} 			%clears default header and footer
+\fancyhead[RO]{\leftmark}
+\fancyhead[LE]{\leftmark}
+\fancyfoot[RO]{\thepage}
+\fancyfoot[LE]{\thepage}
+%\rhead{} 			%right head
+%\lhead{} 	%left head
+%\rfoot{\thepage}
+%%consider using also chead, cfoot, lfoot
+%coherce the plain stile to this (e.g. the first page of every chapter)
+\fancypagestyle{plain}{
+	\fancyhf{}
+	\rfoot{\thepage}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+
+%% CLEAR PAGE WITHOUT NUMBER AT THE BEGINNING OF CHAPTERS
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{%
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}%
+}
+%% ALLOW PAGE ROTATION
+\usepackage{lscape}
+
+%% HYPERTEXT SETUP
+\usepackage[unicode=true]{hyperref}
+\hypersetup{
+	pdfauthor={Filippo Valle},
+	pdftitle={MSc thesis},
+	pdfsubject={System Biology},
+	pdfkeywords={network, graph},
+	breaklinks=true,
+	colorlinks=true,
+	citecolor=blue,
+	urlcolor=blue,
+	linkcolor=black
+}
+
+\author{Filippo Valle}
+\date{\today}
+\title{MSc thesis}
+
+%% FONTS AND SYMBOLS
+\usepackage[utf8]{inputenc}	%%input font setting
+\usepackage{ textcomp }
+\usepackage[T1]{fontenc} 		%%font for automatic recognition of letters with the accent
+\usepackage{amsfonts}		%%fonts for the mathematical rendering of formulas
+\usepackage{amssymb}
+\usepackage{amsmath}
+%% CHAPTERS STRUCTURE
+\usepackage[english]{babel} %%Set English as main language of the document
+%% FIGURES
+\usepackage{graphicx}
+%% TABLES
+\usepackage{booktabs}		%%allow use of \toprule, \midrule, \bottomrule in tables
+%%CAPTIONS
+\usepackage{caption}
+%% CODE LISTINGS
+\usepackage{listings}		%%allow to use code listings
+\usepackage{rotating} %%sideways
+
+\lstdefinestyle{myPython}{
+backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
+breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+breaklines=true,                 % sets automatic line breaking
+captionpos=b,                    % sets the caption-position to bottom
+commentstyle=\color{mygray},    % comment style
+keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+keywordstyle=\color{mygreen},       % keyword style
+identifierstyle=\color{black},
+language=python,                 % the language of the code
+morekeywords={*, as},
+numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+numbersep=5pt,                   % how far the line-numbers are from the code
+numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+showstringspaces=false,          % underline spaces within strings only
+showtabs=false,                  % show tabs within strings adding particular underscores
+stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+stringstyle=\color{myblue},     % string literal style
+tabsize=2,	                   % sets default tabsize to 2 spaces
+}
+
+\usepackage{float} %forza [htb]
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myblue}{rgb}{0.44,0.62,0.78}
+
+%% HYPENATON
+\hyphenation{te-si}	%manual hyphenation
+
+%%commands
+\newcommand{\avg}[1]{\left\langle #1\right\rangle}
+\newcommand{\draft}[1]{\textcolor{red}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% BEGIN DOCUMENT
+\begin{document}
+%%%%%% HEAD  OF THE DOCUMENT
+\frontmatter
+%%FRONT PAGE
+%\input{head/frontPage.tex}
+\input{head/frontPage-cr.tex}
+\clearemptydoublepage
+%%DEDICATION (the initial quote)
+\input{head/dedication}
+\clearemptydoublepage
+%%ABSTRACT
+\input{head/abstract}
+\clearemptydoublepage
+%%INDEXES 
+%summary
+\tableofcontents
+\clearemptydoublepage
+
+%%%%%% BODY OF THE DOCUMENT
+\mainmatter
+%%INTRODUCTION
+\input{body/introduction.tex}
+\clearemptydoublepage
+%% CHAPTERS
+% add any further chapter file here
+\input{body/data}
+
+\input{body/structure}
+
+\input{body/scalelaws}
+
+\input{body/topicmodelling}
+
+\input{body/results}
+
+\input{body/conclusions}
+%%APPENDIXES
+
+\input{appendix/appAltmann}
+
+%%%% TAIL OF THE DOCUMENT
+\backmatter
+%list of figures
+\listoffigures
+\clearemptydoublepage
+%list of tables
+\listoftables
+\clearemptydoublepage
+%bibliography
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{bibliography/bibThesis}
+\bibliographystyle{ieeetr}
+\clearemptydoublepage
+
+\input{acknowledgements/acknowledgements}
+\end{document}

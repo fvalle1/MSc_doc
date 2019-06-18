@@ -1,0 +1,101 @@
+\chapter{Data presentation}\label{ch:data}
+\section{Dataset}\label{sec:dataset}
+
+The goal of ~\cite{Farver2018} ~\cite{Zhou2016} ~\cite{Lancichinetti2015} ~\cite{Martini2017}
+
+
+\section{RNA-Sequencing}\label{sec:rnaseq}
+
+Data come from a  RNA-Sequencing~\cite{wang2009rna} experiments.
+ 
+RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the disease and look at an unbiased population of transcripts that allows the identification of novel transcripts, fusion transcripts and non-coding RNAs that could be undetected with different technologies.
+
+Briefly, long RNAs are first converted into a library of cDNA fragments through either RNA fragmentation or DNA fragmentation (see main text). Sequencing adaptors (blue) are subsequently added to each cDNA fragment and a short sequence is obtained from each cDNA using high-throughput sequencing technology. The resulting sequence reads are aligned with the reference genome or transcriptome, and classified as three types: exonic reads, junction reads and poly(A) end-reads. These three types are used to generate a base-resolution expression profile for each gene, as illustrated at the bottom; a yeast ORF with one intron is shown.
+
+
+
+The general steps to prepare a complementary DNA (cDNA) library for sequencing are, in general:
+
+\begin{itemize}
+\item RNA Isolation: RNA is isolated from tissue and the amount of genomic DNA is reduced
+\item RNA selection/depletion: To analyze signals of interest, the isolated RNA can either be kept as is or filtered for RNA that binds specific sequences. The noncoding RNA is removed because it represents over 90$\%$ of the RNA in a cell, which if kept would drown out other data in the transcriptome
+\item cDNA synthesis: RNA is reverse transcribed to cDNA (DNA sequencing tecnology is more mature). Fragmentation and size selection are performed to purify sequences that are the appropriate length for the sequencing machine.  Fragmentation is followed by size selection, where either small sequences are removed or a tight range of sequence lengths are selected. Because small RNAs like miRNAs are lost, these are analyzed independently. The cDNA for each experiment can be indexed with a hexamer or octamer barcode, so that these experiments can be pooled into a single lane for multiplexed sequencing.
+\end{itemize}
+
+In order to collect Gene expression data is sufficient to count how many reads are mapped to a specific exon or gene.
+
+Data was collected from TCGA\footnote{The Cancer Genome Atlas} dataset at \url{https://portal.gdc.cancer.gov} \cite{grossman2016toward}.
+
+The particular datatype considered was \textit{Gene Expression Quantification}, with experimental strategy RNA-Sequencing. 
+At the end the downloaded dataset consisted of:
+\begin{itemize}
+\item N = 60483 genes as \textbf{components}
+\item R = 10672 files as \textbf{realizations}
+\end{itemize}
+
+This type of data is just a small portion of all data available on the portal, this are the most useful data for this type of analysis.
+
+As highlighted in~\cite{dey2017visualizing} these data present a challange to clustering tools, 
+because of both the relatively large number of samples and the complex structure created by the inclusion of many different tissues
+
+Attemts were made from GTEx~\cite{Betel2018} which is a similar source of data from healty tissues. 
+~\cite{Wang2017} tried to unify data from this two different sources and data 
+are available from~\cite{carithers2015novel}. Anyway gene expression data were 
+downloaded directly from GTEx v7\footnote{\url{https://gtexportal.org/home/datasets}}
+
+%%%%Parla di GTex meglio
+
+\subsection{normalization}
+Ususally gene expression data can be normalized in different ways
+\begin{itemize}
+\item Counts
+\item RPK
+\item FPKM
+\item FPKM-UQ
+\end{itemize}
+
+Counts correspond to raw data. 
+Anyway longer genes may have much reads than smaller gene, so it can be useful to normalize this data. 
+
+RPK\footnote{Reads Per Kilobase of transcript} solves this by dividing counts by 
+gene length $L$, \[RPK=\frac{counts}{L}\].
+
+FPKM\footnote{Fragments Per Kilobase of transcript per Million mapped reads} are provided. 
+FPKM calculation normalizes read count by dividing it by the gene length and the total number of reads mapped to protein-coding genes.
+\begin{equation}
+FPKM = \frac{RC_g*10^9}{RC_{pc}*L}
+\end{equation}
+where
+\begin{itemize}
+\item $RC_g$: Number of reads mapped to the gene
+\item $RC_{pc}$: Number of reads mapped to all protein-coding genes
+\item $L$: Length of the gene in base pairs
+\end{itemize}
+
+FPKM can be normalized to the 75th percentile read count value for the sample, in this case it is called FPKM-UQ. 
+FPKM-UQ is obtained by:
+\begin{equation}
+FPKM - UQ = \frac{RC_g*10^9}{RC_{g75}*L}
+\end{equation}
+where
+\begin{itemize}
+\item $RC_{g75}$: 75th percentile read count value for genes in the sample 
+\end{itemize}
+
+\section{Clean data}
+\subsection{Protein coding}
+The whole dataset contains infos on approximatly $60000$ elements with different 
+\textit{ENSG} identifier. Only $\simeq 20000$ of this are protein coding genes, 
+using Ensemble\footnote{\url{https://ensemble.org}} protein coding genes are 
+selected.
+
+\subsection{Thresholds}\label{sec:threshold}
+In order to filter out noise, it is useful to put a threshold on the data.
+Considering data in $FPKM$ format, it is common opinion that values beleow 
+$0.1$ can be considered noise. Moreover data above $10^5$ are trashed out, 
+because the are syntom of some kind of errors during experiment.
+
+Given this thresholds~\ref{eq:occurrence} becomes 
+\begin{equation}
+o_i=\frac{\sum_{j=1}^{R}\theta(n_{ij}-0.1)*\theta(10^5-n_{ij})}{R}
+\end{equation}

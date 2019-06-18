@@ -1,0 +1,10 @@
+*.toc 
+*.aux 
+*.bbl 
+*.blg 
+*.lof 
+*.log 
+*.lot 
+*.out 
+*.gz
+*.DS_Store

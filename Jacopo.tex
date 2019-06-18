@@ -1,0 +1,82 @@
+\section{Variability across samples}
+As done by~\cite{Grilli} is investigated the variability across samples.
+
+Defined $n_i^s$ the number of components (genes) $i$ in sample $s$, being $N_s=\Sigma_i n_i^s$ 
+the sampling distribution is
+\begin{equation}\label{eq:sampling}
+P_{s}\left(\{n\} | N_{s}\right)=\frac{N_{s}!}{\prod_{i}n_{i}!} \prod_{i}\left(p_{i}^{s}\right)^{n_{i}}
+\end{equation}
+
+The probability of observing the set $\{n\}$ is an unknown distribution $\rho$ 
+sampled by~\ref{eq:sampling}, so
+\begin{equation}\label{eq:variability}
+P(\{n\}|N)=\int dp \rho(\{p\}) \frac{N!}{\prod_{i}n_{i}!} \prod_{i}\left(p_{i}\right)^{n_{i}}
+\end{equation},
+
+marginalising~\ref{eq:variability} one can obtain
+\begin{equation}\label{eq:marginalvariability}
+P_{i}(n | N)=\int dp \rho_{i}(p)\binom{N}{n}p^{n}(1-p)^{N-n}
+\end{equation}
+which is the probability of observing $n$ occurrence of $i$ in an experiment 
+with $N$ observations.
+
+Using~\ref{eq:marginalvariability} it is easy to extimate
+\begin{equation}\label{eq:pimean}
+  \avg{P_{i}} \approx \frac{1}{T} \sum_{s=1}^{T} \frac{n_{i}^{s}}{N_{s}}
+\end{equation} and 
+\begin{equation}\label{eq:pisquare}
+  \avg{P_{i}^{2}}\approx \frac{1}{T} \sum_{s} \frac{n_{i}^{s}\left(n_{i}^{s}-1\right)}{N_{s}\left(N_{s}-1\right)}
+\end{equation} 
+where $P_i=\frac{n_i^s}{N_s}$.
+
+In case $N_s\gg1$ and $P_i\ll1$~\ref{eq:marginalvariability} becames
+\begin{equation}\label{eq:marginalvariabilitypoisson}
+  P_{i}(n|N)=\int d \lambda \rho_{i}(\lambda) \frac{(\lambda N)^{n}}{n !} e^{-\lambda N}
+\end{equation}
+
+One can extimate the moment generating function of $\rho_i(\lambda)$
+\begin{equation}\label{eq:momentgenfunc}
+  \begin{aligned}
+    g(z)=\left\langle z^{n_{i}}\right\rangle_{N}=&\int d\lambda_{i} \rho_{i}\left(\lambda_{i}\right) \frac{(\lambda N)^{n_i}}{n_i!} e^{-\lambda N} z^{n_{i}}\\
+    &\approx \int d\lambda_{i} \rho_{i}\left(\lambda_{i}\right) e^{\left(N 
+    \lambda_{i}(z-1)\right)}\\
+    &=\left\langle e^{\left(N \lambda_{i}(z-1)\right)}\right\rangle
+  \end{aligned}
+\end{equation},
+
+putting $q=N(z-1)$ in~\ref{eq:momentgenfunc} one obtains
+\[
+\avg{\left(1+\frac{q}{N}\right)^{n_{i}}}_{N}=\avg{\exp \left(\lambda_{i} q\right)}
+\] from which it is possible to calculate
+\begin{equation}\label{eq:momentgenfuncG}
+G_i(q)=\avg{e^{\lambda q}}=\frac{1}{T}\Sigma_s \avg{e^{\lambda 
+q}}_{N_s}=\frac{1}{T}\Sigma_s \left(1+\frac{q}{N}\right)^{n_{i}^s}
+\end{equation}.
+
+Note that all quantities of~\ref{eq:momentgenfuncG} are available from data.
+
+Assuming that $\rho_i(\lambda)$ is a gamma function
+\begin{equation}\label{eq:rhogamma}
+  \rho_{i}(\lambda)=\frac{1}{\Gamma\left(r_{i}\right) \theta_{i}^{r_{i}}} \lambda^{\beta_{i}-1} \exp \left(-\beta_{i} \frac{\lambda}{\lambda_{i}}\right)
+\end{equation}
+
+where $\bar{\lambda_i}\approx \avg{P_i}$ and 
+$\beta_i\approx\frac{\avg{P_i}^2}{\sigma_{P_i}^2}$, it is possible to extimate 
+these from data using~\ref{eq:pimean} and ~\ref{eq:pisquare}.
+
+Putting~\ref{eq:rhogamma} into~\ref{eq:variability} one obtains the form for~\ref{eq:marginalvariability}
+\begin{equation}\label{eq:marginalvariabilitygamma}
+  P_{i}\left(n | N\right)=\frac{\Gamma\left(\beta_{i}+n\right)}{n! \Gamma\left(\beta_{i}\right)}\left(\frac{\overline{\lambda}_{i} N}{\beta_{i}+\overline{\lambda}_{i} N}\right)^{n}\left(\frac{\beta_{i}}{\beta_{i}+\overline{\lambda}_{i} N}\right)^{\beta_{i}}
+\end{equation}.
+
+To test the hypotesis of~\ref{eq:rhogamma}, it is possible to extimate the 
+occurrence
+\begin{equation}
+  \avg{o_i}=P(1|N)=1-\frac{1}{T}\Sigma_{s=1}^T P(0|N_s)
+\end{equation}
+
+where $P(0|n)$ is~\ref{eq:marginalvariabilitygamma} evaluated in $n=0$.
+
+The plot shows..
+
+%%%plot predicted O
