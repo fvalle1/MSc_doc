@@ -1,0 +1,36 @@
+\subsection{LDA}
+\draft{commenti vari}
+
+As in ~\cite{Zhou2016}
+\begin{equation}\label{eq:lda}
+  P(w, z,\beta, \theta| \alpha, \eta)=\prod_n^{N_d} P(w|z,\beta)P(z|\theta)\prod_k^KP(\beta|\eta)\prod_d^N P(\theta | \alpha)
+\end{equation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\linewidth]{pictures/topic/LDA.jpeg}
+  \label{fig:LDA}
+  \caption{LAD scheme}
+\end{figure}
+
+where
+
+\begin{itemize}
+  \item $N$ number of documents
+  \item $K$ number of topics
+  \item $w$ words
+  \item $N_d$ number of words in document d
+  \item $\eta$ and $\alpha$ are parameters of the model
+\end{itemize}
+
+in~\ref{eq:lda} $P(\theta | \alpha)$ and $P(\beta|\eta)$ are Dirichlet distributions
+
+the outputs are the topic distribution in documents $P(z|d)$ and the word distribution in topics $P(w|z)$
+
+\subsection{Hierarchical clustering}
+
+\draft{da scrivere}
+\begin{lstlisting}
+sklearn.hi
+\end{lstlisting}
+
