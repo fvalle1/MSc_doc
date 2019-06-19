@@ -11,7 +11,7 @@ P\left({n_i};M\right)=\frac{M!}{\prod_{i=1}^{N} n_i}\prod_{i=1}^N f_i^{n_i}
 \end{equation}
 where $n_i$ is the number of components with frequency $f_i$, being $f_i=\frac{a_i}{\sum_{i=1}^{N}a_{i}}$ as defined in~\ref{eq:fi}.
 
-Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up with respect to their frequency in the dataset. The most abundant components, which are also the ones with higher frequency (frequency is nothing but the normalized abundance), have a greater probability to be picked up.
+Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up with respect to their frequency in the dataset. The most abundant components, which are also the ones with higher frequency (frequency is nothing but the normalised abundance), have a greater probability to be picked up.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/structure/randomsampling.png}
@@ -19,7 +19,7 @@ Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ componen
     \label{fig:structure/randomsampling}
 \end{figure}
 
-Using this construction on data of counts on both dataset, by definition the Zipf's law sampled are idntical to the data's one.
+Using this construction on data of counts on both dataset, by definition the Zipf's law sampled are identical to the data's one.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
@@ -64,7 +64,7 @@ Looking at the $U$s, it is evident that data is different from sampling. This is
 \end{figure}
 
 Looking at the Heaps's law~\cite{Heaps:1978:IRC:539986} 
-, again the curves differ and the null model is not enough complete to explain the trend. In figure~\ref{fig:structure/heaps_null} the Heaps's law is presented compared to the one obtained by sampling, note that each data point share the abscissa with a sampling one (figures~\ref{fig:structure/sizeDistr_null} are nothing but the histograms of the abscissas of~\ref{fig:structure/heaps_null}). It happens that the sampling curve is above the data's one. This means that to build a sample of size $M$ just by sampling it is necessary to use a greater number of different genes than the number of different genes actually expressed in nature. In other words in real world are expressed only the genes that are really useful in the sample, and this is not repricable just by sampling. This fact is coherent with the fact that the $U$s differ.
+, again the curves differ and the null model is not enough complete to explain the trend. In figure~\ref{fig:structure/heaps_null} the Heaps's law is presented compared to the one obtained by sampling, note that each data point share the abscissa with a sampling one (figures~\ref{fig:structure/sizeDistr_null} are nothing but the histograms of the abscissas of~\ref{fig:structure/heaps_null}). It happens that the sampling curve is above the data's one. This means that to build a sample of size $M$ just by sampling it is necessary to use a greater number of different genes than the number of different genes actually expressed in nature. In other words in real world are expressed only the genes that are really useful in the sample, and this is not describable just by sampling. This fact is coherent with the fact that the $U$s differ.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
@@ -78,7 +78,7 @@ Looking at the Heaps's law~\cite{Heaps:1978:IRC:539986}
 \caption{Heaps' law; TCGA(left) and GTEx (right)}
 \label{fig:structure/heaps_null}
 \end{figure}
-Onother way to see this is looking at the histograms of the number of different genes expressed, actually the distribution of the~\ref{fig:structure/heaps_null} y axis. Figure~\ref{fig:structure/diffwordsDistr_null} shows that thi distributions are completely different if one looks at the data and at the samples.
+Another way to see this is looking at the histograms of the number of different genes expressed, actually the distribution of the~\ref{fig:structure/heaps_null} y axis. Figure~\ref{fig:structure/diffwordsDistr_null} shows that these distributions are completely different if one looks at the data and at the samples.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
