@@ -1,11 +1,17 @@
 \chapter{Scale laws}\label{ch:scalelaws}
-\draft{taylor \cite{Eisler2008} \cite{altmann2016statistical}}
-\section{Scaling}
-It can be interesting to study how a particular gene changes its behaviour in different samples. 
-This will be useful if you want to decide in which tissues a gene is expressed more than average.
+One of the goals of this work is to search, reveal, study and use universal laws in bulk gene expression data.\nocite{altmann2016statistical}
+As in chapter~\ref{ch:structure} approaches from different field of science are considered at this point.
 
-First of all it could be interesting to represent the variance of expression $\sigma^2_{FPKM}$ versus 
-the average FPKM $<FPKM>$ across tissues.
+In can be interesting to study the behaviour of the gene expression across samples.
+
+\draft{taylor \cite{Eisler2008} }
+\section{Scaling}
+\draft{gene expression across samples? gamma?}
+
+Given a matrix of components and realisations as~\ref{fig:componetstable} with expression entries $n_{i j}$ it is possible to estimate the mean of a row $m_i=\avg{n_{ij}}_j$ and its variance $\sigma^2_i=\avg{n_{ij}^2}_j - \avg{n_{ij}}^2_j$.
+
+First of all it could be interesting to represent the variance of expression $\sigma^2$ versus 
+the average $m$ across tissues.
 
 %%CV^2
 

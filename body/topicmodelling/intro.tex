@@ -19,10 +19,7 @@ It is expected that topics represent some properties of samples due to the gene 
 
 The ultimate goal would be to be able to separate healthy and diseased samples, than separate and find well known tumour types, than extend the actual knowledge and retrieve the tumour sub-types.
 
-See~\ref{app:hsbm} for detailed analysis of the math behind the algorithm and \url{https://cloud.docker.com/repository/docker/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non linguistics component systems datasets.
-
-\draft{gerarchico scrivi due righe!!}
-
+One of the advantages of this particular algorithm is that it is hierarchical, so it apply community detection at different layers. So the output has got different resolution, the extreme one is the separation, by definition, between samples and genes, than it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
 \begin{figure}[htb!]
   \centering
   \includegraphics[width=0.6\linewidth]{pictures/topic/peixioto_hierarchic.jpg}
@@ -30,7 +27,33 @@ See~\ref{app:hsbm} for detailed analysis of the math behind the algorithm and \u
   \label{fig:topic_peixioto_hierarchic}
 \end{figure}
 
-\draft{monte carlo scrivi due righe}
+What the algorithm does is to run a sort of Montecarlo simulation and find the best partition of the data.
+The probability that the hidden variables $\theta$ describe the data $G$ $P(\theta | G)$ can be written as a likelihood times a prior as 
+\[P(\theta|G)=\frac{P(G|\theta)\overbrace{P(\theta)}^{prior}}{\underbrace{P(G)}_{\sum_{\theta}P(G|\theta)P(\theta)}}.\]
+It is possible to define a description length
+\[
+\Sigma=-lnP(G|\theta)-lnP(\theta),
+\]
+so that $P(\theta | G)\propto \exp{-\Sigma}$.
+Moreover the likelihood $P(G | \theta)$, can be written as $\frac{1}{\Omega}$ where $\Omega$ is the number of possibles realisations given $\theta$. This can be represented as a microcanonical ensemble with entropy $S=Ln\left(\Omega\right)$.
+Note that $\Sigma=S-lnP(\theta)$
+According to~\cite{peixoto2017nonparametric} entropy $S$ can be written as
+\[
+S=\frac{1}{2}\Sigma_{r,s} n_rn_sH\left(\frac{e_{rs}}{n_rn_s}\right),
+\]
+where $n_r$ is the number of nodes in block $r$, $e_{rs}$ the number of links between nodes of group $r$ and group $s$ and $H$ is the Shannon entropy $H(X)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows to find groups with nodes very disconnected or topic and clusters with a lot of connections.
+The algorithm tries to minimise $S$, so that $\Sigma$ is minimised, so $\exp{-\Sigma}$ is maximised, but this is $P(\theta | G)$ that is the required probability to maximise.
+
+The MonteCarlo works in few steps:
+\begin{itemize}
+ \item a node $i$ is chosen
+ \item the group of $i$ is called $r$
+  \item a node $j$ is chosen from $i$'s neighbours, the group of $j$ is called $t$
+  \item a random group $s$ is selected
+  \item move of node $i$ to group $s$ is accepted with probability $P(r\to s|t)=\frac{e_{ts}+\epsilon}{e_t+\epsilon B}$
+  \item if $s$ is not accepted, a random edge $e$ is chosen from group $t$ and node $i$ is assigned to the endpoint of $e$ which is not in $t$
+\end{itemize}
+in figure~\ref{fig:topic_pixioto_move} an example of these steps.
 
 \begin{figure}[htb!]
   \centering
@@ -43,13 +66,13 @@ See~\ref{app:hsbm} for detailed analysis of the math behind the algorithm and \u
   \label{fig:topic_pixioto_move}
 \end{figure}
 
-\draft{vedi se scrivere meglio}
 Once the model run it is possible to estimate the probability distribution of words inside a topic
 \[P(w|t_w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $t_w$}}\]
 and the topic distribution inside a document
 \[P(t_w|d)=\frac{\text{\# of edges on $d$ from $t_w$}}{\text{\# of edges on $d$}}\]
-In case of overlapping partitions it is possible to estimate the presence of a
-word in a topic
+In case of overlapping partitions the presence of a word in a topic is not trivial and can be extimated as 
 \[P(t_w|w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $w$}}\]
 or the presence of a document in a cluster
 \[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}\]
+
+See appendix~\ref{app:hsbm} for detailed analysis of the math behind the algorithm and \url{https://cloud.docker.com/repository/docker/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non linguistics component systems datasets.
