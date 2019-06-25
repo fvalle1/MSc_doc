@@ -1,4 +1,4 @@
-\section{Universal laws in RNA-Seq}
+\section{Universal laws in RNA-Seq}\label{sec:universallaws}
 \subsection{TCGA}
 Analysing TCGA dataset~\cite{grossman2016toward} the first interesting analysis is to plot the sorted abundance, this gives the so called Zipf's law. The analysis were made considering \textit{Gene Expression Quantification} as data type, \textit{Transcriptome Profiling} as data, \textit{RNA-Seq} as experimental strategy, \textit{HTSeq - Counts} or \textit{HTSeq - FPKM} as workflow type. $5000$ samples were downloaded and analysed.
 \begin{figure}[htb!]
@@ -38,7 +38,7 @@ A pretty similar analysis can be made on GTEx's~\cite{carithers2015novel} health
     \caption{Zipf's law from GTEx count data. On the left all genes considered, on the right only protein coding ones}
     \label{fig:my_label}
 \end{figure}
-Not surprisingly in the GTEx dataset it is retrieved the same behaviour at this time. The power law with exponent $\simeq 1$ is found and considering non coding genes gives to a knee in the power law.
+Not surprisingly in the GTEx dataset it is retrieved the same behaviour at this time. The power law with exponent $\simeq 1$ is found and considering non coding genes lead to a knee in the power law.
 
 Going further in the analysis it is possible make an histogram of occurrences defined by~\ref{eq:occurrence}, also known as $U$s.
 \begin{figure}[htb!]
