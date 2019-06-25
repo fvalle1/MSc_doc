@@ -4,8 +4,8 @@ all: thesis
 
 thesis: thesis.tex
 	pdflatex $^
-	pdflatex $^
 	bibtex thesis
+	pdflatex $^
 	pdflatex $^
 	open thesis.pdf
 
