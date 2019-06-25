@@ -22,11 +22,9 @@ First of all, the \textbf{occurrence} of a component, defined as
 \begin{equation}\label{eq:occurrence}
 o_i=\frac{\sum_{j=1}^{R}(1-\delta_{n_{ij},0})}{R},
 \end{equation}
-is the number of realizations in which the component's abundance is not null.
-A component that is present in all the realizations has got $O_i=1$.
-Components with high ($\simeq 1$) occurrence are present in mostly all realisations of the datasets, in linguistics this components are articles.
-Components with low occurrence $\simeq 0$ are present only in a few realisations 
-and are the most specific ones.
+is the fraction of realizations in which the component's abundance is not null.
+A component that is present in all the realizations has got $O_i=1$, the ensemble of all components with $O_i=1$ is known as \textbf{core}.
+Components with high ($\simeq 1$) occurrence are present in mostly all realisations of the datasets, in linguistics this components are articles. Components with low occurrence $\simeq 0$ are present only in a few realisations and are the most specific ones.
 
 The sum across all columns is called \textbf{abundance} of a component and is defined as:
 \begin{equation}\label{eq:abundance}
@@ -40,9 +38,7 @@ naturally brings to the \textbf{frequency of a component} in the whole corpus
 \begin{equation}\label{eq:fi}
 f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}.
 \end{equation}
-
-Dividing the abundance of a component by the sum of all abundances in a realisation
- gives the frequency of the component in that specific realization 
+Dividing the abundance of a component by the sum of all abundances in a realisation gives the \textbf{frequency} of the component in that specific realization
 \begin{equation}
 f_{ij}=\frac{n_{ij}}{\sum_{c=1}^{N}n_{cj}}.
 \end{equation}
@@ -57,5 +53,4 @@ It is expected that frequencies distribute according to the so called Zipf's law
 \begin{equation}\label{eq:zipf}
 f_i\propto r_i^{-\alpha}
 \end{equation}
-where $r$ is the rank: the position of a component when sorting all components
-by their frequencies in the whole dataset.
+where $r$ is the rank: the position of a component when sorting all components by their frequencies in the whole dataset.
