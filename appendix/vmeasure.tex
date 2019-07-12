@@ -3,7 +3,7 @@ Using algorithms that are unsupervised, but with a ground truth available it is 
 
 The homogeneity
 \begin{equation}
-    h=1-\frac{h(C|K)}{H(C)}
+    h=1-\frac{H(C|K)}{H(C)}
 \end{equation}
 defining the entropy
 \begin{equation}
@@ -12,7 +12,7 @@ defining the entropy
 where $n_{c k}$ is the number of nodes of type $c$ in cluster $k$, $N$ the number of nodes and $n_k$ the number of nodes in cluster $k$. It is evident that if all nodes inside cluster $k$ are of the same type $c$ $n_{c k}=n_{k}$, $H(C|K)=0$ and $h=1$, it is actually a complete homogeneous situation.
 The completeness:
 \begin{equation}
-    c=1-\frac{h(K|C)}{H(K)},
+    c=1-\frac{H(K|C)}{H(K)},
 \end{equation}
 $H(K|C)$ is defined in the same way as $H(C|K)$. Completeness measures if all nodes of the same type are in the same cluster.
 Ideally one wants a model which output is both homogeneous and complete. So it is possible to define the V-measure~\cite{rosenberg2007v}, which is the harmonic average of the two:

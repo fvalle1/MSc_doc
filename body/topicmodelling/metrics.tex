@@ -7,7 +7,7 @@ Note that this work's model is a non supervised one, but a ground truth is avail
 
 It is possible to define some quantities, the homogeneity
 \begin{equation}\label{eq:homogeneity}
-    h=1-\frac{h(C|K)}{H(C)}
+    h=1-\frac{H(C|K)}{H(C)}
 \end{equation}
 defining the entropy
 \begin{equation}\label{eq:hck}
@@ -17,7 +17,7 @@ where $n_{c k}$ is the number of nodes of type $c$ in cluster $k$, $N$ the numbe
 
 Another quantity can be defined and it is completeness:
 \begin{equation}\label{eq:completness}
-    c=1-\frac{h(K|C)}{H(K)},
+    c=1-\frac{H(K|C)}{H(K)},
 \end{equation}
 $H(K|C)$ is defined in the same way as~\ref{eq:hck}. Completeness measures if all nodes of the same type are in the same cluster.
 

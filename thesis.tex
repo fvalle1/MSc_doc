@@ -168,13 +168,6 @@ tabsize=2,	                   % sets default tabsize to 2 spaces
 
 \input{body/conclusions}
 
-%%APPENDIXES
-\clearemptydoublepage
-\appendix%%resets A, B, C..
-\addcontentsline{toc}{chapter}{Appendices}
-\input{appendix/appAltmann}
-\input{appendix/vmeasure}
-
 
 %%%% TAIL OF THE DOCUMENT
 \backmatter
@@ -185,11 +178,17 @@ tabsize=2,	                   % sets default tabsize to 2 spaces
 \listoftables
 \clearemptydoublepage
 %bibliography
-
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliography{bibliography/bibThesis}
 \bibliographystyle{ieeetr}
 \clearemptydoublepage
+
+%%APPENDIXES
+\clearemptydoublepage
+\appendix%%resets A, B, C..
+\addcontentsline{toc}{chapter}{Appendices}
+\input{appendix/appAltmann}
+\input{appendix/vmeasure}
 
 \input{acknowledgements/acknowledgements}
 \end{document}
