@@ -1,0 +1,57 @@
+\chapter{Homogeneity, completeness and V-measure}\label{app:vmeasure}
+Using algorithms that are unsupervised, but with a ground truth available it is useful to define some metrics.
+
+The homogeneity
+\begin{equation}
+    h=1-\frac{H(C|K)}{H(C)}
+\end{equation}
+defining the entropy
+\begin{equation}
+    H(C|K)=\sum_{c\in \mathrm{model labels},\\ k \in \mathrm{clusters}}\frac{n_{c k}}{N}Log\left(\frac{n_{c k}}{n_k}\right)
+\end{equation}
+where $n_{c k}$ is the number of nodes of type $c$ in cluster $k$, $N$ the number of nodes and $n_k$ the number of nodes in cluster $k$. It is evident that if all nodes inside cluster $k$ are of the same type $c$ $n_{c k}=n_{k}$, $H(C|K)=0$ and $h=1$, it is actually a complete homogeneous situation.
+The completeness:
+\begin{equation}
+    c=1-\frac{H(K|C)}{H(K)},
+\end{equation}
+$H(K|C)$ is defined in the same way as $H(C|K)$. Completeness measures if all nodes of the same type are in the same cluster.
+Ideally one wants a model which output is both homogeneous and complete. So it is possible to define the V-measure~\cite{rosenberg2007v}, which is the harmonic average of the two:
+\begin{equation}
+    2\frac{h c}{h + c}.
+\end{equation}
+
+The product $h c$ is equal to
+\begin{equation}
+    \frac{(H(C)-H(C|K))(H(K)-H(K|C))}{H(K) H(C)},
+\end{equation}
+the sum $h + c$ is
+\begin{equation}
+    \frac{H(K)(H(C)-H(C|K))+H(C)(H(K)-H(K|C))}{H(K) H(C)}.
+\end{equation}
+Expressing the conditional entropy 
+\[
+H(K|C)=\sum_{k c} P(k,c)Log(P(k|c))
+\\=\sum_{k c} P(k,c)Log\left(\frac{P(k,c)}{P(c)}\right)
+\\=H(K,C) - H(C)
+\]
+in terms of the conjunct entropy $H(K,C)$ which is symmetric by exchanges of $C$ and $K$
+\[
+H(K,C)=H(K|C) + H(C) = H(C|K) + H(K) = H(C,K)
+\]
+it is easy to verify that 
+\[
+H(C) - H(C|K) = H(K) - H(K|C) 
+\]
+so
+\[
+h c = \frac{(H(C)-H(C|K))^2}{H(K) H(C)}
+\]
+and
+\[
+h + c = \frac{(H(C)-H(C|K))(H(K)+H(C))}{H(K) H(C)}.
+\]
+The harmonic average $2\frac{h c}{h + c}$ becomes
+\[
+2\frac{H(C)-H(C|K)}{H(K)+H(C)}=2\frac{H(C)+H(K)-H(K,C)}{H(K)+H(C)}=2\frac{MI(C,K)}{H(K)+H(C)}
+\]
+which is called V-measure and is actually the mutual information between $P(C)$ and $P(K)$ normalised to $1$ by the term $H(C)+H(K)$. In fact if $P(C)=P(K)$ $H(K,C)=H(K)=H(C)$ and the measure is $1$, if $P(C)$ and $P(K)$ are completely independent $H(K,C)=H(K)+H(C)$ and the measure is $0$.
