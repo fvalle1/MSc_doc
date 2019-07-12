@@ -26,7 +26,7 @@ the~\ref{eq:PbonG} can be written as $\frac{e^{-\Sigma}}{P(G)}$, so maximising t
 In case of a weighted network the likelihood becomes $P(G,x|b,\theta)$, where $x$
 are the weights.
 
-\subsection{Algorithm}
+\paragraph{Algorithm}
 First of all a $B\times B$ matrix is created. The entry $e_{rs}$ of this matrix represents the number of links between nodes of group $r$ and nodes of group $s$, with $r,s\in\{b_i\}$. At the beginning $B$ groups are formed at random and the initial $B$ is a hyper-parameter of the model.
 \begin{figure}[htb!]
   \centering
@@ -175,5 +175,4 @@ group of words and group of documents.
 Doing this let words and documents be separated by construction.
 Considering the process described above if two nodes are not connected at the beginning it is impossible
 that they end up in the same block.
-It is easily verified in~\cite{peixoto2014efficient} that this property is
-preserved and fully reflected in the final block structure.
+It is easily verified in~\cite{peixoto2014efficient} that this property is preserved and fully reflected in the final block structure.
