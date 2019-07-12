@@ -44,7 +44,7 @@ S=\frac{1}{2}\Sigma_{r,s} n_rn_sH\left(\frac{e_{rs}}{n_rn_s}\right),
 where $n_r$ is the number of nodes in block $r$, $e_{rs}$ the number of links between nodes of group $r$ and group $s$ and $H$ is the Shannon entropy $H(X)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows to find groups with nodes very disconnected or topic and clusters with a lot of connections.
 The algorithm tries to minimise $S$, so that $\Sigma$ is minimised, so $\exp{-\Sigma}$ is maximised, but this is $P(\theta | G)$ that is the required probability to maximise.
 
-The MonteCarlo works in few steps:
+The Monte Carlo works in few steps:
 \begin{itemize}
  \item a node $i$ is chosen
  \item the group of $i$ is called $r$

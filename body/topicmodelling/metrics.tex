@@ -9,7 +9,7 @@ It is possible to define some quantities, the homogeneity
 \begin{equation}\label{eq:homogeneity}
     h=1-\frac{h(C|K)}{H(C)}
 \end{equation}
-defining the entropy as
+defining the entropy
 \begin{equation}\label{eq:hck}
     H(C|K)=\sum_{c\in \mathrm{tissues},\\ k \in \mathrm{clusters}}\frac{n_{c k}}{N}Log\left(\frac{n_{c k}}{n_k}\right)
 \end{equation}
@@ -33,6 +33,13 @@ Also the number of different labels in the same cluster will be studied.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_primarysite.pdf}
-    \caption{Scores across hierarchy. The mutual information is the armonic average between homogeneity and completness}
+    \caption{Scores across hierarchy. The mutual information is the armonic average between homogeneity and completeness}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_primarysite}
+\end{figure}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf}
+    \caption{Scores across hierarchy. The scored is compared with some random labels}
+    \label{fig:topic/gtex/oversigma_10tissue/metric_scores}
 \end{figure}
