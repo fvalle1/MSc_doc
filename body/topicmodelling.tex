@@ -27,99 +27,104 @@ Once extensively analysed the structure of the dataset, the goal becomes to deve
 
 \section{Results}
 
-\draft{Using as gene set ~\cite{Ardlie2015} enrichment test can be made \cite{Kuleshov2016}}
+\draft{Using gsea ~\cite{subramanian2005gene} as gene set ~\cite{Ardlie2015} enrichment test can be made from python \cite{Kuleshov2016}}
 
 \begin{table}[htbp!]
-	\caption{Enrichment}
+	\tiny
 	\begin{center}
-		\begin{tabular}{|l|r|l|}
+		\begin{tabular}{|c|c|c|}
 			\hline
 			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
-			GTEX-OOBJ-1026-SM-3NB2L\_pancreas\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Q734-0426-SM-48TZX\_pancreas\_female\_40-49\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-X3Y1-0726-SM-3P5YU\_pancreas\_male\_40-49\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QLQW-0326-SM-447A8\_pancreas\_male\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-PX3G-1026-SM-48TZW\_pancreas\_female\_20-29\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-XQ8I-1926-SM-4BOOK\_pancreas\_male\_50-59\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-P4PP-1026-SM-3NM9O\_pancreas\_female\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-OHPM-1026-SM-3LK74\_pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-NFK9-1626-SM-3LK5J\_pancreas\_male\_40-49\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QV31-0226-SM-447BO\_pancreas\_male\_30-39\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-RM2N-0326-SM-48FD8\_pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-T5JW-0226-SM-4DM7I\_pancreas\_female\_20-29\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-WH7G-0826-SM-4LVMR\_pancreas\_male\_40-49\_years & 3E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-R53T-0426-SM-48FEM\_pancreas\_female\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-R55D-1426-SM-48FEN\_pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-TKQ2-0426-SM-4DXUO\_pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-RWS6-1126-SM-47JXC\_pancreas\_female\_60-69\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-XUW1-1726-SM-4BOOZ\_pancreas\_female\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QEL4-1326-SM-447AD\_pancreas\_male\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-PLZ6-0726-SM-3P619\_pancreas\_male\_30-39\_years & 6E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_40-49\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_40-49\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_20-29\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_40-49\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_30-39\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_20-29\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_40-49\_years & 3E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_60-69\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_female\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			pancreas\_male\_30-39\_years & 6E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
 		\end{tabular}
 	\end{center}
+		\caption{Enrichment}
 	\label{topic/enrich/pancreas}
 \end{table}
 
 \begin{table}[htbp!]
-	\caption{Enrichment}
+\tiny
 	\begin{center}
-		\begin{tabular}{|l|r|l|}
+		\begin{tabular}{|c|c|c|}
 			\hline
-			GTEX-Q2AG-0011-R9A-SM-2HMJ6\_brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-RVPU-0011-R7A-SM-2XCAB\_brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-PWO3-0011-R2A-SM-2S1OX\_brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-TSE9-0011-R8A-SM-3DB7R\_brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QVJO-0011-R8A-SM-447C7\_brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Q2AG-0011-R8A-SM-2HMK5\_brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Q2AG-0011-R1A-SM-2HMJI\_brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-OXRO-0011-R2A-SM-3NB1W\_brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-XLM4-0011-R9A-SM-4AT45\_brain\_male\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-T6MN-0011-R8A-SM-32QP3\_brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-XOTO-0011-R8A-SM-4B65J\_brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-X4XX-0011-R5A-SM-46MWN\_brain\_male\_60-69\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-X585-0011-R2B-SM-46MVF\_brain\_male\_50-59\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-WHSE-0011-R8A-SM-3P5Z1\_brain\_male\_20-29\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-OHPN-0011-R2A-SM-2I5FB\_brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-N7MT-0011-R4a-SM-2I3G9\_brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-TSE9-0011-R9A-SM-3DB7Q\_brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QVJO-0011-R1A-SM-2S1QI\_brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QVJO-0011-R9A-SM-2S1QH\_brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-XLM4-0011-R2B-SM-4AT5Z\_brain\_male\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
+			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_60-69\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_50-59\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_20-29\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			brain\_male\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
 		\end{tabular}
 	\end{center}
+		\caption{Enrichment}
 	\label{topic/enrich/brain}
 \end{table}
 
 \begin{table}[htbp!]
 \centering
-		\begin{tabular}{|l|r|l|}
+\tiny
+		\begin{tabular}{|c|c|c|}
 			\hline
 			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
-			GTEX-XBEC-0006-SM-4AT5T\_blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-OXRN-0005-SM-2I5EU\_blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-UPK5-0006-SM-3GAD8\_blood\_male\_40-49\_years & 3E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-X4XY-0006-SM-46MV2\_blood\_male\_60-69\_years & 9E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-NPJ8-0007-SM-2D7VX\_blood\_male\_40-49\_years & 3E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-O5YV-0006-SM-2I5GX\_blood\_female\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Y8E5-0006-SM-47JWQ\_blood\_male\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-WWYW-0005-SM-3NB3K\_blood\_female\_50-59\_years & 5E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-SN8G-0006-SM-32PLD\_blood\_female\_50-59\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-POYW-0006-SM-2XCF4\_blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-X4XX-0005-SM-3NMCS\_blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QVUS-0006-SM-3GAE8\_blood\_female\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-REY6-0005-SM-2TF54\_blood\_male\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-UPJH-0006-SM-3GACW\_blood\_male\_50-59\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Q2AG-0005-SM-33HBX\_blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-Q734-0006-SM-2I3FJ\_blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-TSE9-0005-SM-4DXUF\_blood\_female\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-QEG4-0006-SM-2I5FY\_blood\_male\_30-39\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-R53T-0005-SM-3GADK\_blood\_female\_50-59\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			GTEX-OHPN-0005-SM-2YUML\_blood\_female\_60-69\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_40-49\_years & 3E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_60-69\_years & 9E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_40-49\_years & 3E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_50-59\_years & 5E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_50-59\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_50-59\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_male\_30-39\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_50-59\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			blood\_female\_60-69\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
 		\end{tabular}
 	\label{topic/enrich/blood}
 	\caption{Enrichment}
 \end{table}
 
-
 Enrichment test are made once for each topic, starting from the layer with more genes per 
 single topic. Test are made across multiple categories.
+
+DAVID~\cite{huang2008bioinformatics,huang2009systematic} confirms analogous result
