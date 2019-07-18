@@ -1,4 +1,4 @@
-\subsection{Run on GTEx}
+\subsection{Run on Gene Tissues Expression dataset}
 Once the model was tuned and adapted to RNA-Sequencing data, it was run on a subset of the GTEx dataset. A subset was chosen randomly in order to reduce the computing time needed. The analysis hereby described took about 2 days to be run on a 16 core CPU, 100GB memory facility. The great amount of memory is needed to temporary store the network configuration at each step of the Monte Carlo simulation.
 
 First of all to rapidly have an information about the interest of the oncoming result the metric above described were considered. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores} it is represented the V-measure score versus the number of clusters found at different layers.
@@ -8,8 +8,8 @@ First of all to rapidly have an information about the interest of the oncoming r
     \caption{Scores across hierarchy. The primary site and secondary site labels are compared.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores}
 \end{figure}
-The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score considering only homogeneity, this is a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at an higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
-This score can be useful to define at which level of the hierarchy the consequent analysis should be made.
+The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering only homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at an higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
+This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.
 
 In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation between the clusters at different layers it is evident.
 \begin{figure}[htb!]
@@ -159,8 +159,8 @@ Moreover remembering the V-measure or normalized mutual information defined in~\
     \caption{Scores across hierarchy. The scored is compared with some random labels. In blue the score for the primary site labels, in red for the secondary site labels, in yellow the shuffled labels, in green the mixed score with primary homogeneity and secondary completeness.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle}
 \end{figure}
+\FloatBarrier
 
-\clearpage
 \subsection{Standard algorithms}
 At this point was verified that the model has got interesting output, it reaches high scores and has got a strong signal against null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-known similar algorithms.
 First of all a comparison is made with hierarchical clustering. This is done using the standard scipy~\cite{jones2014scipy} package, the metrics used was the euclidean one and the linkage method was set to Ward. This is quite fast, it needs a couple of minutes on a dual core, 8GB memory machine.
@@ -172,111 +172,132 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_hier} the compari
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_hier}
 \end{figure}
 
-Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in~\ref{sec:lda}
+Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in~\ref{sec:lda}. Running LDA in standard scipy package is quite fast and is comparable with hierarchical clustering in terms of CPU time. Note that once LDA package extracts the topics, it is necessary to define some clusters, to do so a standard Agglomerative clustering approach was used, the distance was set to euclidean and the linkage to Ward. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_all} are reported the V-measure score for all the algorithms described until this point. What is clear is that the hierarchical Stochastic Block Model performs better than all the others, LDA gain a little worst score and hierarchical clustering is the worst of the three. As highly expected all models are quite different than random. The fact that hSBM and LDA have higher scores suggests that a topic model approach can be very useful in this kind of problems. 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_all.pdf}
     \caption{Scores across hierarchy. The scored is compared with some random labels}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_all}
 \end{figure}
+Note that LDA and hierarchical cluster models were not fine tuned and default parameters were used. Maybe a fine tuning of this packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model.
+\FloatBarrier
 
 \subsection{Topics}
-\draft{Using gsea ~\cite{subramanian2005gene} as gene set ~\cite{Ardlie2015} enrichment test can be made from python \cite{Kuleshov2016}}
+The analysis up to this point considered only one of the two sides of the bipartite network, in fact nothing was told about the genes (words in topic models).
+Not less the model output some clusters of genes.  From now on I'll refer to these clusters of genes as topics.
 
+If one has got a set of genes in order to catch any important information and discover if there is any biological meaning behind it, it is possible to perform an enrichment test. Enrichment analysis checks whether an input set of genes significantly overlaps with annotated gene sets.
+In this work tests were made using Gene Set Enrichment Analysis~\cite{subramanian2005gene} python tool~\cite{Kuleshov2016}, which performs a Fisher exact test (hypergeometric test), the Benjamini-Hochberg corrected P-values is reported. Genes' annotation terms were searched in the following sets: 
+\begin{itemize}
+		\item GO Molecular Function 2018
+		\item GO Biological Process 2018
+		\item GO Cellular Component 2018
+		\item Human Phenotype Ontology
+		\item Tissue Protein Expression from Human Proteome Map
+		\item KEGG 2019 Human
+		\item NCI-60 Cancer Cell Lines
+		\item GTEx Tissue Sample Gene Expression Profiles up
+		\item GTEx Tissue Sample Gene Expression Profiles down,
+\end{itemize}
+in particular the two latter contains annotation specific for GTEx dataset~\cite{Ardlie2015}.
+
+In tables~\ref{topic/enrich/pancreas}, ~\ref{topic/enrich/brain} and ~\ref{topic/enrich/blood} are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at $0.05$ and terms are sorted by adjusted P-value.
 \begin{table}[htb!]
 	\tiny
 	\begin{center}
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|l|c|r|}
 			\hline
-			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
-			pancreas\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_40-49\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_40-49\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_20-29\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_30-39\_years & 1E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_40-49\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_30-39\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_20-29\_years & 2E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_40-49\_years & 3E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 4E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_60-69\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_female\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_50-59\_years & 5E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			pancreas\_male\_30-39\_years & 6E-18 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene set \\ \hline
+			pancreas male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 40-49 years & 3E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 40-49 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 30-39 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 20-29 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 30-39 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 40-49 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 30-39 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 20-29 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 40-49 years & 3E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 60-69 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas female 50-59 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 50-59 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			pancreas male 30-39 years & 6E-18 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
 		\end{tabular}
 	\end{center}
-	\caption{Enrichment}
-	\label{topic/enrich/pancreas}
+	\caption{Enrichment test of a topic. It is clear the enrichment for pancreas related gene sets.}
+	\label{tab:topic/enrich/pancreas}
 \end{table}
-
 \begin{table}[htb!]
 	\tiny
 	\begin{center}
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|l|c|r|}
 			\hline
-			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
-			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_40-49\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_60-69\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_50-59\_years & 6E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_60-69\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_50-59\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_20-29\_years & 7E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 8E-05 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_female\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-			brain\_male\_60-69\_years & 1E-04 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+			Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene set \\ \hline
+			brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 60-69 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 50-59 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 20-29 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 8E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 8E-05 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+			brain male 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
 		\end{tabular}
 	\end{center}
-	\caption{Enrichment}
-	\label{topic/enrich/brain}
+	\caption{Enrichment test of a topic. It is clear the enrichment for brain related gene sets.}
+	\label{tab:topic/enrich/brain}
 \end{table}
-
 \begin{table}[htb!]
 	\centering
 	\tiny
-	\begin{tabular}{|c|c|c|}
+	\begin{tabular}{|l|c|r|}
 		\hline
-		Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene\_set \\ \hline
-		blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_50-59\_years & 3E-23 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_40-49\_years & 3E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_60-69\_years & 9E-21 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_40-49\_years & 3E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_60-69\_years & 4E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_50-59\_years & 5E-20 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_50-59\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_60-69\_years & 1E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_50-59\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_40-49\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_60-69\_years & 2E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_male\_30-39\_years & 3E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_50-59\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
-		blood\_female\_60-69\_years & 5E-19 & GTEx\_Tissue\_Sample\_Gene\_Expression\_Profiles\_up \\ \hline
+		Term & \multicolumn{1}{l|}{Adjusted P-value} & Gene set \\ \hline
+		blood male 50-59 years & 3E-23 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 50-59 years & 3E-23 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 40-49 years & 3E-21 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 60-69 years & 9E-21 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 40-49 years & 3E-20 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 60-69 years & 4E-20 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 60-69 years & 4E-20 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 50-59 years & 5E-20 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 50-59 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 60-69 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 50-59 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 40-49 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 40-49 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 60-69 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood male 30-39 years & 3E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 50-59 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
+		blood female 60-69 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up \\ \hline
 	\end{tabular}
-	\label{topic/enrich/blood}
-	\caption{Enrichment}
+	\label{tab:topic/enrich/blood}
+	\caption{Enrichment test of a topic. It is clear the enrichment for blood related gene sets.}
 \end{table}
+Test were made on the topics at the level of the hierarchy which obtained the higher V-measure score on the sample side clustering. These results are very interesting, these enrichment tests demonstrate that not only the sample side of the network is well clustered but only the topics have a non trivial meaning.
 
-Enrichment test are made once for each topic, starting from the layer with more genes per 
-single topic. Test are made across multiple categories.
+So also the topics are related to the tissues and somehow are tissue-specific. In the next examples the relation between the topics and the samples will be further investigated.
+In particular following what was done by~\cite{dey2017visualizing} the importance of each topic inside each sample the $P(topic | sample)$.
+
+Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. In fact it is not always easy to identify and classify cancer tissues. In particular being able to separate tumour sub-types would be the ideal   pursuance of this work. So let's switch to the analysis of diseased samples. 
+\FloatBarrier

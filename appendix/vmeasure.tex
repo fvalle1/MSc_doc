@@ -9,7 +9,7 @@ defining the entropy
 \begin{equation}
     H(C|K)=\sum_{c\in \mathrm{model labels},\\ k \in \mathrm{clusters}}\frac{n_{c k}}{N}Log\left(\frac{n_{c k}}{n_k}\right)
 \end{equation}
-where $n_{c k}$ is the number of nodes of type $c$ in cluster $k$, $N$ the number of nodes and $n_k$ the number of nodes in cluster $k$. It is evident that if all nodes inside cluster $k$ are of the same type $c$ $n_{c k}=n_{k}$, $H(C|K)=0$ and $h=1$, it is actually a complete homogeneous situation.
+where $n_{c k}$ is the number of nodes of type $c$ in cluster $k$, $N$ the number of nodes and $n_k$ the number of nodes in cluster $k$. It is evident that if all nodes inside cluster $k$ are of the same type $c$ $n_{c k}=n_{k}$, $H(C|K)=0$ and $h=1$, it is actually a full homogeneous situation.
 The completeness:
 \begin{equation}
     c=1-\frac{H(K|C)}{H(K)},
@@ -50,8 +50,8 @@ and
 \[
 h + c = \frac{(H(C)-H(C|K))(H(K)+H(C))}{H(K) H(C)}.
 \]
-The harmonic average $2\frac{h c}{h + c}$ becomes
+The harmonic average $2\frac{h c}{h + c}$ gives
 \[
-2\frac{H(C)-H(C|K)}{H(K)+H(C)}=2\frac{H(C)+H(K)-H(K,C)}{H(K)+H(C)}=2\frac{MI(C,K)}{H(K)+H(C)}
+\mathrm{V-measure}=2\frac{H(C)-H(C|K)}{H(K)+H(C)}=2\frac{H(C)+H(K)-H(K,C)}{H(K)+H(C)}=2\frac{MI(C,K)}{H(K)+H(C)}
 \]
-which is called V-measure and is actually the mutual information between $P(C)$ and $P(K)$ normalised to $1$ by the term $H(C)+H(K)$. In fact if $P(C)=P(K)$ $H(K,C)=H(K)=H(C)$ and the measure is $1$, if $P(C)$ and $P(K)$ are completely independent $H(K,C)=H(K)+H(C)$ and the measure is $0$.
+which is actually the mutual information between $P(C)$ and $P(K)$ normalized to $1$ by the term $H(C)+H(K)$. In fact if $P(C)=P(K)$ $H(K,C)=H(K)=H(C)$ and the measure is $1$, if $P(C)$ and $P(K)$ are completely independent $H(K,C)=H(K)+H(C)$ and the measure is $0$.
