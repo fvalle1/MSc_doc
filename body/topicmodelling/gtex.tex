@@ -1,14 +1,14 @@
 \subsection{Run on Gene Tissues Expression dataset}
 Once the model was tuned and adapted to RNA-Sequencing data, it was run on a subset of the GTEx dataset. A subset was chosen randomly in order to reduce the computing time needed. The analysis hereby described took about 2 days to be run on a 16 core CPU, 100GB memory facility. The great amount of memory is needed to temporary store the network configuration at each step of the Monte Carlo simulation.
 
-First of all to rapidly have an information about the interest of the oncoming result the metric above described were considered. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores} it is represented the V-measure score versus the number of clusters found at different layers.
+First of all to rapidly have information about the interest of the oncoming result the metric above described were considered. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores} it is represented the V-measure score versus the number of clusters found at different layers.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf}
-    \caption{Scores across hierarchy. The primary site and secondary site labels are compared.}
+    \caption{Scores across the hierarchy. The primary site and secondary site labels are compared.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores}
 \end{figure}
-The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering only homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at an higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
+The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at a higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
 This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.
 
 In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation between the clusters at different layers it is evident.
@@ -21,11 +21,11 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation
 
 \clearpage
 
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site} each column is a cluster and each color is a tissue of the dataset. It is evident that the majority of the tissue are identified: the first, second, fifth, sixth, eighth and tenth columns are fully and uniformly colored of the same color. These corresponds to an identification of brain, blood, lung, testis and bladder.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site} each column is a cluster and each colour is a tissue of the dataset. It is evident that the majority of the tissue are identified: the first, second, fifth, sixth, eighth and tenth columns are fully and uniformly coloured of the same colour. These correspond to an identification of brain, blood, lung, testis and bladder.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site.pdf}
-    \caption{Clusters composition at level of the hierarchy with higher score. Each column is a cluster, each color is a label.}
+    \caption{Clusters composition at the level of the hierarchy with higher score. Each column is a cluster, each colour is a label.}
     \label{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site}
 \end{figure}
 A normalised representation of the same clusters the result is still quite interesting and the homogeneity of the clusters is more evident.
@@ -35,23 +35,23 @@ A normalised representation of the same clusters the result is still quite inter
     \caption{Normalised composition of clusters.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site}
 \end{figure}
-Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}, demonstrates that at this point all the the tissues are separated and each cluster is fully of nodes sharing the same tissue.
+Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}, demonstrates that at this point all the tissues are separated and each cluster is full of nodes sharing the same tissue.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site.pdf}
     \caption{Normalised composition of clusters at a deeper level.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}
 \end{figure}
-Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of brain, nevertheless the cerebellum is well identified (column 13) and blood is distinguished in whole blood (columns 1-4) and lymphocytes (column 10).
+Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of the brain, nevertheless, the cerebellum is well identified (column 13) and blood is distinguished in whole blood (columns 1-4) and lymphocytes (column 10).
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site.pdf}
-    \caption{Normalised composition of clusters with respect to the secondary site subtissue labels.}
+    \caption{Normalised composition of clusters with respect to the secondary site sub-tissue labels.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site}
 \end{figure}
 
 \subsection{Shuffling}
-A null model of cluster composition is necessary In order to be able to state that a result is better than expected. This was done by doing the same analysis but reshuffling the labels of the nodes. Doing so the number of clusters and the cluster sizes are maintained. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site} an example of clustering with random labels, it is evident that all clusters have similar and homogeneous composition. Note that not every tissue has the same number of samples, so for example blood is more represented than other tissues.
+A null model of cluster composition is necessary In order to be able to state that a result is better than expected. This was done by doing the same analysis but reshuffling the labels of the nodes. Doing so the number of clusters and the cluster sizes are maintained. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site} an example of clustering with random labels, it is evident that all clusters have similar and homogeneous composition. Note that not every tissue has the same number of samples, so, for example, blood is more represented than other tissues.
 \begin{figure}[htb!]
 	\centering
 	\includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site}
@@ -63,14 +63,14 @@ All the results described in the previous pictures are quite qualitative. To hav
 \[
 max_{l\in labels}\left(\frac{n_{l k}}{n_k}\right)
 \]
-with $n_{l k}$ is the numbers of nodes labeled $l$ in cluster $k$ and $n_k$ is the number of nodes in cluster $k$. This is represented in figure~\ref{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site} for the level where the V-measure is maximized (best results are expected here). In figure~\ref{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site} on the left is shown the most representative label fraction versus for each cluster, on the right the histograms of the same quantity. It is evident that models' clusters are very homogeneous with the majority of cluster with almost $100\%$ of the same tissue. It is also clear that reshuffling the labels the result is very different and so the models behave better than expected. 
+with $n_{l k}$ is the numbers of nodes labelled $l$ in cluster $k$ and $n_k$ is the number of nodes in cluster $k$. This is represented in figure~\ref{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site} for the level where the V-measure is maximized (best results are expected here). In figure~\ref{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site} on the left is shown the most representative label fraction versus for each cluster, on the right the histograms of the same quantity. It is evident that models' clusters are very homogeneous with the majority of cluster with almost $100\%$ of the same tissue. It is also clear that reshuffling the labels the result is very different and so the models behave better than expected. 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf}
     \caption{Most representative label versus cluster size.}
     \label{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site}
 \end{figure}
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behavior. This is due to the fact that at this level clusters are very small and so it is easier to pick up nodes with the same level (in the extreme case of a cluster with size 1 it is always full with the same label). This shows that the deeper level it is not interesting, results are exactly the same with random labels;  moreover the reshuffling null model it is good to show up eventual biases due to small cluster sizes.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This is due to the fact that at this level clusters are very small and so it is easier to pick up nodes with the same level (in the extreme case of a cluster with size 1 it is always full with the same label). This shows that the deeper level it is not interesting, results are the same with random labels;  moreover the reshuffling null model it is good to show up eventual biases due to small cluster sizes.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -88,11 +88,11 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the s
     \begin{minipage}{0.45\textwidth}
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l3_primary_site.pdf}
     \end{minipage}
-    \caption{Fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than down right the upper one.}
+    \caption{The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than down right the upper one.}
     \label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*}
 \end{figure}
 
-A similar analysis can be made considering not just the number of the cluster but the cluster size, this is shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site}. It is interesting to notice that the shuffle null model and the real labels clusters are evidently different, so there must be some kind of signal. It is clear that the model is able to output big clusters full with the same label.
+A similar analysis can be made considering not just the number of the cluster but the cluster size, this is shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site}. It is interesting to notice that the shuffle null model and the real labels clusters are evidently different, so there must be some kind of signal. It is clear that the model is able to output big clusters full of the same label.
 \begin{figure}[htb!]
 	\centering
 	\includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf}
@@ -117,19 +117,18 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*} the
 	\begin{minipage}{0.45\textwidth}
 		\includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf}
 	\end{minipage}
-	\caption{Fraction of most representative label versus cluster size across the hierarchy. From upper left the deeper layer than down right the upper one.}
+	\caption{Fraction of most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the upper one.}
 	\label{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*}
 \end{figure}
 
-
-At this point to deepen investigate the structure of the clusters it can be interesting to study how many labels are present in each cluster. In fact the fraction of most represented label defined above carries no information of what happens to the non most representative labels. For example if one cluster is composed of $80\%$ by label \textbf{A} and $20\%$ by label \textbf{B} and another cluster is composed $80\%$ by label \textbf{A}, $10\%$ by label \textbf{B} and $10\%$ by label \textbf{C} they have both fraction of maximum representative label $80\%$ but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this sort of effects. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site} it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.
+At this point to deepen investigate the structure of the clusters it can be interesting to study how many labels are present in each cluster. In fact, the fraction of most represented label defined above carries no information of what happens to the remaining labels. For example, if one cluster is composed of $80\%$ by label \textbf{A} and $20\%$ by label \textbf{B} and another cluster is composed $80\%$ by label \textbf{A}, $10\%$ by label \textbf{B} and $10\%$ by label \textbf{C} they have both a fraction of maximum representative label $80\%$ but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this sort of effects. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site} it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf}
-    \caption{Number of different labels in each cluster versus cluster size.}
+    \caption{The number of different labels in each cluster versus cluster size.}
     \label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site}
 \end{figure}
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*} the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless in layers with higher V-measure score there is a strong signal that the reshuffling model is quite different from the real labels output.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*} the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless in layers with higher V-measure score there is a strong signal that the reshuffling model is quite different from the model's output.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -148,15 +147,15 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_s
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf}
     \end{minipage}
 \label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*}
-\caption{Number of different labels in each cluster versus cluster size. From upper left the deeper layer than down right the upper one.}
+\caption{Number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the upper one.}
 \end{figure}
 
-Having constructed the null model it is possible estimate the V-measure score also for the null model. The results are reported in figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle}. 
-Moreover remembering the V-measure or normalized mutual information defined in~\ref{eq:mutualinformation} it is possible to estimate a mixed score which considers the homogeneity of primary site and the completeness of secondary site, doing so the score goes up if going deeper in the hierarchy the model makes more cluster with the same tissue but separates sub tissues. In fact it is not a big deal if one loses completeness regarding tissues (the model separates one big cluster full with the same label into two small ones) but gain information at the next magnification information. This is clear if one look at the big blood cluster that in the next level of the hierarchy is separated into two clusters of blood, one of whole blood and one of lymphocytes. The result is that this mixed score is the highest one.
+Having constructed the null model it is possible to estimate the V-measure score also for the null model. The results are reported in figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle}. 
+Moreover remembering the V-measure or normalized mutual information defined in~\ref{eq:mutualinformation} it is possible to estimate a mixed score which considers the homogeneity of primary site and the completeness of secondary site, doing so the score goes up if going deeper in the hierarchy the model makes more cluster with the same tissue but separates sub tissues. It is not a big deal if one loses completeness regarding tissues (the model separates one big cluster full with the same label into two small ones) but gain information at the next magnification. This becomes clear if one looks at the big blood cluster that in the next level of the hierarchy is separated into two clusters of blood, one of whole blood and one of lymphocytes. The result is that this mixed score is the highest one.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_shuffle.pdf}
-    \caption{Scores across hierarchy. The scored is compared with some random labels. In blue the score for the primary site labels, in red for the secondary site labels, in yellow the shuffled labels, in green the mixed score with primary homogeneity and secondary completeness.}
+    \caption{Scores across the hierarchy. The scored is compared with some random labels. In blue the score for the primary site labels, in red for the secondary site labels, in yellow the shuffled labels, in green the mixed score with primary homogeneity and secondary completeness.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle}
 \end{figure}
 \FloatBarrier

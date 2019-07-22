@@ -1,0 +1,650 @@
+Topic modellingch:topicmodelling
+Once extensively analyzed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.
+
+
+Remembering that in chapter ch:structure it emerged some kind of structure behind data, where each tissue seemed to be sampled by a different power law, a topic modelling approach it is here proposed.
+
+The idea is that behind data there are hidden variables that describe the relationship between the genes and the samples. Let's call these variables topics.
+Firstly it is necessary to build a bipartite network of genes and samples, then nodes are linked considering the gene expression value in the dataset.
+figure[htb!]
+        pictures/topic/bipartite.pdf
+    An example of a bipartite network. Samples are on the left, genes are on the right. Each link is weighted by gene expression value. On the left side, all nodes of the same colour are clusters of samples. On the right side, all nodes with the same colour are set of genes, also known as topics.
+ 
+    Blue lines represent the cluster structure, each blue square is a set of nodes, lines delineate the hierarchical structure.
+
+    It is clear in the middle the network separation in genes and samples.
+    fig:topic/bipartite
+figure
+
+The output of this kind of model consists of sets of genes, the topics, with a probability distribution  and probability distributions of these topics inside each sample , both gives the relation between a sample and a gene.
+
+In this work it is used an innovative and recent approach to topic modelling, the algorithm was presented by gerlach2018network and extends the so called stochastic block models Holland1983. 
+Topic modelling is being developed and studied to approach linguistics problems, so this algorithm was developed considering words and books as input, links represents the abundance of a word in a book. In chapter ch:structure was evident that there are many similarities between data considered in this work and linguistics' dataset. Referring to data used in this project samples will be the documents and genes will be the words.
+It is expected that topics represent some properties of samples due to the gene expression distribution in samples.
+
+The ultimate goal would be to be able to separate healthy and diseased samples than separate and find well-known tumour types, then extend the actual knowledge and retrieve the tumour sub-types.
+
+One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers. So the output has got different resolution, the extreme one is the separation, by definition, between samples and genes, at other layers it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
+figure[htb!]
+    pictures/topic/peixioto_hierarchic.jpg
+  Hierarchical structure
+  fig:topic_peixioto_hierarchic
+figure
+
+What the algorithm does is to run a sort of MonteCarlo simulation and find the best partition of the data.
+The probability that the hidden variables  describe the data   can be written as a likelihood times a prior probability as 
+P(G)=P(G)P()^priorP(G)__P(G)P().
+It is possible to define a description length
+
+
+so that .
+Moreover, the likelihood , can be written as  where  is the number of possibles realisations given . This can be represented as a microcanonical ensemble with entropy . Note that .
+According to peixoto2017nonparametric entropy  can be written as
+
+S=12_r,s n_rn_sH(e_rsn_rn_s),
+
+where  is the number of nodes in block ,  the number of links between nodes of group  and group  and  is the Shannon entropy . Note that  is minimal if  is close to zero,  and  are two completely separated blocks or if it is close to ,  and  are groups with many connections; this allows to find groups with nodes very disconnected or topic and clusters with a lot of connections.
+The algorithm tries to minimise , so that  is minimised, so  is maximised, but this is  that is the required probability to maximise.
+
+The MonteCarlo works in a few steps:
+itemize
+ a node  is chosen
+ the group of  is called 
+  a node  is chosen from 's neighbours, the group of  is called 
+  a random group  is selected
+  move of node  to group  is accepted with probability 
+  if  is not accepted, a random edge  is chosen from group  and node  is assigned to the endpoint of  which is not in 
+itemize
+in figure fig:topic_pixioto_move an example of these steps.
+
+figure[htb!]
+    pictures/topic/peixioto_move.jpg
+  Left: Local neighbourhood of node  belonging to block , and a randomly chosen neighbour  
+  belonging to block . 
+  Right: Block multi graph, indicating the number of edges between blocks, represented as the edge thickness. 
+  In this example, the attempted move  is made with a larger probability than either 
+   or  (no movement), since  and .
+  fig:topic_pixioto_move
+figure
+
+Once the model run it is possible to estimate the probability distribution of words inside a topic
+P(wt_w)= of edges on  to  of edges on 
+and the topic distribution inside a document
+P(t_wd)= of edges on  from  of edges on 
+In the case of overlapping partitions, the presence of a word in a topic is not trivial and can be estimated as 
+P(t_ww)= of edges on  to  of edges on 
+or the presence of a document in a cluster
+P(t_dd)= of edges on  to  of edges on 
+
+See appendix app:hsbm for detailed analysis of the math behind the algorithm and https://cloud.docker.com/repository/docker/fvalle01/hsbm for the extension of gerlach2018network to non linguistics component systems datasets.
+
+
+Metrics and benchmarks
+Before running topic modelling, it is useful to define some metrics to test and benchmark the model.
+
+Looking at the cluster side of the network, the outputs are sets of samples, the clusters. One can state the model works if all, or at least the majority, of samples in the same cluster share some property. Here the tissue is considered as property.
+
+Note that this work's model is a non supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let's call this  and a certain probability of being in a cluster (model's output), let's call this .
+
+It is possible to define some quantities, the homogeneity
+equationeq:homogeneity
+    h=1-H(CK)H(C)
+equation
+defining the entropy
+equationeq:hck
+    H(CK)=_ctissues,
+ k clustersn_c kNLog(n_c kn_k)
+equation
+where  is the number of nodes of type  in cluster ,  the number of nodes and  the number of nodes in cluster . It is evident that if all nodes inside cluster  are of the same type  ,  and , it is actually a complete homogeneous situation.
+
+Another quantity can be defined and it is completeness:
+equationeq:completness
+    c=1-H(KC)H(K),
+equation
+ is defined in the same way as eq:hck. Completeness measures if all nodes of the same type are in the same cluster.
+
+Ideally one wants a method which output is both homogeneous and complete. So it is possible to define the V-measure, which is the harmonic average of the two:
+equationeq:mutualinformation
+    V-measure=2h ch + c,
+equation
+which is actually the normalized mutual information between  and  rosenberg2007v.
+
+In the next sections will be studied also the maximum fraction of label in the same cluster max_ckn_c kn_k.
+Also the number of different labels in the same cluster will be studied.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/metric_scores_primarysite.pdf
+    Scores across hierarchy. The mutual information is the harmonic average between homogeneity and completeness
+    fig:topic/metric_scores_primarysite
+figure
+
+
+
+Hierarchical clustering
+da scrivere
+
+hierarchical clustering
+Hierarchical clustering is a general family of clustering algorithms that build nested clusters by merging or splitting them successively. This hierarchy of clusters is represented as a tree (or dendrogram). The root of the tree is the unique cluster that gathers all the samples, the leaves being the clusters with only one sample. See the Wikipedia page for more details.
+
+The AgglomerativeClustering object performs a hierarchical clustering using a bottom up approach: each observation starts in its own cluster, and clusters are successively merged together. The linkage criteria determines the metric used for the merge strategy:
+
+Ward minimizes the sum of squared differences within all clusters. It is a variance-minimizing approach and in this sense is similar to the k-means objective function but tackled with an agglomerative hierarchical approach.
+Maximum or complete linkage minimizes the maximum distance between observations of pairs of clusters.
+Average linkage minimizes the average of the distances between all observations of pairs of clusters.
+Single linkage minimizes the distance between the closest observations of pairs of clusters.
+AgglomerativeClustering can also scale to a large number of samples when it is used jointly with a connectivity matrix but is computationally expensive when no connectivity constraints are added between samples: it considers at each step all the possible merges.
+lstlisting[style=mypython]
+from sklearn.cluster import AgglomerativeClustering
+AgglomerativeClustering(
+    affinity='euclidean',
+    compute_full_tree='auto',
+    linkage='ward',
+    n_clusters=x,
+    )
+lstlisting
+
+LDAsec:lda
+commenti vari
+As in  Zhou2016
+equationeq:lda
+P(w, z,,  , )=_n^N_d P(wz,)P(z)_k^KP()_d^N P( )
+equation
+
+figure
+		pictures/topic/LDA.jpeg
+	fig:LDA
+	LAD scheme
+figure
+where
+itemize
+	 number of documents
+	 number of topics
+	 words
+	 number of words in document d
+	 and  are parameters of the model
+itemize
+in eq:lda  and  are Dirichlet distributions the outputs are the topic distribution in documents  and the word distribution in topics 
+
+
+Pre-process
+To make the algorithm faster, could be interesting to do a pre-processing of the data.
+Vary approaches were tested, all of them involving the quantities defined in ch:structure. The goal is to identify components which are able to best separate the realisations. 
+Low occurrence genes were selected firstly to make topic modelling. A   threshold was set. This method select genes that appears (have expression greater than zero) only in less than half samples. This doesn't consider genes that appear everywhere (with occurrence ) but changes their behaviour across realisations.
+
+tf-idf (term frequency–inverse document frequency) should help. This approach doesn't consider values, but a transformed version
+
+n^new_ij=n_i jM_j(1-Log(o_i))
+ which increases the importance of components with small occurrence . This approach doesn't actually select components, which is still an issue.
+
+Highly variable genes can be selected. This is done using the  analysis from metti referenza giusta.
+figure[htb!]
+        pictures/topic/cvmean_oversigma.png
+    Highly variable genes
+    fig:topic/cvmean_oversigma
+figure
+Plotting the coefficient of variation versus the mean for each component reveals which components have higher variance with respect to components which, on average, have a similar behaviour.
+Binned averages and variances were estimated, and only genes with a  over a  greater than the bin's mean were considered.
+
+Distance from boundaries can be a similar and alternative method to select highly variable genes.
+metti figura giusta!!
+figure[htb!]
+        pictures/topic/cvmean_oversampling.png
+    Genes distant from the boundaries
+    fig:topic/cvmean_oversampling
+figure
+The distribution as discussed in disctuti e linka have a Poisson-like and a Taylor-like boundaries. So can be considered only components that are the most distant from these boundaries.
+
+Using the last two approaches got the point and actually help topic modelling to succeed.
+
+Run
+
+Run on Gene Tissues Expression dataset
+Once the model was tuned and adapted to RNA-Sequencing data, it was run on a subset of the GTEx dataset. A subset was chosen randomly in order to reduce the computing time needed. The analysis hereby described took about 2 days to be run on a 16 core CPU, 100GB memory facility. The great amount of memory is needed to temporary store the network configuration at each step of the Monte Carlo simulation.
+
+First of all to rapidly have information about the interest of the oncoming result the metric above described were considered. In figure fig:topic/gtex/oversigma_10tissue/metric_scores it is represented the V-measure score versus the number of clusters found at different layers.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf
+    Scores across the hierarchy. The primary site and secondary site labels are compared.
+    fig:topic/gtex/oversigma_10tissue/metric_scores
+figure
+The result is quite good, the maximum score is over . Considering that, for example, Farver2018 obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at a higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
+This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.
+
+In figure fig:topic/gtex/oversigma_10tissue/bipartite_rebuild the relation between the clusters at different layers it is evident.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/bipartite_rebuild.pdf
+    Hierarchy of the files' nodes.
+    fig:topic/gtex/oversigma_10tissue/bipartite_rebuild
+figure
+
+
+In figure fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site each column is a cluster and each colour is a tissue of the dataset. It is evident that the majority of the tissue are identified: the first, second, fifth, sixth, eighth and tenth columns are fully and uniformly coloured of the same colour. These correspond to an identification of brain, blood, lung, testis and bladder.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site.pdf
+    Clusters composition at the level of the hierarchy with higher score. Each column is a cluster, each colour is a label.
+    fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site
+figure
+A normalised representation of the same clusters the result is still quite interesting and the homogeneity of the clusters is more evident.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site.pdf
+    Normalised composition of clusters.
+    fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site
+figure
+Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site, demonstrates that at this point all the tissues are separated and each cluster is full of nodes sharing the same tissue.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site.pdf
+    Normalised composition of clusters at a deeper level.
+    fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site
+figure
+Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of the brain, nevertheless, the cerebellum is well identified (column 13) and blood is distinguished in whole blood (columns 1-4) and lymphocytes (column 10).
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site.pdf
+    Normalised composition of clusters with respect to the secondary site sub-tissue labels.
+    fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site
+figure
+
+Shuffling
+A null model of cluster composition is necessary In order to be able to state that a result is better than expected. This was done by doing the same analysis but reshuffling the labels of the nodes. Doing so the number of clusters and the cluster sizes are maintained. In figure fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site an example of clustering with random labels, it is evident that all clusters have similar and homogeneous composition. Note that not every tissue has the same number of samples, so, for example, blood is more represented than other tissues.
+figure[htb!]
+		pictures/topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site
+	Example of visualization of clusters with reshuffled labels.
+	fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site
+figure
+
+All the results described in the previous pictures are quite qualitative. To have a more objective and mathematical measure of the success of the algorithm it is possible to measure the fraction of the most representative label in each cluster 
+
+max_llabels(n_l kn_k)
+
+with  is the numbers of nodes labelled  in cluster  and  is the number of nodes in cluster . This is represented in figure fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site for the level where the V-measure is maximized (best results are expected here). In figure fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site on the left is shown the most representative label fraction versus for each cluster, on the right the histograms of the same quantity. It is evident that models' clusters are very homogeneous with the majority of cluster with almost  of the same tissue. It is also clear that reshuffling the labels the result is very different and so the models behave better than expected. 
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf
+    Most representative label versus cluster size.
+    fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site
+figure
+In figure fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum* the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This is due to the fact that at this level clusters are very small and so it is easier to pick up nodes with the same level (in the extreme case of a cluster with size 1 it is always full with the same label). This shows that the deeper level it is not interesting, results are the same with random labels;  moreover the reshuffling null model it is good to show up eventual biases due to small cluster sizes.
+figure[htb!]
+        minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l0_primary_site.pdf
+    minipage
+    
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l1_primary_site.pdf
+    minipage
+    
+
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf
+    minipage
+    
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l3_primary_site.pdf
+    minipage
+    The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than down right the upper one.
+    fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*
+figure
+
+A similar analysis can be made considering not just the number of the cluster but the cluster size, this is shown in figure fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site. It is interesting to notice that the shuffle null model and the real labels clusters are evidently different, so there must be some kind of signal. It is clear that the model is able to output big clusters full of the same label.
+figure[htb!]
+		pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf
+	Fraction of most representative label versus cluster size.
+	fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site
+figure
+In figure fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l* the same analysis for  all the levels of the hierarchy. It is interesting to see how going up in the hierarchy the two signals become different, as shown before the deeper layer (upper left in the image) is not different from null model and so it is not interesting.
+figure[htb!]
+		minipage0.45
+	pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l0_primary_site.pdf
+	minipage
+	
+	minipage0.45
+	pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l1_primary_site.pdf
+	minipage
+	
+
+	minipage0.45
+	pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l2_primary_site.pdf
+	minipage
+	
+	minipage0.45
+	pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf
+	minipage
+	Fraction of most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the upper one.
+	fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*
+figure
+
+At this point to deepen investigate the structure of the clusters it can be interesting to study how many labels are present in each cluster. In fact, the fraction of most represented label defined above carries no information of what happens to the remaining labels. For example, if one cluster is composed of  by label A and  by label B and another cluster is composed  by label A,  by label B and  by label C they have both a fraction of maximum representative label  but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this sort of effects. In figure fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf
+    The number of different labels in each cluster versus cluster size.
+    fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site
+figure
+In figure fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l* the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless in layers with higher V-measure score there is a strong signal that the reshuffling model is quite different from the model's output.
+figure[htb!]
+        minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l0_primary_site.pdf
+    minipage
+    
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l1_primary_site.pdf
+    minipage
+    
+
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l2_primary_site.pdf
+    minipage
+    
+    minipage0.45
+    pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf
+    minipage
+fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*
+Number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the upper one.
+figure
+
+Having constructed the null model it is possible to estimate the V-measure score also for the null model. The results are reported in figure fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle. 
+Moreover remembering the V-measure or normalized mutual information defined in eq:mutualinformation it is possible to estimate a mixed score which considers the homogeneity of primary site and the completeness of secondary site, doing so the score goes up if going deeper in the hierarchy the model makes more cluster with the same tissue but separates sub tissues. It is not a big deal if one loses completeness regarding tissues (the model separates one big cluster full with the same label into two small ones) but gain information at the next magnification. This becomes clear if one looks at the big blood cluster that in the next level of the hierarchy is separated into two clusters of blood, one of whole blood and one of lymphocytes. The result is that this mixed score is the highest one.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/metric_scores_shuffle.pdf
+    Scores across the hierarchy. The scored is compared with some random labels. In blue the score for the primary site labels, in red for the secondary site labels, in yellow the shuffled labels, in green the mixed score with primary homogeneity and secondary completeness.
+    fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle
+figure
+
+Standard algorithms
+At this point was verified that the model has got interesting output, it reaches high scores and has got a strong signal against null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-known similar algorithms.
+First of all a comparison is made with hierarchical clustering. This is done using the standard scipy jones2014scipy package, the metrics used was the euclidean one and the linkage method was set to Ward. This is quite fast, it needs a couple of minutes on a dual core, 8GB memory machine.
+In figure fig:topic/gtex/oversigma_10tissue/metric_scores_hier the comparison between this scores, the hierarchical algorithm performs worse than hierarchical stochastic block model and as highly expected better than the random model.
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/metric_scores_hier.pdf
+    Scores across hierarchy. The scored is compared with some random labels
+    fig:topic/gtex/oversigma_10tissue/metric_scores_hier
+figure
+
+Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in sec:lda. Running LDA in standard scipy package is quite fast and is comparable with hierarchical clustering in terms of CPU time. Note that once LDA package extracts the topics, it is necessary to define some clusters, to do so a standard Agglomerative clustering approach was used, the distance was set to euclidean and the linkage to Ward. In figure fig:topic/gtex/oversigma_10tissue/metric_scores_all are reported the V-measure score for all the algorithms described until this point. What is clear is that the hierarchical Stochastic Block Model performs better than all the others, LDA gain a little worst score and hierarchical clustering is the worst of the three. As highly expected all models are quite different than random. The fact that hSBM and LDA have higher scores suggests that a topic model approach can be very useful in this kind of problems. 
+figure[htb!]
+        pictures/topic/gtex/oversigma_10tissue/metric_scores_all.pdf
+    Scores across hierarchy. The scored is compared with some random labels
+    fig:topic/gtex/oversigma_10tissue/metric_scores_all
+figure
+Note that LDA and hierarchical cluster models were not fine tuned and default parameters were used. Maybe a fine tuning of this packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model.
+
+Topics
+The analysis up to this point considered only one of the two sides of the bipartite network, in fact nothing was told about the genes (words in topic models).
+Not less the model output some clusters of genes.  From now on I'll refer to these clusters of genes as topics.
+
+If one has got a set of genes in order to catch any important information and discover if there is any biological meaning behind it, it is possible to perform an enrichment test. Enrichment analysis checks whether an input set of genes significantly overlaps with annotated gene sets.
+In this work tests were made using Gene Set Enrichment Analysis subramanian2005gene python tool Kuleshov2016, which performs a Fisher exact test (hypergeometric test), the Benjamini-Hochberg corrected P-values is reported. Genes' annotation terms were searched in the following sets: 
+itemize
+	GO Molecular Function 2018
+	GO Biological Process 2018
+	GO Cellular Component 2018
+	Human Phenotype Ontology
+	Tissue Protein Expression from Human Proteome Map
+	KEGG 2019 Human
+	NCI-60 Cancer Cell Lines
+	GTEx Tissue Sample Gene Expression Profiles up
+	GTEx Tissue Sample Gene Expression Profiles down,
+itemize
+in particular the two latter contains annotation specific for GTEx dataset Ardlie2015.
+
+In tables topic/enrich/pancreas,  topic/enrich/brain and  topic/enrich/blood are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at  and terms are sorted by adjusted P-value.
+table[htb!]
+		center
+	tabularlcr
+		Term & 1lAdjusted P-value & Gene set 
+ 	pancreas male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 40-49 years & 3E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 40-49 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 30-39 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 20-29 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 30-39 years & 1E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 40-49 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 30-39 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 20-29 years & 2E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 40-49 years & 3E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 4E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 60-69 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas female 50-59 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 50-59 years & 5E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	pancreas male 30-39 years & 6E-18 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	tabular
+	center
+	Enrichment test of a topic. It is clear the enrichment for pancreas related gene sets.
+	tab:topic/enrich/pancreas
+table
+table[htb!]
+		center
+	tabularlcr
+		Term & 1lAdjusted P-value & Gene set 
+ 	brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 40-49 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 60-69 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 50-59 years & 6E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 60-69 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 50-59 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 20-29 years & 7E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 8E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 8E-05 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain female 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	brain male 60-69 years & 1E-04 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	tabular
+	center
+	Enrichment test of a topic. It is clear the enrichment for brain related gene sets.
+	tab:topic/enrich/brain
+table
+table[htb!]
+			tabularlcr
+		Term & 1lAdjusted P-value & Gene set 
+ 	blood male 50-59 years & 3E-23 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 50-59 years & 3E-23 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 40-49 years & 3E-21 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 60-69 years & 9E-21 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 40-49 years & 3E-20 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 60-69 years & 4E-20 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 60-69 years & 4E-20 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 50-59 years & 5E-20 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 50-59 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 60-69 years & 1E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 60-69 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 50-59 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 40-49 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 40-49 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 60-69 years & 2E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood male 30-39 years & 3E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 50-59 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	blood female 60-69 years & 5E-19 & GTEx Tissue Sample Gene Expression Profiles up 
+ 	tabular
+	tab:topic/enrich/blood
+	Enrichment test of a topic. It is clear the enrichment for blood related gene sets.
+table
+Test were made on the topics at the level of the hierarchy which obtained the higher V-measure score on the sample side clustering. These results are very interesting, these enrichment tests demonstrate that not only the sample side of the network is well clustered but only the topics have a non trivial meaning.
+
+So also the topics are related to the tissues and somehow are tissue-specific. In the next examples the relation between the topics and the samples will be further investigated.
+In particular following what was done by dey2017visualizing the importance of each topic inside each sample the .
+
+Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. In fact it is not always easy to identify and classify cancer tissues. In particular being able to separate tumour sub-types would be the ideal   pursuance of this work. So let's switch to the analysis of diseased samples. 
+
+
+
+Run on The Cancer Genomics Atlas
+The exact same pipeline described so far ca be applied at other dataset. In this section the hSBM model is run on some samples from the TCGA. The principle is the same, but here samples comes from cancer tissues, so there must be more complexity and variability behind the data. Moreover being able to separate cancer samples is not always easy clinically and develop a method to do this can be highly interesting and useful for the scientific community Farver2018. 
+
+First of all let's take a look at the V-measure scores. As shown in figure fig:topic/tcga/metric the score is almost , which is good, but worse than the healthy GTEx scenario. In this dataset there is no a sub-tissue label as before, but a disease type cancer information is available. The disease type separation is not so good; the fact that there is no evident difference between Zipf's laws when separating data by disease type  fig:structure/tcga/fraction_of_trascriptome_disease means that all genes contributes to define this specif label so the pre-process filter is not a good option in this case. To gain better scores in this situation were samples are affected by the cancer complexity and heterogeneity is probably necessary to add more genes to the network.
+figure[htb!]
+        pictures/topic/tcga/metric.pdf
+    Score across the hierarchy for TCGA. In blue the primary site labels were considered, in red the disease types and in green the mix of the two.
+    fig:topic/tcga/metric
+figure
+
+Looking directly into the cluster composition the tissue separation is quite good and visually appreciable. In figure fig:topic/tcga/fraction_clustercomposition_l4_primary_site clusters at the higher level of the hierarchy. Some tissues are well separated at this point, at the same time when possible samples are grouped by system, digestive system is the more evident.
+figure[htb!]
+		pictures/topic/tcga/fraction_clustercomposition_l4_primary_site.png
+	Clusters of diseased tissues at the higher level of the hierarchy. Breast is well separated, such as skin and brain. Cluster 6 contains digestive systems samples from pancreas and colon.
+	fig:topic/tcga/fraction_clustercomposition_l4_primary_site
+figure
+Going deeper in the hierarchy the tissue separation becomes visually appreciable and all the clusters are almost tissue-specific.
+figure[htb!]
+		pictures/topic/tcga/fraction_clustercomposition_l3_primary_site.png
+	text
+	fig:topic/tcga/fraction_clustercomposition_l3_primary_site
+figure
+
+At this point when the model is demonstrated to work on healthy and diseased samples it can be interesting to study merged healthy and diseased labels and examine how the model behave when healthy and cancer samples are merged.
+
+Healthy and diseased together
+At this point demonstrated that the model works on samples from different dataset and performs well on both healthy and diseased samples it can be interesting to see how the model behave when both kind of data are presented to it.
+The goal of this part of work is to identify which genes or topics identify and distinguish tissues themselves and which drive cancer and are necessary to understand the differentiation between cancer types.
+
+For this analysis were still analyzed data  from GTEx and TCGA, but from a particular dataset available from Wang2017 were authors tried to unify the normalization process from different dataset and sources Betel2018. These are, in practice, a mixed bigger dataset; note that not every tissue is present in both GTEx and TCGA, so only common tissues are considered here. The first label considered at this point is the tissue primary site, forgetting about its status (healthy or diseased), the secondary label refers to the tissues but separates their status. For example an healthy brain sample from GTEx and a cancer brain from TCGA share the brain primary site label but have different secondary site assignments.
+
+Once the model is run, the first element to look at is the V-measure; in figure fig:topic/merged/metric_scores_primarysite the result for the primary site is quite satisfying: clusters are very homogeneous and V-measure's peak is near .
+figure[htb!]
+        pictures/topic/merged/metric_scores_primarysite.pdf
+    V-measure score for run with merged healthy and diseased samples. Homogeneity, completeness and mutual information are represented.
+    fig:topic/merged/metric_scores_primarysite
+figure
+
+Estimating the score also for the secondary site, or rather for the tissues with the health state and for just the healthy/disease label lead to figure fig:topic/merged/metric_scores. This result is quite interesting, first of all even the secondary label is well classified and this happens at a deeper level respect to th one where tissues are separated; this means that firstly samples are separated by tissues then by their health state. This is very interesting because is an evidence that the model actually recognize tissues never mind where they come from, moreover the difference between datasets are not important here and so the normalization made by Betel2018 brings no problems at this level. Moreover looking just at the health status label the score is quite low (below ) so the model does not take over the difference between datasets.
+figure[htb!]
+        pictures/topic/merged/metric_scores.pdf
+    V-measure score for run with merged healthy and diseased samples. Primary site (brain, blood, pancreas..) labels are compared with secondary labels (healthy brain, brain cancer, healthy blood, blood cancer, healthy pancreas, pancreas cancer..). The health status label (healthy / diseased) is plotted.
+    fig:topic/merged/metric_scores
+figure
+To conclude the score analysis a mixed score is considered (the homogeneity of primary site is considered with the completeness of secondary label) so that the score increase if going deeper in the hierarchy the separation of a homogeneous cluster brings to separation of the refined labels. In figure fig:topic/merged/metric_scores_all this score is compared with the one obtained with LDA, hierarchical clustering and the null model. What happened here is that hierarchical Stochastic Block Model performs the best, LDA approach is good hierarchical clustering have a quite bad score and all are better than shuffling null model.
+figure[htb!]
+        pictures/topic/merged/metric_scores_all.pdf
+    V-measure score for run with merged healthy and diseased samples. LDA, hierarchical clustering and null model for comparison.
+    fig:topic/merged/metric_scores_all
+figure
+
+Gene sets analysis is then performed. Considering the P-value of the term which P-value was the lowest, one P-value for each topic at the level of the hierarchy where the V-measure was maximized, it is possible to realize the  histogram. The tests are quite interesting, in fact there is an enrichment with a P-value lower than  in most cases so it is possible to assert that topics carry some interesting information more than expected by picking genes at random.
+figure[htb!]
+        pictures/topic/merged/pvaluescrosstopic.png
+     of the term with the lowest P-value in each topic. In orange the classical  threshold.
+    fig:topic/merged/pvaluescrosstopic
+figure
+In figure fig:topic/merged/pvaluecategories are shown the categories of the terms with lower P-values. This explains what aspect of the samples topic describes. The majority of terms found in topics comes from the GTEx annotation for tissue expression, many are from GO biological process, GO molecular function and some from Human phenotype ontology. 
+figure[htb!]
+        pictures/topic/merged/pvaluecategories.pdf
+    Categories of the terms with lower P-values in each topic.
+    fig:topic/merged/pvaluecategories
+figure
+
+Going forward in the analysis it is possible to perform enrichment test with other tools such as DAVID huang2008bioinformatics,huang2009systematic. Results are similar to the ones retrieved before. Tissues related terms are found also using this tool and this confirms the absence of tool or categories related biases. In figures fig:topic/merged/DAVID_lung, fig:topic/merged/DAVID_brain and  fig:topic/merged/DAVID_stomach the result from DAVID enrichment analysis. Finally it is interesting to notice that topics are quite small (order genes), so there are no biases that can appear doing enrichment tests on big sets.
+figure[htb!]
+        pictures/topic/merged/DAVID_lung.pdf
+    Caption
+    fig:topic/merged/DAVID_lung
+figure
+figure[htb!]
+        pictures/topic/merged/DAVID_brain.pdf
+    Caption
+    fig:topic/merged/DAVID_brain
+figure
+figure[htb!]
+        pictures/topic/merged/DAVID_stomach.pdf
+    Caption
+    fig:topic/merged/DAVID_stomach
+figure
+
+The link between topics and samples has not been investigated so far. The probability distribution of each sample over topics  can be estimated as P(topic sample)= of edges on sample from topic of edges on sample after the model is run. Moreover an average of all samples belonging to a topic can be estimated .
+
+In figure fig:topic/merged/lifeplot it is plotted  for the first topics. What is clear is that in all samples there is a global trend that present no much differences between tissues, the topic expression differences between tissues are slightly appreciable at this point. This carries a profound and very informative message: under this new point of view in nature every tissue needs somehow the expression of all the genes (there is a global trend) and small differences between genes' expression are fine tuned to obtain different tissues. In other words it is possible to describe human tissues assuming that all genes are important and that is the fine structure of their interactions which realizes the complexity observed. In the case of diseased samples this suggest that it should be possible to discover a cancer type not looking at a few marker genes but looking at the whole expression profile of all genes.
+figure[htb!]
+		pictures/topic/merged/lifeplot.pdf
+	 for some topic colored by tissue. It is clear a global trend and in some topics there are little differences between tissues.
+	fig:topic/merged/lifeplot
+figure
+In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each was subtracted the average topic expression  and the result was divided by the standard deviation . In figure fig:topic/merged/lifeplot_normalised_level3_hd some most characteristic topics are reported. It is clear that
+figure[htb!]
+		pictures/topic/merged/lifeplot_normalised_level3_hd.pdf
+	 or the distance of each tissue from the average tissue expression in each topic.
+	fig:topic/merged/lifeplot_normalised_level3_hd
+figure
+Topic modellingOnce extensively analyzed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.
+
+
+Remembering that in chapter 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

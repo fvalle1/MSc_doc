@@ -10,7 +10,7 @@ Ward minimizes the sum of squared differences within all clusters. It is a varia
 Maximum or complete linkage minimizes the maximum distance between observations of pairs of clusters.
 Average linkage minimizes the average of the distances between all observations of pairs of clusters.
 Single linkage minimizes the distance between the closest observations of pairs of clusters.
-AgglomerativeClustering can also scale to large number of samples when it is used jointly with a connectivity matrix, but is computationally expensive when no connectivity constraints are added between samples: it considers at each step all the possible merges.
+AgglomerativeClustering can also scale to a large number of samples when it is used jointly with a connectivity matrix but is computationally expensive when no connectivity constraints are added between samples: it considers at each step all the possible merges.
 \begin{lstlisting}[style=mypython]
 from sklearn.cluster import AgglomerativeClustering
 AgglomerativeClustering(
