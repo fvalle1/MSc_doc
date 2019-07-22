@@ -1,31 +1,29 @@
 \section{Pre-process}
-To make the algorithm faster, could be interesting to do a pre-processing of the data.
-Vary approaches were tested, all of them involving the quantities defined in~\ref{ch:structure}. The goal is to identify components which are able to best separate the realisations. 
-\paragraph{Low occurrence genes} were selected firstly to make topic modelling. A  $0.5$ threshold was set. This method select genes that appears (have expression greater than zero) only in less than half samples. This doesn't consider genes that appear everywhere (with occurrence $\simeq 1$) but changes their behaviour across realisations.
+To make the algorithm faster, it could be useful to do a pre-processing of the data.
+Different approaches were tested, all of them involving the quantities defined in~\ref{ch:structure}. The goal is to identify components which are able to best separate the realizations. 
+\paragraph{Low occurrence genes} were selected firstly to approach topic modelling. A $0.5$ threshold was set on occurrence. This method selects genes that appears (have expression greater than zero) only in less than half samples. This approach has some limitations, for instance it doesn't consider genes that appear everywhere (with occurrence $\simeq 1$) but changes their behaviour across realisations.
 
-\paragraph{tf-idf (term frequency–inverse document frequency)} should help. This approach doesn't consider values, but a transformed version
+\paragraph{tf-idf (term frequency–inverse document frequency)} should help. This approach doesn't take in account original expression values $n_{ij}$, but a transformed version
 \[
 n^{new}_{ij}=\frac{n_{i j}}{M_j}\times \left(1-Log\left(o_i\right)\right)
 \] which increases the importance of components with small occurrence $o_i$. This approach doesn't actually select components, which is still an issue.
 
-\paragraph{Highly variable} genes can be selected. This is done using the $CV^2$ analysis from \draft{metti referenza giusta}.
+\paragraph{Highly variable} genes can be selected. This is done using the $CV^2$ analysis done in chapter~\ref{ch:scalinglaws}.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/cvmean_oversigma.png}
     \caption{Highly variable genes}
     \label{fig:topic/cvmean_oversigma}
 \end{figure}
-Plotting the coefficient of variation versus the mean for each component reveals which components have higher variance with respect to components which, on average, have a similar behaviour.
-Binned averages and variances were estimated, and only genes with a $CV^2$ over a $\sigma$ greater than the bin's mean were considered.
+Plotting the coefficient of variation versus the mean for each component reveals which components have higher variance with respect to components which, on average, have a similar behaviour. Binned averages and variances were estimated, and only genes with a $CV^2$ over a $\sigma$ greater than the bin's mean were considered. This method seems to select useful genes even if the binned average bound is quite noisy.
 
-\paragraph{Distance from boundaries} can be a similar and alternative method to select highly variable genes.
-\draft{metti figura giusta!!}
+\paragraph{Distance from boundaries} can be a similar and alternative method to select highly variable genes. In this case the bound is smooth and well defined.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/cvmean_oversampling.png}
     \caption{Genes distant from the boundaries}
     \label{fig:topic/cvmean_oversampling}
 \end{figure}
-The distribution as discussed in \draft{disctuti e linka} have a Poisson-like and a Taylor-like boundaries. So can be considered only components that are the most distant from these boundaries.
+The distribution as discussed in~\ref{ch:scalinglaws} have a Poisson-like and a Taylor-like boundaries. So can be considered only components that are the most distant from these boundaries. Moreover this boundaries can be found with a simple null model, as shown in figure~\ref{fig:scaling/gtex/cvmean_loglog_sampling} the sampling model defines the lower bound of the data.
 
-Using the last two approaches got the point and actually help topic modelling to succeed.
+The last two approaches are the ones which lead to better results, in the following sections gene selection was done by getting only highly variables genes.

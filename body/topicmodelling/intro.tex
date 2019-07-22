@@ -11,7 +11,7 @@ Firstly it is necessary to build a bipartite network of genes and samples, then 
     \label{fig:topic/bipartite}
 \end{figure}
 
-The output of this kind of model consists of sets of genes, the topics, with a probability distribution $P(gene | topic)$ and probability distributions of these topics inside each sample $P(topic | sample)$, both gives the relation between a \textit{sample} and a \textit{gene}.
+The output of this kind of model consists of sets of genes, the topics, with a probability distribution $P(\text{gene} | \text{topic})$ and probability distributions of these topics inside each sample $P(\text{topic} | \text{sample})$, both gives the relation between a \textit{sample} and a \textit{gene}.
 
 In this work it is used an innovative and recent approach to topic modelling, the algorithm was presented by~\cite{gerlach2018network} and extends the so called stochastic block models~\cite{Holland1983}. 
 Topic modelling is being developed and studied to approach linguistics problems, so this algorithm was developed considering words and books as input, links represents the abundance of a word in a book. In chapter~\ref{ch:structure} was evident that there are many similarities between data considered in this work and linguistics' dataset. Referring to data used in this project \textbf{samples} will be the documents and \textbf{genes} will be the words.
@@ -52,8 +52,7 @@ The MonteCarlo works in a few steps:
   \item move of node $i$ to group $s$ is accepted with probability $P(r\to s|t)=\frac{e_{ts}+\epsilon}{e_t+\epsilon B}$
   \item if $s$ is not accepted, a random edge $e$ is chosen from group $t$ and node $i$ is assigned to the endpoint of $e$ which is not in $t$
 \end{itemize}
-in figure~\ref{fig:topic_pixioto_move} an example of these steps.
-
+in figure~\ref{fig:topic_peixioto_move} an example of these steps.
 \begin{figure}[htb!]
   \centering
   \includegraphics[width=0.9\linewidth]{pictures/topic/peixioto_move.jpg}
@@ -62,9 +61,8 @@ in figure~\ref{fig:topic_pixioto_move} an example of these steps.
   Right: Block multi graph, indicating the number of edges between blocks, represented as the edge thickness. \
   In this example, the attempted move $bi \to s$ is made with a larger probability than either $bi \to u$\
    or $bi \to r$ (no movement), since $e_{ts}>e_{tu}$ and $e_{ts}>e_{tr}$.}
-  \label{fig:topic_pixioto_move}
+  \label{fig:topic_peixioto_move}
 \end{figure}
-
 Once the model run it is possible to estimate the probability distribution of words inside a topic
 \[P(w|t_w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $t_w$}}\]
 and the topic distribution inside a document

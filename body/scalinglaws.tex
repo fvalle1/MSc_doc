@@ -20,16 +20,16 @@ of samples in which that gene is expressed that is, considering the thresholds~\
 $\Sigma_j\theta (FPKM_{ij}-0,1)\theta (10^5-FPKM_{ij})$
 
 \subsection{Average versus occurrence}
-Another interesting analysis can be the relation between the occurrence and the average. In figure~\ref{fig:scalelaws/gtex/meanDiff_binned_sampling} it is shown the re
+Another interesting analysis can be the relation between the occurrence and the average. In figure~\ref{fig:scalinglaws/gtex/meanDiff_binned_sampling} it is shown the re
 sult, it is clear that there is a relation between occurrence and average, genes that express in more realisations (higher occurrence and right in the figure) have an
 higher average. Moreover doesn't exist genes that have high expression in few realisations; genes that are rare are also difficult to find so have a small average. Not
 e that the average has got a bound due to the fact that counts are integer numbers, so if, for example, one gene express in $n$ of the $R$ samples, it has occurrence $
 O_i=\frac{n}{R}$ and its average is at least $\avg{\mathrm{counts}}=\frac{1*n}{R}$
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.9\linewidth]{pictures/scalelaws/gtex/meanDiff_binned_sampling.png}
+    \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/meanDiff_binned_sampling.png}
     \caption{Relation between the occurrence of a gene and its average across realisations}
-    \label{fig:scalelaws/gtex/meanDiff_binned_sampling}
+    \label{fig:scalinglaws/gtex/meanDiff_binned_sampling}
 \end{figure}
 
 \subsection{Tissue differentiation}
