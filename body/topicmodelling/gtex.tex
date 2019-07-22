@@ -128,7 +128,7 @@ At this point to deepen investigate the structure of the clusters it can be inte
     \caption{The number of different labels in each cluster versus cluster size.}
     \label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site}
 \end{figure}
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*} the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless in layers with higher V-measure score there is a strong signal that the reshuffling model is quite different from the model's output.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall} the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless in layers with higher V-measure score there is a strong signal that the reshuffling model is quite different from the model's output.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -146,7 +146,7 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_s
     \begin{minipage}{0.45\textwidth}
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf}
     \end{minipage}
-\label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l*}
+\label{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall}
 \caption{Number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the upper one.}
 \end{figure}
 
@@ -161,8 +161,8 @@ Moreover remembering the V-measure or normalized mutual information defined in~\
 \FloatBarrier
 
 \subsection{Standard algorithms}
-At this point was verified that the model has got interesting output, it reaches high scores and has got a strong signal against null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-known similar algorithms.
-First of all a comparison is made with hierarchical clustering. This is done using the standard scipy~\cite{jones2014scipy} package, the metrics used was the euclidean one and the linkage method was set to Ward. This is quite fast, it needs a couple of minutes on a dual core, 8GB memory machine.
+At this point was verified that the model has got interesting output, it reaches high scores and has got a strong signal against the null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-known similar algorithms.
+First of all, a comparison is made with hierarchical clustering. This is done using the standard scipy~\cite{jones2014scipy} package, the metrics used was the euclidean one and the linkage method was set to Ward. This is quite fast, it needs a couple of minutes on a dual core, 8GB memory machine.
 In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_hier} the comparison between this scores, the hierarchical algorithm performs worse than hierarchical stochastic block model and as highly expected better than the random model.
 \begin{figure}[htb!]
     \centering
@@ -200,7 +200,7 @@ In this work tests were made using Gene Set Enrichment Analysis~\cite{subramania
 \end{itemize}
 in particular the two latter contains annotation specific for GTEx dataset~\cite{Ardlie2015}.
 
-In tables~\ref{topic/enrich/pancreas}, ~\ref{topic/enrich/brain} and ~\ref{topic/enrich/blood} are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at $0.05$ and terms are sorted by adjusted P-value.
+In tables~\ref{tab:topic/enrich/pancreas}, ~\ref{tab:topic/enrich/brain} and ~\ref{tab:topic/enrich/blood} are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at $0.05$ and terms are sorted by adjusted P-value.
 \begin{table}[htb!]
 	\tiny
 	\begin{center}

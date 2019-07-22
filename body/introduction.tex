@@ -38,14 +38,13 @@ Using topic modelling one would find the inner structure of the samples.
 One would find clusters such that all samples in a cluster share the tissue and tumour type.
 As far as a document can contain a mixture of similar topics a single tumour can be very heterogeneous.
 
-In chapter~\ref{ch:results} I will discuss the results and the future 
+In chapter~\ref{ch:conclusions} I will discuss the results and the future 
 developments
 
-Many methods of the pipeline written in c++ using  openMP and Boost~\cite{siek2002boost} are available at \url{https://github.com/fvalle1/tacos}.
+Many methods of the pipeline was written in C\texttt{++} using  openMP and Boost~\cite{siek2002boost} are available at~\url{https://github.com/fvalle1/tacos}.
 During this work I used different python libraries such as 
 pandas~\cite{mckinney2010data}, scipy~\cite{jones2014scipy}, numpy~\cite{oliphant2006guide} and 
 matplotlib~\cite{hunter2007matplotlib}. Some analysis required tensorflow~\cite{tensorflow2015-whitepaper} 
 and pySpark~\cite{Zaharia:2016:ASU:3013530.2934664}.
-The topic modelling require graph-tool library~\cite{peixoto_graph-tool_2014}.
-The full work repository is on Github at 
-\url{http://github.com/fvalle1/master_thesis}.
+The topic modelling stochastic block modelling minimization functions are implemented in the graph-tool library~\cite{peixoto_graph-tool_2014}.
+The full work repository is on Github at~\url{http://github.com/fvalle1/master_thesis}.

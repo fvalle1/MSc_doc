@@ -648,3 +648,66 @@ Remembering that in chapter
 
 
 
+Topic modellingOnce extensively analyzed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Run
+
+
+
+
+
+
+Topic modellingOnce extensively analyzed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Run
+
+
+
+
+
+
+Topic modellingOnce extensively analyzed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Run
+
+
+
+
+
+

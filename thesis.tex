@@ -22,13 +22,13 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{} 			%clears default header and footer
-\fancyhead[RO]{\leftmark}
-\fancyhead[LE]{\leftmark}
-\fancyfoot[RO]{\thepage}
-\fancyfoot[LE]{\thepage}
-%\rhead{} 			%right head
-%\lhead{} 	%left head
-%\rfoot{\thepage}
+%\fancyhead[RO]{\leftmark}
+%\fancyhead[LE]{\leftmark}
+%\fancyfoot[RO]{\thepage}
+%\fancyfoot[LE]{\thepage}
+\rhead{} 			%right head
+\lhead{} 	%left head
+\rfoot{\thepage}
 %%consider using also chead, cfoot, lfoot
 %coherce the plain stile to this (e.g. the first page of every chapter)
 \fancypagestyle{plain}{
@@ -67,7 +67,7 @@
 
 %% FONTS AND SYMBOLS
 \usepackage[utf8]{inputenc}	%%input font setting
-\usepackage{ textcomp }
+\usepackage{textcomp}
 \usepackage[T1]{fontenc} 		%%font for automatic recognition of letters with the accent
 \usepackage{amsfonts}		%%fonts for the mathematical rendering of formulas
 \usepackage{amssymb}
@@ -82,8 +82,11 @@
 \usepackage{caption}
 %% CODE LISTINGS
 \usepackage{listings}		%%allow to use code listings
-\usepackage{rotating} %%sideways/
-\usepackage{placeins} %%\FloatBarrier
+\usepackage{rotating}  %%sideways/
+\usepackage{placeins}  %%\FloatBarrier
+\usepackage{float} %force [htb] enabling [H]
+\usepackage{color}
+
 
 \lstdefinestyle{myPython}{
 backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
@@ -109,8 +112,6 @@ stringstyle=\color{myblue},     % string literal style
 tabsize=2,	                   % sets default tabsize to 2 spaces
 }
 
-\usepackage{float} %forza [htb]
-\usepackage{color}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -145,8 +146,8 @@ tabsize=2,	                   % sets default tabsize to 2 spaces
 %%ABSTRACT
 \input{head/abstract}
 \clearemptydoublepage
+
 %%INDEXES 
-%summary
 \tableofcontents
 \clearemptydoublepage
 
@@ -161,13 +162,11 @@ tabsize=2,	                   % sets default tabsize to 2 spaces
 
 \input{body/structure.tex}
 
-\input{body/scalinglaws}
+\input{body/scalinglaws.tex}
 
 \input{body/topicmodelling.tex}
 
-\input{body/results}
-
-\input{body/conclusions}
+\input{body/conclusions.tex}
 
 %%APPENDIXES
 \appendix
