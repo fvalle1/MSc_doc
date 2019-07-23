@@ -165,6 +165,14 @@ algorithm samples the probability distribution of the edges count
 \[P(\{e_{\vec{b}}\}|\{\vec{b_i}\}, A)=\prod_r\left(\binom{m_r}{e_r}\right)^{-1}\] and the
 labeled degree sequence $\{\vec{k_i}\}$ from
 \[P(\{\vec{k_i}\}_{\vec{b}}|\{e_{\vec{b}}\}, \{\vec{b_i}\})=\frac{\prod_k n_k^{\vec{b}}!}{n_{\vec{b}}!}\]
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\linewidth]{pictures/topic/peixioto_passages.png}
+	\caption{Illustration of the generative process of the microcanonical SBM. Given a partition of the
+		nodes, the edge counts between groups are sampled (left), followed by the degrees of the nodes (center) and finally
+		the network itself (right). From~\cite{Peixoto2017}.}
+	\label{fig:hsbm-sum}
+\end{figure}
 
 \paragraph{Word documents separation}
 Following what is done in~\cite{gerlach2018network}, the probability of a group $P(b_l)$ at a certain level $l$ is intended as the disjoint probability of
