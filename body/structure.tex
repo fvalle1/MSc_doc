@@ -1,24 +1,16 @@
 \chapter{Data structure}\label{ch:structure}
-
-The data studied in this work can be represented as component systems. These component systems can be represented by a two dimensional matrix in which rows represent components and columns are the possible realizations buildable given subset of the components. The entries of this matrix are the number of the components on the row needed during the realization of the column. In figure~\ref{fig:componetstable} an example of this kind of matrices.
-
-\draft{metti citazioni}
-\cite{mazzolini2018heaps}
-\cite{Mazzolini2018zipf}
-\cite{altmann2016statistical}
+The data studied in this work can be represented as component systems. These component systems can be represented by a two-dimensional matrix in which rows represent components and columns are the possible realizations buildable given subset of the components. Entries of this matrix are the number of the components on the row needed during the realization of the column. In figure~\ref{fig:componetstable} an example of this kind of matrices.
 
 %%data definitions
-\input{body/structure/datadefinitions}
+\input{body/structure/datadefinitions.tex}
 
 %%universal laws
 \input{body/structure/universallaws.tex}
 
 %%null model
-\input{body/structure/nullmodel}
+\input{body/structure/nullmodel.tex}
 
 %%tissue differentation
 \input{body/structure/tissues.tex}
 
-In conclusion, some interesting laws were found that some statistical.
-
-...
+\paragraph{In conclusion} some interesting laws were found in the datasets considered in this work. Statistical laws from linguistics were identified and studied with different normalizations. Some interesting facts emerged, for example the differences between coding and not-coding genes or the great core of protein-coding genes. The interesting fact, useful in the next sections of this work, is that behind the data there are different power laws and these are different for each tissue. In the next chapters it will be discussed how to use this fact to train a model able to distinguish samples in a dataset. 

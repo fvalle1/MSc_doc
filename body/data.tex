@@ -1,12 +1,6 @@
 \chapter{Data presentation}\label{ch:data}
-\section{Dataset}\label{sec:dataset}
-
-The goal of ~\cite{Farver2018} ~\cite{Zhou2016} ~\cite{Lancichinetti2015} ~\cite{Martini2017}
-
-
 \section{RNA-Sequencing}\label{sec:rnaseq}
-
-Data come from a  RNA-Sequencing~\cite{wang2009rna} experiments.
+Data come from a  RNA-sequencing~\cite{wang2009rna} experiments.
  
 RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the disease and look at an unbiased population of transcripts that allows the identification of novel transcripts, fusion transcripts and non-coding RNAs that could be undetected with different technologies.
 
@@ -24,78 +18,44 @@ The general steps to prepare a complementary DNA (cDNA) library for sequencing a
 
 In order to collect Gene expression data is sufficient to count how many reads are mapped to a specific exon or gene.
 
-Data was collected from TCGA\footnote{The Cancer Genome Atlas} dataset at \url{https://portal.gdc.cancer.gov} \cite{grossman2016toward}.
-
-The particular datatype considered was \textit{Gene Expression Quantification}, with experimental strategy RNA-Sequencing. 
-At the end the downloaded dataset consisted of:
+\paragraph{normalization}
+Usually gene expression data can be normalized in different ways
 \begin{itemize}
-\item N = 60483 genes as \textbf{components}
-\item R = 10672 files as \textbf{realizations}
+	\item Counts
+	\item RPK
+	\item TPM
+	\item FPKM
 \end{itemize}
+Count reads correspond to raw data. Counts needs no normalisation to be treated but may have some biases. For example, longer genes may have more reads than shorter gene just because they are longer. That's why other kind of normalization can be used.
 
-This type of data is just a small portion of all data available on the portal, this are the most useful data for this type of analysis.
+RPK\footnote{Reads Per Kilobase of transcript} remove the length bias by dividing counts by the gene length $L$: \(RPK=\frac{counts}{L}\). This solves some problems but doesn't take care of the different sizes of the transcript in different samples.
 
-As highlighted in~\cite{dey2017visualizing} these data present a challange to clustering tools, 
-because of both the relatively large number of samples and the complex structure created by the inclusion of many different tissues
-
-Attemts were made from GTEx~\cite{Betel2018} which is a similar source of data from healty tissues. 
-~\cite{Wang2017} tried to unify data from this two different sources and data 
-are available from~\cite{carithers2015novel}. Anyway gene expression data were 
-downloaded directly from GTEx v7\footnote{\url{https://gtexportal.org/home/datasets}}
-
-%%%%Parla di GTex meglio
-
-\subsection{normalization}
-Ususally gene expression data can be normalized in different ways
-\begin{itemize}
-\item Counts
-\item RPK
-\item FPKM
-\item FPKM-UQ
-\end{itemize}
-
-Counts correspond to raw data. 
-Anyway longer genes may have much reads than smaller gene, so it can be useful to normalize this data. 
-
-RPK\footnote{Reads Per Kilobase of transcript} solves this by dividing counts by 
-gene length $L$, \[RPK=\frac{counts}{L}\].
-
-FPKM\footnote{Fragments Per Kilobase of transcript per Million mapped reads} are provided. 
-FPKM calculation normalizes read count by dividing it by the gene length and the total number of reads mapped to protein-coding genes.
-\begin{equation}
+FPKM\footnote{Fragments Per Kilobase of transcript per Million mapped reads} calculation normalizes read count by dividing it by the gene length and by the total number of reads mapped to protein-coding genes in that sample.
+\[
 FPKM = \frac{RC_g*10^9}{RC_{pc}*L}
-\end{equation}
-where
+\]
+being
 \begin{itemize}
-\item $RC_g$: Number of reads mapped to the gene
-\item $RC_{pc}$: Number of reads mapped to all protein-coding genes
-\item $L$: Length of the gene in base pairs
+	\item $RC_g$: Number of reads mapped to the gene
+	\item $RC_{pc}$: Number of reads mapped to all protein-coding genes
+	\item $L$: Length of the gene in base pairs.
 \end{itemize}
+When dealing with FPKM some thresholds are put in particular $FPKM$ below $0,1$ and above $10^5$ will not be considered, maybe they come from some kind of experimental error.
 
-FPKM can be normalized to the 75th percentile read count value for the sample, in this case it is called FPKM-UQ. 
-FPKM-UQ is obtained by:
-\begin{equation}
-FPKM - UQ = \frac{RC_g*10^9}{RC_{g75}*L}
-\end{equation}
-where
-\begin{itemize}
-\item $RC_{g75}$: 75th percentile read count value for genes in the sample 
-\end{itemize}
+TPM\footnote{Transcript Per Million} tries to unify the sizes of the samples: $TPM = \frac{RC_g*10^9}{\sum_{g\prime} \left(\frac{RC_{g^\prime}}{l_{g^\prime}}\right) RC_{pc}*L}$.
 
-\section{Clean data}
-\subsection{Protein coding}
+In this work the idea is not to introduce any normalization, so when possible raw counts will be considered. Sometimes especially if it is necessary to compare different sources TPM or FPKM will be taken in account. Some analysis as the sizes distribution needs not to be made with TPM, because the quantity that's going to be studied is the quantity the normalization trashes out.
+
+\section{Datasets}
+In this work two datasets were used. The first one contains RNA-sequencing data of post-mortem collected samples. It is the Gene Tissue Expression (GTEx) dataset~\cite{carithers2015novel}. GTEx \textit{2016-01-15 v7 RNASeQCv1.1.8} version was downloaded\footnote{\url{https://gtexportal.org/home/datasets}}.
+GTEx contains $11688$ samples of $53$ tissues. For many of them a sub-tissue label is available. As highlighted in~\cite{dey2017visualizing} these data present a challenge to clustering tools, because of both the relatively large number of samples and the complex structure created by the inclusion of many different tissues.
+
+The other dataset considered is The Cancer Genome Atlas (TCGA) dataset~\cite{grossman2016toward}. Data were collected via Genomic Data Commons tools\footnote{\url{https://portal.gdc.cancer.gov}} considering \textit{Gene Expression Quantification} as data type, \textit{Transcriptome Profiling} as data category, \textit{RNA-Seq} as experimental strategy, \textit{HTSeq - Counts} or \textit{HTSeq - FPKM} as workflow type. On TCGA there are $12683$ samples and $68$ primary site or tissues. On this dataset there are a great quantity of metadata, in particular the disease type will be considered in this work.
+
+Onother source of data used in this work is~\cite{Wang2017} which authors tried to unify GTEx and TCGA~\cite{Betel2018}, when possible.
+
+\paragraph{Protein coding}
 The whole dataset contains infos on approximatly $60000$ elements with different 
 \textit{ENSG} identifier. Only $\simeq 20000$ of this are protein coding genes, 
 using Ensemble\footnote{\url{https://ensemble.org}} protein coding genes are 
 selected.
-
-\subsection{Thresholds}\label{sec:threshold}
-In order to filter out noise, it is useful to put a threshold on the data.
-Considering data in $FPKM$ format, it is common opinion that values beleow 
-$0.1$ can be considered noise. Moreover data above $10^5$ are trashed out, 
-because the are syntom of some kind of errors during experiment.
-
-Given this thresholds~\ref{eq:occurrence} becomes 
-\begin{equation}
-o_i=\frac{\sum_{j=1}^{R}\theta(n_{ij}-0.1)*\theta(10^5-n_{ij})}{R}
-\end{equation}

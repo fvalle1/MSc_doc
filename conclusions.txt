@@ -1,0 +1,17 @@
+IntroductionIn recent years the study of complex systems is becoming more interesting especially when some different systems that share interesting and fundamental properties are found. Network theory has been proven to be a useful proxy to model and represent such complex systems.
+
+This work wants to study and find universal statistical laws in different kind of biological systems. If one finds that two different systems share some statistical laws and that they have somehow similar data structure, therefore it is possible to use tools developed from different fields to study and gain information about each other. In particular two datasets containing information about some human healthy and diseased tissues will be analysed. This data come from biological experiments of RNA-sequencing.
+
+The ultimate goal of this work would be to study, develop and build a machine learning's model which is able to discriminate healthy and diseased tissues at the beginning. Once diseased tissue are found, the next goal is to separate cancer types and ultimately sub-types, which is not always easy clinically.
+
+The methods to gain this goal are derived firstly from linguistics, in particular a topic model approach will be widely described.
+
+In chapter 
+
+
+
+
+
+
+
+

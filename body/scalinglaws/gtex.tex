@@ -1,3 +1,4 @@
+\paragraph{Variance versus mean}\mbox{}\\
 First of all it could be interesting to study the variance of expression $\var{\mathrm{counts}}$ versus 
 the average $\avg{\mathrm{counts}}$ across tissues.
 %%all genes
@@ -11,6 +12,7 @@ In figure~\ref{fig:scalinglaws/gtex/varmean_loglog_density} the scatter plot of 
 First of all it is evident that data have a double scaling behaviour: when the mean is small ($\lesssim 1$) data have a Poisson-like scaling ($\var{\mathrm{counts}} \sim \avg{\mathrm{counts}}$), at higher means instead data have a quadratic scaling ($\var{\mathrm{counts}} \sim \avg{\mathrm{counts}}^2$) known in ecology as Taylor's law~\cite{Eisler2008}. This means that at low averages data behaviour is just due to the sampling experimental process, on the contrary the Taylor's law reveals the non trivial distribution across samples of the gene expression.
 Another interesting fact is that looking at the density of points (colours in figure~\ref{fig:scalinglaws/gtex/allgenes/varmean_loglog_density}) are evident two clouds of points, one at low averages, one at high averages. These correspond to coding and non coding genes, remembering section~\ref{sec:universallaws} these two kind of genes have a different behaviour: coding genes are highly expressed in the majority of the samples, non coding ones are less expressed (and so less sampled) in few samples. 
 
+\paragraph{Coefficient of Variation}\mbox{}\\
 A similar analysis, common in literature, is the analysis of the coefficient of variation squared $CV^2=\frac{\var{\mathrm{counts}}}{\avg{\mathrm{counts}}^2}$ represented in figure~\ref{fig:scalinglaws/gtex/allgenes/cvmean_loglog}.
 \begin{figure}[htb!]
     \centering
