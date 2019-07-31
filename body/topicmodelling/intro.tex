@@ -1,4 +1,4 @@
-Remembering that in chapter~\ref{ch:structure} it emerged some kind of structure behind data, where each tissue seemed to be sampled by a different power law, a topic modelling approach it is here proposed.
+Remembering that in chapter~\ref{ch:structure} it emerged some kind of structure behind data, where each tissue seemed to be sampled by a different power law, a topic modelling approach is here proposed.
 
 The idea is that behind data there are hidden variables that describe the relationship between the genes and the samples. Let's call these variables topics.
 Firstly it is necessary to build a bipartite network of genes and samples, then nodes are linked considering the gene expression value in the dataset.
@@ -11,39 +11,41 @@ Firstly it is necessary to build a bipartite network of genes and samples, then 
     \label{fig:topic/bipartite}
 \end{figure}
 
-The output of this kind of model consists of sets of genes, the topics, with a probability distribution $P(\text{gene} | \text{topic})$ and probability distributions of these topics inside each sample $P(\text{topic} | \text{sample})$, both gives the relation between a \textit{sample} and a \textit{gene}.
+The output of this kind of models consists of sets of genes, the topics, with a probability distribution $P(\text{gene} | \text{topic})$ and probability distributions of these topics inside each sample $P(\text{topic} | \text{sample})$, together they give the relationship between a \textit{sample} and a \textit{gene}.
 
-In this work it is used an innovative and recent approach to topic modelling, the algorithm was presented by~\cite{gerlach2018network} and well explained in details in~\cite{Peixoto2017}, this belongs to the so-called stochastic block models~\cite{Holland1983}. 
-Topic modelling is being developed and studied to approach linguistics problems, so this algorithm was developed considering words and books as input, links represents the abundance of a word in a book. In chapter~\ref{ch:structure} was evident that there are many similarities between data considered in this work and linguistics' dataset. Referring to data used in this project \textbf{samples} will be the documents and \textbf{genes} will be the words.
-It is expected that topics represent some properties of samples due to the gene expression distribution in samples.
+In this work it is used an innovative and recent approach to topic model, the algorithm was presented by~\cite{gerlach2018network} and well explained in details in~\cite{Peixoto2017}. This model is a sort of stochastic block models~\cite{Holland1983}. 
+Topic modelling has being developed and studied to approach linguistics problems, so this algorithm was developed considering words and books in input, links represents the abundance of a word in a book. In chapter~\ref{ch:structure} was evident that there are many similarities between data considered in this work and linguistics' corpora. Referring to data used in this project \textbf{samples} will be the documents and \textbf{genes} will be the words.
+It is expected that topics represent some properties of the system due to the gene expression distribution in samples.
 
-The ultimate goal would be to be able to separate healthy and diseased samples than separate and find well-known tumour types, then extend the actual knowledge and retrieve the tumour sub-types.
+The ultimate goal would be to be able to separate healthy and diseased samples then separate and find well-known tumour types, then extend the actual knowledge and retrieve the tumour sub-types.
 
-One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers. So the output has got different resolution, the extreme one is the separation, by definition, between samples and genes, at other layers it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
+One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers. So the output has got different resolutions and number of clusters found at each layer. One extreme layer is the one which separates genes ($\simeq$ words) and samples ($\simeq$ samples), by definition; in other layers it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
 \begin{figure}[htb!]
   \centering
   \includegraphics[width=0.6\linewidth]{pictures/topic/peixioto_hierarchic.jpg}
-  \caption{Example of a hierarchical structure.}
+  \caption{Example of a hierarchical structure. At $l=0$ the number of cluster is comparable with the number of nodes, is the situation with many small clusters.}
   \label{fig:topic_peixioto_hierarchic}
 \end{figure}
 
-What the algorithm does is to run a sort of MonteCarlo simulation and find the best partition of the data.
+What the algorithm does is to run a sort of Monte Carlo simulation and find the best partition of the data.
 The probability that the hidden variables $\theta$ describe the data $G$ $P(\theta | G)$ can be written as a likelihood times a prior probability as 
 \[P(\theta|G)=\frac{P(G|\theta)\overbrace{P(\theta)}^{prior}}{\underbrace{P(G)}_{\sum_{\theta}P(G|\theta)P(\theta)}}.\]
 It is possible to define a description length
 \[
 \Sigma=-lnP(G|\theta)-lnP(\theta),
 \]
-so that $P(\theta | G)\propto \exp{-\Sigma}$.
-Moreover, the likelihood $P(G | \theta)$, can be written as $\frac{1}{\Omega}$ where $\Omega$ is the number of possibles realisations given $\theta$. This can be represented as a microcanonical ensemble with entropy $S=Ln\left(\Omega\right)$. Note that $\Sigma=S-lnP(\theta)$.
-According to~\cite{peixoto2017nonparametric} entropy $S$ can be written as
+so that $P(\theta | G)\propto e^{-\Sigma}$.
+Moreover, the likelihood $P(G | \theta)$, can be written as $\frac{1}{\Omega}$ where $\Omega$ is the number of possibles realizations given $\theta$. This can be represented as a microcanonical ensemble with entropy $S=Ln\left(\Omega\right)$. According to~\cite{peixoto2017nonparametric} entropy $S$ can be written as
 \[
-S=\frac{1}{2}\Sigma_{r,s} n_rn_sH\left(\frac{e_{rs}}{n_rn_s}\right),
+S=\frac{1}{2}\Sigma_{r,s} n_r n_s H\left(\frac{e_{rs}}{n_rn_s}\right),
 \]
-where $n_r$ is the number of nodes in block $r$, $e_{rs}$ the number of links between nodes of group $r$ and group $s$ and $H$ is the Shannon entropy $H(X)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows to find groups with nodes very disconnected or topic and clusters with a lot of connections.
-The algorithm tries to minimise $S$, so that $\Sigma$ is minimised, so $\exp{-\Sigma}$ is maximised, but this is $P(\theta | G)$ that is the required probability to maximise.
+where $n_r$ is the number of nodes in block $r$, $e_{rs}$ the number of links between nodes of group $r$ and group $s$ and $H$ is the Shannon entropy $H(x)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows to find groups with nodes very disconnected or topic and clusters with a lot of connections. Note that the description length depends on the entropy:
+\[
+\Sigma=S-lnP(\theta),
+\]
+The algorithm tries to minimize $S$, so that $\Sigma$ is minimized, so $e^{-\Sigma}$ is maximized, but this is $P(\theta | G)$ that is the required probability to maximize.
 
-The MonteCarlo works in a few steps:
+The Monte Carlo works in a few steps:
 \begin{itemize}
  \item a node $i$ is chosen
  \item the group of $i$ is called $r$
@@ -72,4 +74,4 @@ In the case of overlapping partitions, the presence of a word in a topic is not 
 or the presence of a document in a cluster
 \[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}\]
 
-See appendix~\ref{app:hsbm} for detailed analysis of the math behind the algorithm and \url{https://cloud.docker.com/repository/docker/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non linguistics component systems datasets.
+See appendix~\ref{app:hsbm} for detailed analysis of the maths behind the algorithm and \url{https://cloud.docker.com/repository/docker/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non linguistics component systems datasets.

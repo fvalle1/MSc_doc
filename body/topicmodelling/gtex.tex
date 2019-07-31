@@ -5,48 +5,47 @@ First of all to rapidly have information about the interest of the oncoming resu
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf}
-    \caption{Scores across the hierarchy. The primary site and secondary site labels are compared.}
+    \caption{Scores across the hierarchy. The performances in comparing primary site and secondary site are compared. Note that with one cluster the completness is $1$ but the homogeneity is $0$ so the score goes down.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores}
 \end{figure}
-The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score, moreover the the secondary site score's peak is at a higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
+The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score, moreover the secondary site score's peak is at a higher number of clusters coherently with the fact that there is a greater number of sub tissue labels.
 This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.
 
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation between the clusters at different layers it is evident.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation between the clusters at different layers it is evident. Each row is a layer of the hierarchy and arrows represent the path of a node across the hierarchy. Note that clusters doesn't overlap and the separation done at the greater level is maintained across all the hierarchy. This representation gives an idea of the point of the hierarchy where the tissues really separates, see in figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} cluster $2$ the splits in two clusters separating \textit{breast} and \textit{adipose Tissue}.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/bipartite_rebuild.pdf}
-    \caption{Hierarchy of the files' nodes.}
+    \caption{Hierarchy of the files' nodes. In the top the layers where the output consist of many small clusters, in the bottom the output with few big clusters. The arrows represent where nodes go passing from a hierarchy layer to another. The bigger the balls, the bigger the cluster. The more yellow the link the more nodes are in common between the clusters of the two different layers. Plotted using clustree~\cite{clustree}.}
     \label{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild}
 \end{figure}
 
 \clearpage
-
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site} each column is a cluster and each colour is a tissue of the dataset. It is evident that the majority of the tissue are identified: the first, second, fifth, sixth, eighth and tenth columns are fully and uniformly coloured of the same colour. These correspond to an identification of brain, blood, lung, testis and bladder.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site} each column is a cluster and each colour is a tissue of the dataset. It is evident that the majority of the tissues are identified: the first, second, fifth, sixth, eighth and tenth columns are fully and uniformly coloured of the same colour. These correspond to an identification of \textit{brain}, \textit{blood}, \textit{lung}, \textit{testis} and \textit{bladder}.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site.pdf}
     \caption{Clusters composition at the level of the hierarchy with higher score. Each column is a cluster, each colour is a label.}
     \label{fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site}
 \end{figure}
-A normalised representation of the same clusters the result is still quite interesting and the homogeneity of the clusters is more evident.
+A normalized representation of the same clusters the result is still quite interesting and the homogeneity of the clusters is more evident.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site.pdf}
-    \caption{Normalised composition of clusters.}
+    \caption{Normalized composition of clusters. Again each column is a cluster, each colour is a label.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site}
 \end{figure}
 Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}, demonstrates that at this point all the tissues are separated and each cluster is full of nodes sharing the same tissue.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site.pdf}
-    \caption{Normalised composition of clusters at a deeper level.}
+    \caption{Normalized composition of clusters at a deeper level.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}
 \end{figure}
-Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of the brain, nevertheless, the cerebellum is well identified (column 13) and blood is distinguished in whole blood (columns 1-4) and lymphocytes (column 10).
+Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of the \textit{brain}, nevertheless, the \textit{cerebellum} is well identified (column 13) and \textit{blood} is distinguished in \textit{whole blood} (columns 1-4) and \textit{lymphocytes} (column 10).
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site.pdf}
-    \caption{Normalised composition of clusters with respect to the secondary site sub-tissue labels.}
+    \caption{Normalized composition of clusters with respect to the secondary site sub-tissue labels.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site}
 \end{figure}
 
@@ -67,10 +66,10 @@ with $n_{l k}$ is the numbers of nodes labelled $l$ in cluster $k$ and $n_k$ is 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf}
-    \caption{Most representative label versus cluster size.}
+    \caption{Fraction of cluster composed by the representative label versus cluster. On the right the distributions of this measure.}
     \label{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site}
 \end{figure}
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This is due to the fact that at this level clusters are very small and so it is easier to pick up nodes with the same level (in the extreme case of a cluster with size 1 it is always full with the same label). This shows that the deeper level it is not interesting, results are the same with random labels;  moreover the reshuffling null model it is good to show up eventual biases due to small cluster sizes.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This is due to the fact that at this level clusters are very small and so it is easier to pick up nodes with the same level (in the extreme case of a cluster with size 1 it is always full of the same label). This shows that the deeper level it is not interesting, results are the same with random labels;  moreover the reshuffling null model it is good to show up eventual biases due to small cluster sizes.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -167,7 +166,7 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_hier} the compari
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_hier.pdf}
-    \caption{Scores across hierarchy. The scored is compared with some random labels}
+    \caption{Scores across hierarchy. The score obtained with hSBM is compared with hierarchical clustering and shuffled labels.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_hier}
 \end{figure}
 
@@ -175,10 +174,10 @@ Another very used and well-studied algorithm is Latent Dirichlet Allocation brie
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_all.pdf}
-    \caption{Scores across hierarchy. The scored is compared with some random labels}
+    \caption{Scores across hierarchy for all algorithms used in this work.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_all}
 \end{figure}
-Note that LDA and hierarchical cluster models were not fine tuned and default parameters were used. Maybe a fine tuning of this packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model.
+Note that LDA and hierarchical cluster models were not fine-tuned and default parameters were used. Maybe a fine-tuning of these packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine-tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model.
 \FloatBarrier
 
 \subsection{Topics}
@@ -200,7 +199,7 @@ In this work tests were made using Gene Set Enrichment Analysis~\cite{subramania
 \end{itemize}
 in particular the two latter contains annotation specific for GTEx dataset~\cite{Ardlie2015}.
 
-In tables~\ref{tab:topic/enrich/pancreas}, ~\ref{tab:topic/enrich/brain} and ~\ref{tab:topic/enrich/blood} are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at $0.05$ and terms are sorted by adjusted P-value.
+In tables~\ref{tab:topic/enrich/pancreas},~\ref{tab:topic/enrich/brain} an~\ref{tab:topic/enrich/blood} are reported examples of enrichment test results for topics output by hSBM. On the results is put a P-value cut at $0.05$ and terms are sorted by adjusted P-value.
 \begin{table}[htb!]
 	\tiny
 	\begin{center}
@@ -298,5 +297,5 @@ Test were made on the topics at the level of the hierarchy which obtained the hi
 So also the topics are related to the tissues and somehow are tissue-specific. In the next examples the relation between the topics and the samples will be further investigated.
 In particular following what was done by~\cite{dey2017visualizing} the importance of each topic inside each sample the $P(\text{topic} | \text{sample})$.
 
-Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. In fact it is not always easy to identify and classify cancer tissues. In particular being able to separate tumour sub-types would be the ideal   pursuance of this work. So let's switch to the analysis of diseased samples. 
+Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. In fact, it is not always easy to identify and classify cancer tissues. In particular being able to separate tumour sub-types would be the ideal pursuance of this work. So let's switch to the analysis of diseased samples. 
 \FloatBarrier

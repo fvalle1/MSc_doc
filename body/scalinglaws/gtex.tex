@@ -5,7 +5,7 @@ the average $\avg{\mathrm{counts}}$ across tissues.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/allgenes/varmean_loglog.png}
-    \caption{Variance versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. All genes are considered}
+    \caption{Variance versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. All genes are considered.}
     \label{fig:scalinglaws/gtex/allgenes/varmean_loglog_density}
 \end{figure}
 In figure~\ref{fig:scalinglaws/gtex/varmean_loglog_density} the scatter plot of variance versus mean reveal some interesting facts.
@@ -17,7 +17,7 @@ A similar analysis, common in literature, is the analysis of the coefficient of 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/allgenes/cvmean_loglog.png}
-    \caption{Coefficient of variation squared versus average. In red the Poisson-like scaling, in green the Taylor-like scaling}
+    \caption{Coefficient of variation squared versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. All genes are considered.}
     \label{fig:scalinglaws/gtex/allgenes/cvmean_loglog}
 \end{figure}
 The behaviour is complementary to the above discussed double scaling and is quite common in literature looking at single cell RNA sequencing data~\cite{Islam2013}. Even looking at $CV^2$ it is evident the presence of the coding and non-coding clouds of points. The non coding genes are on the Poisson-like scaling, $\var{\mathrm{counts}} \sim \avg{\mathrm{counts}}$ so $CV^2=\frac{\var{\mathrm{counts}}}{\avg{\mathrm{counts}}^2}\sim\frac{1}{\avg{\mathrm{counts}}}$, otherwise the protein coding genes are on the Taylor-like curve $CV^2=\frac{\var{\mathrm{counts}}}{\avg{\mathrm{counts}}^2}\sim 1$.
@@ -26,7 +26,7 @@ The behaviour is complementary to the above discussed double scaling and is quit
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/varmean_loglog_density.png}
-    \caption{Variance versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. Only protein coding genes are considered}
+    \caption{Variance versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. Only protein coding genes are considered.}
     \label{fig:scalinglaws/gtex/varmean_loglog_density}
 \end{figure}
 Following the sampling model of~\cite{Mazzolini2018} sum up in section~\ref{sec:nullmodel} the averages and variances can be estimated on null matrices. In figure~\ref{fig:scalinglaws/gtex/varmean_3sigma} the comparison between real genes and sampling ones. The sampling has got a double scaling as well; this is quite interesting, it means that the global scaling is due to the Zipf distribution and the sizes distribution themselves, they are identical in data and sampling by definition.
@@ -34,7 +34,7 @@ Moreover the sampling points draw a lower bound of the data, this encodes the in
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/varmean_3sigma.png}
-    \caption{Variance versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. In \textcolor{pythonorange}{orange} the sampling components. Only protein coding genes are considered}
+    \caption{Variance versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. In \textcolor{pythonorange}{orange} the sampling components. Only protein coding genes are considered.}
     \label{fig:scalinglaws/gtex/varmean_3sigma}
 \end{figure}
 
@@ -42,17 +42,17 @@ Again it is possible to analyse the $CV^2$, at this time considering only protei
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/cvmean_loglog_density.png}
-    \caption{Variance versus occurrence}
+    \caption{Coefficient of variation squared versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. Only protein coding genes are considered.}
     \label{fig:scalinglaws/gtex/cvmean_loglog}
 \end{figure}
 
-In figure~\ref{fig:scalinglaws/gtex/cvmean_loglog_sampling} the same plot compared to the sampling points. The double scaling is evident also for the sampling points. Note that $CV^2$ has got a lower bound at $0$ which corresponds to the less variable case if all expression are identical in all samples ($\var{\mathrm{counts}}$) and an upper bound at $N-1$ with $N$ the number of realisations and corresponds to the most variable case where a component  express in only one realisation and is $0$ elsewhere.
+In figure~\ref{fig:scalinglaws/gtex/cvmean_loglog_sampling} the same plot compared to the sampling points. The double scaling is evident also for the sampling points. Note that $CV^2$ has got a lower bound at $0$ which corresponds to the less variable case if all expression are identical in all samples ($\var{\mathrm{counts}}$) and an upper bound at $N-1$ with $N$ the number of realisations and corresponds to the most variable case where a component  express in only one realization and is $0$ elsewhere.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/cvmean_loglog_sampling.png}
-    \caption{Caption}
+    \caption{Coefficient of variation squared versus average. In \textcolor{pythonred}{red} the Poisson-like scaling, in \textcolor{pythongreen}{green} the Taylor-like scaling. In \textcolor{pythonorange}{orange} the sampling components.}
     \label{fig:scalinglaws/gtex/cvmean_loglog_sampling}
 \end{figure}
 
-Finally the data have a double scaling when looking at their global variance across realisations, a Poisson-like where the sampling experimental process is more important and a Taylor-like where the complexity of the data emerges.
+Finally, the data have a double scaling when looking at their global variance across realisations, a Poisson-like where the sampling experimental process is more important and a Taylor-like where the complexity of the data emerges.
 Non coding genes have got low expression and are rare, protein coding genes, otherwise, express a lot and everywhere and carry more information following a double scaling. All genes are more variable than a sampling null model and this is the evidence that something interesting is hidden behind the data.

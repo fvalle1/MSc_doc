@@ -7,7 +7,9 @@ thesis: thesis.tex
 	bibtex thesis
 	pdflatex $^
 	pdflatex $^
+	cp thesis.pdf /Volumes/GoogleDrive/My\ Drive/tesi_magistrale/MSc_doc/.
 	open thesis.pdf
+
 
 .phony:
 clean:
