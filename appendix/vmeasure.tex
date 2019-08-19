@@ -1,7 +1,7 @@
 \chapter{Homogeneity, completeness and V-measure}\label{app:vmeasure}
 Using algorithms that are unsupervised, but with a ground truth available it is useful to define some metrics.
 
-The homogeneity
+One is the homogeneity
 \begin{equation}
     h=1-\frac{H(C|K)}{H(C)}
 \end{equation}
@@ -30,8 +30,8 @@ the sum $h + c$ is
 \end{equation}
 Expressing the conditional entropy 
 \[
-H(K|C)=\sum_{k c} P(k,c)Log(P(k|c))
-\\=\sum_{k c} P(k,c)Log\left(\frac{P(k,c)}{P(c)}\right)
+H(K|C)=\sum_{k c} P(k,c)Log_2(P(k|c))
+\\=\sum_{k c} P(k,c)Log_2\left(\frac{P(k,c)}{P(c)}\right)
 \\=H(K,C) - H(C)
 \]
 in terms of the conjunct entropy $H(K,C)$ which is symmetric by exchanges of $C$ and $K$

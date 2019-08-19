@@ -1,27 +1,25 @@
 \chapter{Data presentation}\label{ch:data}
 \section{RNA-Sequencing}\label{sec:rnaseq}
-Data considered in this work come from RNA-sequencing~\cite{wang2009rna} experiments.
- 
-RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the sample. This experiments aim to quantify how much a gene is expressed in a particular sample of a tissue.
+Data considered in this work come from RNA-sequencing~\cite{wang2009rna} experiments. These experiments aim to quantify how much a gene is expressed in a particular sample of a tissue. RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the sample. 
 
-Briefly, long RNAs are first converted into a library of cDNA fragments through either RNA fragmentation or DNA fragmentation. Sequencing adaptors are subsequently added to each cDNA fragment and a short sequence is obtained from each cDNA using high-throughput sequencing technology. The resulting sequence reads are aligned with the reference genome or transcriptome, and classified as three types: exonic reads, junction reads and poly(A) end-reads. These three types are used to generate a base-resolution expression profile for each gene.
+Briefly, long RNAs are first converted into a library of complementary DNA (cDNA) fragments through either RNA fragmentation or DNA fragmentation. Sequencing adaptors are subsequently added to each cDNA fragment and a short sequence is obtained from each cDNA using high-throughput sequencing technology. The resulting sequence reads are aligned with the reference genome or transcriptome, and classified as three types: exonic reads, junction reads and poly(A) end-reads. These three types are used to generate a base-resolution expression profile for each gene.
 
-The general steps to prepare a complementary DNA (cDNA) library for sequencing are, in general:
+The general steps to prepare a cDNA library for sequencing are, in general:
 \begin{itemize}
 \item RNA Isolation: RNA is isolated from tissue and the amount of genomic DNA is reduced;
 \item RNA selection/depletion: To analyze signals of interest, the isolated RNA can either be kept as is or filtered for RNA that binds specific sequences. The non-coding RNA is removed because it represents over 90$\%$ of the RNA in a cell, which if kept would drown out other data in the transcriptome;
 \item cDNA synthesis: RNA is reverse transcribed to cDNA (DNA sequencing technology is more mature). Fragmentation and size selection are performed to purify sequences that are the appropriate length for the sequencing machine.  Fragmentation is followed by size selection, where either small sequences are removed or a tight range of sequence lengths are selected. Because small RNAs like miRNAs are lost, these are analyzed independently. The cDNA for each experiment can be indexed with a hexamer or octamer barcode, so that these experiments can be pooled into a single lane for multiplexed sequencing.
 \end{itemize}
-In order to collect Gene expression data is sufficient to count how many reads are mapped to a specific exon or gene. The ultimate output of this analysis, where this work begins, are lists of gene expression values for each sample.
+In order to collect gene expression data is sufficient to count how many reads are mapped to a specific exon or gene. The ultimate output of this analysis, where this work begins, are nothing but lists of gene expression values for each sample.
 \paragraph{normalization}\mbox{}\\
-Usually gene expression data can be normalized in different ways:
+Usually gene expression data can be normalized in different ways, for example it is possible to use:
 \begin{itemize}
 	\item counts,
 	\item RPK,
 	\item TPM,
 	\item FPKM.
 \end{itemize}
-Count reads correspond to raw data. Counts needs no normalization to be treated but may have some biases. For example, longer genes may have more reads than shorter gene just because they are longer. That's why other kind of normalization can be used. Note that this is not always the case: in fact, some sequencing techniques consider just the start of the gene, so the length doesn't matter.   
+Count reads correspond to raw data. Counts need no normalization to be treated but may be biased. For example, longer genes may have more reads than shorter ones just because they are longer. That's why other kind of normalization can be used. Note that this is not always the case: in fact, some sequencing techniques consider just the start of the gene, so the gene length doesn't matter.   
 
 RPK\footnote{Reads Per Kilobase of transcript} normalization removes the length bias by dividing counts by the gene length $L$: \(\text{RPK}=\frac{\text{counts}}{L}\). This solves some problems but doesn't take care of the different sizes of the transcript in different samples.
 
@@ -35,7 +33,7 @@ being
 	\item $RC_{pc}$: Number of reads mapped to all protein-coding genes
 	\item $L$: Length of the gene in base pairs.
 \end{itemize}
-When dealing with FPKM some thresholds are put in particular FPKM below $0,1$ and above $10^5$ will not be considered, maybe they come from some kind of experimental error.
+When dealing with FPKM some thresholds are put in particular FPKM below $0,1$ and above $10^5$ will not be considered, maybe these values come from some kind of experimental error.
 
 TPM\footnote{Transcript Per Million} tries to unify the sizes of the samples: $\text{TPM} = \frac{RC_g*10^9}{\sum_{g\prime} \left(\frac{RC_{g^\prime}}{l_{g^\prime}}\right) RC_{pc}*L}$.
 
@@ -49,5 +47,5 @@ The other dataset considered is The Cancer Genome Atlas (TCGA) dataset~\cite{gro
 
 Another source of data used in this work is~\cite{Wang2017} which authors tried to unify GTEx and TCGA~\cite{Betel2018}, when possible.
 
-\paragraph{Protein coding}
-The whole dataset contains infos on approximately $60000$ elements with different \textit{ENSG} identifier. Only $\simeq 20000$ of this are protein coding genes, using Ensemble\footnote{\url{https://ensemble.org}} protein coding genes are selected.
+\paragraph{Protein-coding}
+The whole dataset contains infos on approximately $60000$ elements with different \textit{ENSG} identifier. Only $\simeq 20000$ of this are protein-coding genes, using Ensemble\footnote{\url{https://ensemble.org}} protein coding genes are selected. In chapters~\ref{ch:structure} and~\ref{ch:scalinglaws} some analysis explaining the different behaviour of coding and non-coding gense will be described.

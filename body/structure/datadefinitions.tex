@@ -15,9 +15,9 @@ Given a matrix with $N$ components on the rows and $R$ realizations on the colum
 
 First of all, the \textbf{occurrence} of a component, defined as 
 \begin{equation}\label{eq:occurrence}
-o_i=\frac{\sum_{j=1}^{R}(1-\delta_{n_{ij},0})}{R},
+O_i=\frac{\sum_{j=1}^{R}(1-\delta_{n_{ij},0})}{R},
 \end{equation}
-is the fraction of realizations in which the component's abundance is not null. A component that is present in all the realizations has got $O_i=1$, the ensemble of all components with $O_i=1$ is known as \textbf{core}. Components with high ($\simeq 1$) occurrence are present in mostly all realizations of the datasets, in linguistics these components are articles. Components with low occurrence $\simeq 0$ are present only in a few realizations and are the most specific ones~\cite{altmann2016statistical}.
+is the fraction of realizations in which the component's abundance is not null. A component that is present in all the realizations has got $O_i=1$, the ensemble of all components with $O_i=1$ is known as \textbf{core}. Components with high ($\simeq 1$) occurrence are present in mostly all realizations of the datasets, in linguistics articles (such as \textit{the}) are present everywhere, so they have high occurrence. Components with low occurrence $\simeq 0$ are present only in a few realizations and are the most specific ones~\cite{altmann2016statistical}.
 
 The sum across all columns is called \textbf{abundance} of a component and is defined as:
 \begin{equation}\label{eq:abundance}
@@ -40,7 +40,7 @@ The sum of all abundances in the same realization
 \begin{equation}\label{eq:size}
 M_j=\sum_{c=1}^{N}n_{cj}
 \end{equation}
-is called \textbf{size}.
+represent the \textbf{size} of the realization.
 
 It is expected that frequencies distribute according to the so called Zipf's law
 \begin{equation}\label{eq:zipf}

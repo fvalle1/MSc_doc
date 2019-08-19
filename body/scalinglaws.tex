@@ -1,18 +1,13 @@
 \chapter{Scaling laws}\label{ch:scalinglaws}
-One of the goals of this work is to search, reveal, study and use universal laws in bulk gene expression data~\nocite{altmann2016statistical}. As was done in chapter~\ref{ch:structure} approaches from different field of science are considered at this point.
+One of the goals of this work is to search, reveal, study and use universal laws in bulk gene expression data. Approaches from different field of science are considered at this point, as already done in chapter~\ref{ch:structure}.~\nocite{altmann2016statistical}
 
-In can be interesting to study the behaviour of the gene expression across samples.
+In can be interesting to study how the gene expression changes and behave across all the samples.
 
-Given a matrix of components and realizations as~\ref{fig:componetstable} with expression entries $n_{i j}$ it is possible to estimate the mean of a row $m_i=\avg{n_{i
- j}}_j$ and its variance $\var{i}=\avg{n_{i j}^2}_j - \avg{n_{i j}}^2_j$.
+Given a matrix of components and realizations as~\ref{fig:componetstable} with expression entries $n_{i j}$ it all begins selecting a row and estimate its mean $m_i=\avg{n_{i
+ j}}_j$ and its variance $\var{i}=\avg{n_{i j}^2}_j - \avg{n_{i j}}^2_j$. A row is nothing but a component that, in the data considered in this work, is represented by a gene. At this point the analyses consider raw counts as entries.  
 
 \input{body/scalinglaws/gtex.tex}
+\FloatBarrier
+\input{body/scalinglaws/averageoccurrence.tex}
 
-\paragraph{Average versus occurrence}\mbox{}\\
-Another interesting analysis can be the relation between the occurrence and the average. In figure~\ref{fig:scalinglaws/gtex/meanDiff_binned_sampling} it is shown the result, it is clear that there is a relation between occurrence and average, genes that express in more realizations (higher occurrence and right in the figure) have a higher average. Moreover, it doesn't exist genes that have high expression in few realizations; genes that are rare are also difficult to find so have a small average. Note that the average has got a bound due to the fact that counts are integer numbers, so if, for example, one gene express in $n$ of the $R$ samples, it has occurrence $O_i=\frac{n}{R}$ and its average is at least $\avg{\mathrm{counts}}=\frac{1*n}{R}$
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.9\linewidth]{pictures/scalinglaws/gtex/meanDiff_binned_sampling.png}
-    \caption{Relation between the occurrence of a gene and its average across realizations.}
-    \label{fig:scalinglaws/gtex/meanDiff_binned_sampling}
-\end{figure}
+\input{body/scalinglaws/conclusions.tex}

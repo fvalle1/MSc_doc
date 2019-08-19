@@ -1,7 +1,7 @@
-\section{Universal laws in gene expression}\label{sec:universallaws}
+\section{Universal laws in gene expression datasets}\label{sec:universallaws}
 \paragraph{TCGA}\mbox{} \\
-Analysing TCGA dataset the first interesting analysis is to plot the sorted abundance, this gives the so called Zipf's law.
-In figure~\ref{fig:structure/tcga/globalZipf}, it is shown the frequency rank plot. It is interesting that this kind of data distribute according a power law with, this same behaviour can be found in many systems such as linguistics' ones~\cite{altmann2016statistical}.
+Analysing TCGA dataset the first interesting analysis is to analyse the sorted abundance, this brings to the so called Zipf's law.
+In figure~\ref{fig:structure/tcga/globalZipf}, it is shown the frequency rank plot. It is interesting that this kind of data distribute according a power law, this same behaviour can be found in many systems such as linguistics' ones~\cite{altmann2016statistical}.
 \begin{figure}[htb!]
 	\centering
 	\begin{minipage}{0.45\textwidth}
@@ -38,13 +38,13 @@ The exact same analysis can be performed on GTEx healthy samples. RNA sequencing
     \caption{Zipf's law from GTEx count data. On the left all genes considered, on the right only protein coding ones.}
     \label{fig:my_label}
 \end{figure}
-Not surprisingly in the GTEx dataset it is retrieved the same behaviour from this point of view. The power law is found and considering non coding genes lead to a knee in the power law.
+Not surprisingly in the GTEx dataset it is retrieved the same behaviour described before. The power law is found and considering non coding genes leads to a knee in the power law.
 
-Going further in the analysis it is possible make a histogram of occurrences defined by~\ref{eq:occurrence}, also known as $U$s.
+Going further in the analysis it is possible make a histogram of occurrences defined in~\ref{eq:occurrence}, also known as $U$s.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/structure/gtex/U_gtex_cnc.pdf}
-    \caption{The histogram of the occurrences $O_i$. Coding and non-coding entries are coloured.}
+    \caption{The histogram of the occurrences $O_i$. Coding and non-coding entries are coloured and normalised to $1$.}
     \label{fig:structure/gtex/U_cnc}
 \end{figure}
 Even in this kind of analysis it is possible to see the different behaviour of coding and non-coding genes. The protein-coding genes express almost in every sample, so their occurrence is near to $1$, non coding genes are more specific, so they are present only in a subset of the dataset and many of them have a small occurrence.
@@ -57,7 +57,7 @@ Even in this kind of analysis it is possible to see the different behaviour of c
     \begin{minipage}{0.45\textwidth}
     \includegraphics[width=0.95\linewidth]{pictures/structure/gtex/U_Brain.png}
     \end{minipage}
-    \caption{Same behaviour is observed looking at one tissue a time.}
+    \caption{Differences in coding and non-coding occurrences is observed also when looking at one tissue a time.}
     \label{fig:structure/gtex/U_tissues}
 \end{figure}
 
