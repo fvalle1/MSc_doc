@@ -5,7 +5,7 @@ Firstly it is necessary to build a bipartite network of genes and samples, then 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.7\linewidth]{pictures/topic/bipartite.pdf}
-    \caption{An example of a bipartite network. Samples are on the left, genes are on the right. Each link is weighted by gene expression value. On the left side, all nodes of the same colour are clusters of samples. On the right side, all nodes with the same colour are set of genes, also known as topics.\\ 
+    \caption{An example of a bipartite network. Samples are on the left, genes are on the right. Each link is weighted by gene expression value. On the left side, all nodes of the same colour are clusters of samples. On the right side, all nodes with the same colour are set of genes, also known as topics.\\
     Blue lines represent the cluster structure, each blue squared-dot is a set of nodes, lines delineate the hierarchical structure.\\
     It is clear in the middle the network separation between genes and samples.}
     \label{fig:topic/bipartite}
@@ -26,7 +26,7 @@ One of the advantages of this particular algorithm is that it is hierarchical, s
 \end{figure}
 
 What the algorithm does is to run a sort of Monte Carlo simulation and find the best partition of the data.
-The probability that the hidden variables $\theta$ describe the data $G$ $P(\theta | G)$ can be written as a likelihood times a prior probability as 
+The probability that the hidden variables $\theta$ describe the data $G$ $P(\theta | G)$ can be written as a likelihood times a prior probability as
 \[P(\theta|G)=\frac{P(G|\theta)\overbrace{P(\theta)}^{prior}}{\underbrace{P(G)}_{\sum_{\theta}P(G|\theta)P(\theta)}}.\]
 It is possible to define a description length
 \[
@@ -64,11 +64,13 @@ in figure~\ref{fig:topic_peixioto_move} an example of these steps.
   \label{fig:topic_peixioto_move}
 \end{figure}
 
+In order to remove eventual biases due to the initial configuration the model is run with $5$ different initial states, then the final state with the minimal entropy is selected.
+
 Once the model run it is possible to estimate the probability distribution of words inside a topic
 \[P(w|t_w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $t_w$}}\]
 and the topic distribution inside a document
 \[P(t_w|d)=\frac{\text{\# of edges on $d$ from $t_w$}}{\text{\# of edges on $d$}}\]
-This algorithm can set to have overlapping partitions, in this case the presence of a word in a topic is not trivial and can be estimated as 
+This algorithm can set to have overlapping partitions, in this case the presence of a word in a topic is not trivial and can be estimated as
 \[P(t_w|w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $w$}}\]
 or the presence of a document in a cluster
 \[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}\]

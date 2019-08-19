@@ -64,7 +64,7 @@ The simulation consists of four steps: for each node $i$
 \end{itemize}
 This steps mime probability~\ref{eq:Prst}; note that for $\epsilon\to\infty$ this gives a uniform probability.
 
-To enchant the probability to find a minimum, a bounce of these moves is made, only the set of moves with the minimum $S$ is accepted.
+To enchant the probability to find a minimum, a bounce of these moves is made, only the set of moves with the minimum $S$ is accepted. Moreover, in order to remove eventual biases due to the initial configuration the model is run with different initial states, then the final state with the minimal entropy is selected.
 
 \paragraph{How many blocks $B$?}\mbox{}\\
 Note that the number of blocks $B$ is a free parameter and must be inferred as described in~\cite{peixoto2017nonparametric}. This implies a slight modification of the algorithm such that it became possible to admit the creation of  a new group.
