@@ -74,11 +74,12 @@ In figure~\ref{fig:topic/merged/lifeplot} it is plotted $P(\text{topic}| \text{t
 	\label{fig:topic/merged/lifeplot}
 \end{figure}
 
-In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each $P(\text{topic}| \text{tissue})$was subtracted the average topic expression $\text{mean}_{\text{tissue}}(\text{topic})=\avg{P(\text{topic}| \text{tissue})}_{tissue}$ and the result was divided by the standard deviation $\sigma_{\text{tissue}}(\text{topic})$. In figure~\ref{fig:topic/merged/lifeplot_normalised_level3_hd} some most characteristic topics are reported. This analysis reveals that tissue have a different behaviour than average in different topics, different tissues are distant from the average in different topics. Moreover, the healthy and the disease sample from the two different sources seems to have a similar behaviour, in fact if a healthy tissue is far from the average in a topic, the diseased counterpart is also distant from the average as evident in the topics reported in the figure.
+In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each $P(\text{topic}| \text{tissue})$was subtracted the average topic expression $\text{mean}_{\text{tissue}}(\text{topic})=\avg{P(\text{topic}| \text{tissue})}_{tissue}$ and the result was divided by the standard deviation $\sigma_{\text{tissue}}(\text{topic})$. In figure~\ref{fig:topic/merged/lifeplot_normalised_level3_hd} some most characteristic topics are reported. This analysis reveals that tissue have a different behaviour than average in different topics, different tissues are distant from the average in different topics. This 
+analysis is useful to determine what is the role of each topic, moreover if a topic reveals cancer the difference between the healthy tissue and its diseased counterpart emerges as shown in the figure.
 \begin{figure}[htb!]
 	\centering
 	\includegraphics[width=0.85\linewidth]{pictures/topic/merged/lifeplot_normalised_level3_hd.pdf}
-	\caption{$\frac{\left|P(topic | tissue) - \avg{P(\text{topic}| \text{tissue})}_{tissue}\right|}{\sigma_{\text{tissue}}(\text{topic})}$ or the distance of each tissue from the average tissue expression in each topic. Some interesting topics are reported.}
+	\caption{$\frac{\left|P(topic | tissue) - \avg{P(\text{topic}| \text{tissue})}_{tissue}\right|}{\sigma_{\text{tissue}}(\text{topic})}$ or the distance of each tissue from the average tissue expression in each topic. Some low occurrence topics are reported.}
 	\label{fig:topic/merged/lifeplot_normalised_level3_hd}
 \end{figure}
 
