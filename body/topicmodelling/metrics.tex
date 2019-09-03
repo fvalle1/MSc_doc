@@ -3,7 +3,7 @@ Before running topic modelling, it is useful to define some metrics to test and 
 
 Looking at the samples side of the network, the outputs are sets of samples, let's call these clusters. One can state the model works if all, or at least the majority, of samples in the same cluster share some label. Here the tissue is considered as the main label.
 
-Note that this work's model is a non supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let's call this $P(C)$ and a certain probability of being in a cluster (model's output), let's call this $P(K)$.
+Note that this work's model is a non-supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let's call this $P(C)$ and a certain probability of being in a cluster (model's output), let's call this $P(K)$.
 It is possible to define some quantities, the homogeneity
 \begin{equation}\label{eq:homogeneity}
     h=1-\frac{H(C|K)}{H(C)}
@@ -24,7 +24,7 @@ Ideally one wants a method which output is both homogeneous and complete. So it 
 \begin{equation}\label{eq:mutualinformation}
     \mathrm{V-measure}=2\frac{h c}{h + c},
 \end{equation}
-which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/metric_scores_primarysite} an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. In fact if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.
+which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/metric_scores_primarysite} an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. This happens because if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_primarysite.pdf}
@@ -32,5 +32,5 @@ which is actually the normalized mutual information between $P(C)$ and $P(K)$~\c
     \label{fig:topic/metric_scores_primarysite}
 \end{figure}
 
-In order to validate the model it will be compared to more standard approaches such as standard hierarchical clustering and a classical topic model approach using Latent Dirichlet Allocation. 
+In order to validate the model, it will be compared to more standard approaches such as standard hierarchical clustering and a classical topic model approach using Latent Dirichlet Allocation. 
 \FloatBarrier
