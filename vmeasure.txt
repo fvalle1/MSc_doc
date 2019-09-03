@@ -1,0 +1,60 @@
+Homogeneity, completeness and V-measureapp:vmeasure
+Using algorithms that are unsupervised, but with a ground truth available it is useful to define some metrics.
+
+One is the homogeneity
+equation
+    h=1-H(CK)H(C)
+equation
+defining the entropy
+equation
+    H(CK)=_cmodel labels,
+ k clustersn_c kNLog(n_c kn_k)
+equation
+where  is the number of nodes of type  in cluster ,  the number of nodes and  the number of nodes in cluster . It is evident that if all nodes inside cluster  are of the same type  ,  and , it is actually a full homogeneous situation.
+The completeness:
+equation
+    c=1-H(KC)H(K),
+equation
+ is defined in the same way as . Completeness measures if all nodes of the same type are in the same cluster.
+Ideally one wants a model which output is both homogeneous and complete. So it is possible to define the V-measure rosenberg2007v, which is the harmonic average of the two:
+equation
+    2h ch + c.
+equation
+
+The product  is equal to
+equation
+    (H(C)-H(CK))(H(K)-H(KC))H(K) H(C),
+equation
+the sum  is
+equation
+    H(K)(H(C)-H(CK))+H(C)(H(K)-H(KC))H(K) H(C).
+equation
+Expressing the conditional entropy 
+
+H(KC)=_k c P(k,c)Log_2(P(kc))
+
+=_k c P(k,c)Log_2(P(k,c)P(c))
+
+=H(K,C) - H(C)
+
+in terms of the conjunct entropy  which is symmetric by exchanges of  and 
+
+H(K,C)=H(KC) + H(C) = H(CK) + H(K) = H(C,K)
+
+it is easy to verify that 
+
+H(C) - H(CK) = H(K) - H(KC) 
+
+so
+
+h c = (H(C)-H(CK))^2H(K) H(C)
+
+and
+
+h + c = (H(C)-H(CK))(H(K)+H(C))H(K) H(C).
+
+The harmonic average  gives
+
+V-measure=2H(C)-H(CK)H(K)+H(C)=2H(C)+H(K)-H(K,C)H(K)+H(C)=2MI(C,K)H(K)+H(C)
+
+which is actually the mutual information between  and  normalized to  by the term . In fact if   and the measure is , if  and  are completely independent  and the measure is .
