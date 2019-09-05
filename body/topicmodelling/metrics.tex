@@ -1,7 +1,7 @@
 \section{Metrics and benchmarks}
-Before running topic modelling, it is useful to define some metrics to test and benchmark the model. In particular the model searches sets on the two sides of the network: the one containing samples and the one containing genes. Samples are extracted from datasets where much metadata are available, some of these metadata labels will be used to benchmark the model. To study gene,s enrichment test are instead necessary.
+Before running topic modelling, it is useful to define some metrics to test and benchmark the model. In particular the model searches sets on the two sides of the network: the one containing samples and the one containing genes. Samples are extracted from datasets where much metadata are available, some of these metadata labels will be used to benchmark the model. To study genes enrichment test are instead necessary.
 
-Looking at the samples side of the network, the outputs are sets of samples, let's call these clusters. One can state the model works if all, or at least the majority, of samples in the same cluster share some label. Here the tissue is considered as the main label.
+Looking at the samples side of the network, the outputs are sets of samples, let's call these clusters. One can state that the model works if all, or at least the majority, of samples in the same cluster share some label. Here the tissue is considered as the main label.
 
 Note that this work's model is a non-supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let's call this $P(C)$ and a certain probability of being in a cluster (model's output), let's call this $P(K)$.
 It is possible to define some quantities, the homogeneity

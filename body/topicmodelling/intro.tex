@@ -1,4 +1,4 @@
-Remembering that in chapter~\ref{ch:structure} it emerged some kind of structure behind data, where each tissue seemed to be sampled by a different power law, a topic modelling approach is here proposed. Topic modelling has been developed and studied to approach linguistics problems, so this algorithm was developed considering words and books in input, links represent the abundance of a word in a book. In chapter~\ref{ch:structure} was evident that there are many similarities between data considered in this work and linguistics' corpora. Referring to data used in this project \textbf{samples} will be the documents and \textbf{genes} will be the words. It is expected that topics represent some properties of the system due to the gene expression distribution in samples.
+Remembering chapter~\ref{ch:structure}, it emerged some kind of structure behind data: each tissue seemed to be sampled by a different power law. A topic modelling approach is here proposed. Topic modelling has been developed and studied to approach linguistics problems, so this algorithm was developed considering a network of words and books in input, links represent the abundance of a word in a book. In chapter~\ref{ch:structure}, it was evident that there are many similarities between data considered in this work and linguistics' corpora. Referring to data used in this project \textbf{samples} will be the documents and \textbf{genes} will be the words. It is expected that topics represent some properties of the system due to the gene expression distribution in samples.
 
 The idea is that behind data there are hidden variables that describe the relationship between the genes and the samples. Let's call these variables topics.
 Firstly it is necessary to build a bipartite network of genes and samples, then nodes are linked considering the gene expression value in the dataset.
@@ -13,11 +13,11 @@ Firstly it is necessary to build a bipartite network of genes and samples, then 
 
 The output of this kind of models consists of sets of genes, the topics, with a probability distribution $P(\text{gene} | \text{topic})$ and probability distributions of these topics inside each sample $P(\text{topic} | \text{sample})$, together they give the relationship between a \textit{sample} and a \textit{gene}.
 
-In this work, an innovative and recent approach to topic model is proposed. The algorithm was presented by~\cite{gerlach2018network} and~\cite{Peixoto2017} explain it in details. This model is an evolution of a stochastic block model~\cite{Holland1983}. It is called hierarchical Stochastic Block Model (hSBM).
+In this work, an innovative and recent approach to topic model is proposed. The algorithm was presented by~\cite{gerlach2018network} and~\cite{Peixoto2017} explained it in details. This model is an evolution of a stochastic block model~\cite{Holland1983}. It is called hierarchical Stochastic Block Model (hSBM).
 
-The ultimate goal is to be able to separate healthy and diseased samples then find and separate well-known tumour types and finally extend the actual knowledge and retrieve the tumour sub-types.
+The ultimate goal is being able to separate healthy and diseased samples, then find and separate well-known tumour types and finally extend the actual knowledge and retrieve the tumour sub-types.
 
-One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers of resolution. So the output has got different resolutions and different number of clusters at each layer . One extreme layer is the one which separates genes ($\simeq$ words) and samples ($\simeq$ samples), by definition; in other layers, it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
+One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers of resolution. So the output has got different resolutions and different number of clusters at each layer . One extreme layer is the one which separates genes ($\simeq$ words) and samples ($\simeq$ samples), by definition. In the other layers, it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
 \begin{figure}[htb!]
   \centering
   \includegraphics[width=0.6\linewidth]{pictures/topic/peixioto_hierarchic.jpg}
@@ -75,4 +75,4 @@ This algorithm can set to have overlapping partitions; in this case, the presenc
 or the presence of a document in a cluster
 \[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}\]
 
-See appendix~\ref{app:hsbm} for a detailed analysis of the maths behind the algorithm and \url{https://cloud.docker.com/repository/docker/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non-linguistics component systems datasets.
+See appendix~\ref{app:hsbm} for a detailed analysis of the maths behind the algorithm and \url{https://hub.docker.com/r/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non-linguistics component systems datasets.

@@ -1,5 +1,5 @@
 \subsection{Healthy and diseased together}
-In the previous sections it was demonstrated that the model works on samples from different datasets and performs well on both healthy and diseased samples it can be interesting to see how the model behave when both kinds of data are presented to it.
+In the previous sections it was demonstrated that the model works on samples from different datasets and performs well on both healthy and diseased samples. It can be interesting to see how the model behave when both kinds of data are presented to it.
 The goal of this part of work is to identify which genes or topics identify and distinguish tissues themselves and which drive cancer and are necessary to understand the differentiation between cancer types.
 
 For this analysis data from GTEx and TCGA were still analysed, but from a particular dataset available from~\cite{Wang2017} were authors tried to unify the normalization process from different dataset and sources~\cite{Betel2018}. This is, in practice, a mixed bigger dataset; note that not every tissue is present in both GTEx and TCGA, so only common tissues are considered here. The first label considered at this point is the tissue primary site, forgetting about its status (healthy or diseased), the secondary label refers to the tissues but separates their status. For example, a healthy brain sample from GTEx and a cancer brain from TCGA share the \textit{brain} primary site label but have different secondary site assignments.
@@ -12,7 +12,7 @@ Once the model is run, the first element to look at is the V-measure; in figure~
     \label{fig:topic/merged/metric_scores_primarysite}
 \end{figure}
 
-Estimating the score also for the secondary site, or rather for the tissues with the health state and just the healthy/disease label lead to figure~\ref{fig:topic/merged/metric_scores}. This result is quite interesting, first of all even the secondary label is well classified and this happens at deeper level respect to the one where tissues are separated; this means that firstly samples are separated by tissues then by their health state. This is very interesting because is evidence that the model recognize tissues, never mind where they come from, moreover the difference between datasets are not important here and so the normalization made by~\cite{Betel2018} brings no problems at this level. Moreover, looking just at the health status label the score is quite low (below $0.2$) so the model does not take over the difference between datasets.
+Estimating the score also for the secondary site, or rather for the tissues with the health state and just the healthy/disease label lead to figure~\ref{fig:topic/merged/metric_scores}. This result is quite interesting, first of all even the secondary label is well classified and this happens at deeper level respect to the one where tissues are separated; this means that firstly samples are separated by tissues then by their health state. This is very interesting because it is an evidence that the model recognize tissues, never mind where they come from, moreover the difference between datasets are not important here and so the normalization made by~\cite{Betel2018} brings no problems at this level. Moreover, looking just at the health status label the score is quite low (below $0.2$) so the model does not take over the difference between datasets.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/merged/metric_scores.pdf}
@@ -43,22 +43,22 @@ In figure~\ref{fig:topic/merged/pvaluecategories} are shown the categories of th
     \label{fig:topic/merged/pvaluecategories}
 \end{figure}
 
-Going forward in the analysis it is possible to perform enrichment test with other tools such as DAVID~\cite{huang2008bioinformatics,huang2009systematic}. Results are similar to the ones retrieved before. Tissues related terms are found also using this tool and this confirms the absence of tool, sets, or categories related biases. In figures~\ref{fig:topic/merged/DAVID_lung},~\ref{fig:topic/merged/DAVID_brain} and ~\ref{fig:topic/merged/DAVID_stomach} the result from DAVID enrichment analysis. Finally, it is interesting to notice that topics are quite small (order $\simeq20$ genes), so there are no biases that can appear doing enrichment tests on big sets.
+Going forward in the analysis it is possible to perform enrichment test with other tools such as DAVID~\cite{huang2008bioinformatics,huang2009systematic}. Results are similar to the ones retrieved before. Tissues related terms are found also using this tool and this confirms the absence of tool, sets, or categories related biases. In figures~\ref{fig:topic/merged/DAVID_lung},~\ref{fig:topic/merged/DAVID_brain} and~\ref{fig:topic/merged/DAVID_stomach} the result from DAVID enrichment analysis. Finally, it is interesting to notice that topics are quite small (order $\simeq20$ genes), so there are no biases that can appear doing enrichment tests on big sets.
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.6\linewidth]{pictures/topic/merged/DAVID_lung.pdf}
+    \includegraphics[width=0.8\linewidth]{pictures/topic/merged/DAVID_lung.pdf}
     \caption{Enrichment test on DAVID platform reveals lung-related genes.}
     \label{fig:topic/merged/DAVID_lung}
 \end{figure}
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.6\linewidth]{pictures/topic/merged/DAVID_brain.pdf}
+    \includegraphics[width=0.8\linewidth]{pictures/topic/merged/DAVID_brain.pdf}
     \caption{Enrichment test on DAVID platform reveals brain-related genes.}
     \label{fig:topic/merged/DAVID_brain}
 \end{figure}
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.6\linewidth]{pictures/topic/merged/DAVID_stomach.pdf}
+    \includegraphics[width=0.8\linewidth]{pictures/topic/merged/DAVID_stomach.pdf}
     \caption{Enrichment test on DAVID platform reveals stomach-related genes.}
     \label{fig:topic/merged/DAVID_stomach}
 \end{figure}
@@ -66,7 +66,7 @@ Going forward in the analysis it is possible to perform enrichment test with oth
 \FloatBarrier
 \paragraph{The link between topics and samples} has not been investigated so far. The probability distribution of each sample over topics $P(\text{topic}| \text{sample})$ can be estimated as \[P(\text{topic}| \text{sample})=\frac{\text{\# of edges on sample from topic}}{\text{\# of edges on sample}}\] after the model is run. Moreover, an average of all samples belonging to a topic can be estimated: $P(\text{topic}| \text{tissue})=\frac{1}{\left|tissue\right|}\sum_{sample\in tissue}P(\text{topic}| \text{sample})$.
 
-In figure~\ref{fig:topic/merged/lifeplot} it is plotted $P(\text{topic}| \text{tissue})$ for the first topics. What is clear is that in all samples there is a global trend with not many differences between tissues, the topic expression differences between tissues are slightly appreciable at this point. This new point of view carries a profound and very informative message: in nature every tissue needs somehow the expression of all the genes (there is a global trend) and small differences between genes' expression are fine-tuned to obtain different tissues. In other words, it is possible to describe human tissues assuming that all genes are important and that is the fine structure of their interactions which realizes the complexity observed. In the case of diseased samples, this suggests that it should be possible to discover a cancer type not looking at a few marker genes but looking at the whole expression profile of all genes.
+In figure~\ref{fig:topic/merged/lifeplot} it is plotted $P(\text{topic}| \text{tissue})$ for the first topics. What is clear is that in all samples there is a global trend without many differences between tissues, the topic expression differences between tissues are slightly appreciable at this point. This new point of view carries a profound and very informative message: in nature every tissue needs somehow the expression of all the genes (there is a global trend) and small differences between genes' expression are fine-tuned to obtain different tissues. In other words, it is possible to describe human tissues assuming that all genes are important and that is the fine structure of their interactions which realizes the complexity observed. In the case of diseased samples, this suggests that it should be possible to discover a cancer type not looking at a few marker genes but looking at the whole expression profile of all genes.
 \begin{figure}[htb!]
 	\centering
 	\includegraphics[width=0.9\linewidth]{pictures/topic/merged/lifeplot.pdf}
@@ -74,7 +74,7 @@ In figure~\ref{fig:topic/merged/lifeplot} it is plotted $P(\text{topic}| \text{t
 	\label{fig:topic/merged/lifeplot}
 \end{figure}
 
-In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each $P(\text{topic}| \text{tissue})$was subtracted the average topic expression $\text{mean}_{\text{tissue}}(\text{topic})=\avg{P(\text{topic}| \text{tissue})}_{tissue}$ and the result was divided by the standard deviation $\sigma_{\text{tissue}}(\text{topic})$. In figure~\ref{fig:topic/merged/lifeplot_normalised_level3_hd} some most characteristic topics are reported. This analysis reveals that tissues have a different behaviour than average in different topics, different tissues are distant from the average in different topics. This 
+In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each $P(\text{topic}| \text{tissue})$ it was subtracted the average topic expression $\text{mean}_{\text{tissue}}(\text{topic})=\avg{P(\text{topic}| \text{tissue})}_{tissue}$ and the result was divided by the standard deviation $\sigma_{\text{tissue}}(\text{topic})$. In figure~\ref{fig:topic/merged/lifeplot_normalised_level3_hd} some most characteristic topics are reported. This analysis reveals that tissues have a different behaviour than average in different topics, different tissues are distant from the average in different topics. This 
 analysis is useful to determine what is the role of each topic, moreover if a topic reveals cancer the difference between the healthy tissue and its diseased counterpart emerges as shown in the figure.
 \begin{figure}[htb!]
 	\centering

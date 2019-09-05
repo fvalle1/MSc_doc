@@ -1,5 +1,5 @@
 \section{Null model construction}\label{sec:nullmodel}
-The kind of data considered in this work comes from RNA Sequencing experiments. These experiments use wet biology methods to extract information from samples. If one imagines it exists an unknown function that describes the gene expression across the samples considered, what experimental people do is to sample this function, picking up some genes.
+The kind of data considered in this work comes from RNA-sequencing experiments. These experiments use wet biology methods to extract information from samples. If one imagines it exists an unknown function that describes the gene expression across the samples considered, what experimental people do is to sample this function, picking up some genes.
 
 In this section it is described a null model of sampling, this is useful to verify if the data distributions seen are just an effect of this experimental sample or if they carry some useful and interesting information.
 
@@ -11,7 +11,7 @@ P\left( \{ n_i\} ;M\right) =\frac{M!}{\prod_{i=1}^{N} n_i}\prod_{i=1}^N f_i^{n_i
 \end{equation}
 where $n_i$ is the number of times the component with frequency $f_i$ appears, being $f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}$ as defined in~\ref{eq:fi}.
 
-Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up concerning their frequency in the dataset. The most abundant components, which are also the ones with the highest frequencies (frequency is nothing but the normalized abundance), have a greater probability to be picked up.
+Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up concerning their frequency in the dataset. The most abundant components, which are also the ones with the highest frequencies (frequency is nothing but the normalized abundance), have a greater probability to be picked up. An ensemble of these matrices is created and then averaged to gain statistics.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/structure/randomsampling.png}
@@ -48,7 +48,7 @@ By construction, the distribution of the sizes of the sampling and the data are 
     \label{fig:structure/sizeDistr_null}
 \end{figure}
 
-Looking at the $U$s in figure~\ref{fig:structure/globalU_null}, it is evident that data behave differently from sampling. This is a signal that the null model is not enough to explain the data matrices. In particular, it is evident that the null model generates the matrices in a manner such that more components have high occurrence comparing to the original data. This can be easily explained, in fact in the real world some genes are highly expressed but only in a subset of the whole dataset; these genes are specific for certain type of samples. The null model gets the information that such genes are highly expressed (they have a high abundance) and so samples these quite often (components with high abundance have a greater chance to be picked up by the null model sampling). This set of genes with $O_i=1$ is called \textbf{core}, in figure~\ref{fig:structure/globalU_null} it is evident the difference between the real one and the sampled one.
+Looking at the $U$s in figure~\ref{fig:structure/globalU_null}, it is evident that data behave differently from sampling. This is a signal that the null model is not enough to explain the data matrices. In particular, it is evident that the null model generates matrices which components have higher occurrence comparing to the original data. This can be easily explained, in fact in the real world some genes are highly expressed but only in a subset of the whole dataset; these genes are specific for certain type of samples. The null model gets the information that such genes are highly expressed (they have a high abundance) and so samples these quite often (components with high abundance have a greater chance to be picked up by the null model sampling). This set of genes with $O_i=1$ is called \textbf{core}, in figure~\ref{fig:structure/globalU_null} it is evident the difference between the real one and the sampled one.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
@@ -77,6 +77,7 @@ Plotting on the abscissa the size of samples and on the ordinate the number of g
 \caption{Heaps' law; TCGA(left) and GTEx (right). Sampling is reported for comparison.}
 \label{fig:structure/heaps_null}
 \end{figure}
+
 Another way to see this is by looking at the histograms of the number of different genes expressed, actually the distribution of the~\ref{fig:structure/heaps_null} y-axis. Figure~\ref{fig:structure/diffwordsDistr_null} shows that these distributions are completely different if one looks at the data and the samples.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}

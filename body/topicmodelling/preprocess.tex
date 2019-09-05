@@ -13,7 +13,7 @@ n^{new}_{ij}=\frac{n_{i j}}{M_j}\times \left(1-Log\left(o_i\right)\right)
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/cvmean_oversigma.png}
-    \caption{Highly variable genes. In cyan genes that are $1 \sigma$ over the average of their bin.}
+    \caption{Highly variable genes. In \textcolor{pythoncyan}{cyan} genes that are $1 \sigma$ over the average of their bin.}
     \label{fig:topic/cvmean_oversigma}
 \end{figure}
 Plotting the coefficient of variation versus the mean, one point for each component, reveals components that have higher variance than components which, on average, have similar behaviour. Binned averages and variances were estimated. Only genes with a $CV^2$ over a $\sigma$ were considered. This method seems useful to select genes even if the binned average bound is quite noisy.
@@ -22,10 +22,10 @@ Plotting the coefficient of variation versus the mean, one point for each compon
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/cvmean_oversampling.png}
-    \caption{In cyan genes which distance from boundaries is greater than $10 CV^2$.}
+    \caption{In \textcolor{pythoncyan}{cyan} genes which distance from boundaries is greater than $10 CV^2$.}
     \label{fig:topic/cvmean_oversampling}
 \end{figure}
 The distribution as discussed in~\ref{ch:scalinglaws} have Poisson-like and Taylor-like boundaries. So it is possible to consider only components that are the most distant from these boundaries. Moreover, these boundaries can be found with a simple null model, as shown in figure~\ref{fig:scalinglaws/gtex/cvmean_loglog_sampling} the sampling model defines the lower bound of the data.
-
+\FloatBarrier
 The last two approaches are the ones which lead to better results, in the following section gene selection was done by getting only highly variables genes.
 To reduce the number of documents, samples are picked up uniformly random from a subset of all the available ones.
