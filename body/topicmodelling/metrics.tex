@@ -24,7 +24,22 @@ Ideally one wants a method which output is both homogeneous and complete. So it 
 \begin{equation}\label{eq:mutualinformation}
     \mathrm{V-measure}=2\frac{h c}{h + c},
 \end{equation}
-which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/metric_scores_primarysite} an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. This happens because if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.
+which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/hc} a simplified example of the homogeneity and completenesses ideas.
+\begin{figure}[htb!]
+	\caption{Homogeneity and completeness examples: each ball is a node and each colour represents a label.}
+	\label{fig:topic/hc}
+	\begin{minipage}{0.5\linewidth}
+		\includegraphics[page=2,width=0.8\linewidth]{pictures/topic/hc.pdf}
+		\caption{Examples of homogeneous and non homogeneous clusters. Two clusters are full of red nodes: they have $h=1$ and are full homogeneous. On the bottom an example of a non homogeneous cluster: many colours are present in these clusters.}
+	\end{minipage}
+\hspace{2mm}
+	\begin{minipage}{0.5\linewidth}
+	\includegraphics[page=3,width=0.8\linewidth]{pictures/topic/hc.pdf}
+			\caption{Examples of completeness. Red nodes are distributed over two different clusters, they are not complete. All the pink nodes are in the same cluster: they are complete.\\}
+\end{minipage}
+\end{figure}
+
+In figure~\ref{fig:topic/metric_scores_primarysite} an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. This happens because if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_primarysite.pdf}
