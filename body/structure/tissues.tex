@@ -13,7 +13,7 @@ To do this, it is necessary to get all the samples of a given tissue. Then one e
 Here, when a curve is steep it means that a few genes' expression represents a great fraction of the total size of the transcriptome. If a curve is smooth it means that many genes are necessary to describe the whole transcriptome for that particular tissue. This analysis shows that different tissues have a different complexity in terms of the number of genes necessary to build the transcriptome (in average). In figure~\ref{fig:structure/gtex/fraction_of_trascriptome_Brain} the same analysis is done for the sub-tissues of brain, also these sub-types present a great separation.
 \begin{figure}[htb!]
   \centering
-  \includegraphics[width=0.7\linewidth]{pictures/structure/gtex/fraction_of_trascriptome_Brain.pdf}
+  \includegraphics[width=0.85\linewidth]{pictures/structure/gtex/fraction_of_trascriptome_Brain.pdf}
   \caption{The integral of the sorted abundances for sub-types of brain. This is done using TPM to avoid biases due to gene lengths. Blood is plotted for reference.}
   \label{fig:structure/gtex/fraction_of_trascriptome_Brain}
 \end{figure}
@@ -25,7 +25,7 @@ Another way to interpret this analysis is thinking~\ref{fig:structure/gtex/fract
   \caption{Different tissues present different power law.}
   \label{fig:structure/gtex/zipf_tissue}
 \end{figure}
-From this point of view, each tissue has its particular slope. The steeper the Zipf the simplest is the tissue: the transcript can be described with few genes.
+From this point of view, each tissue has its particular slope. The steeper the Zipf the simplest the tissue:. The transcript of a simple tissue can be described with a few genes.
 \FloatBarrier
 Coming back to the transcriptome analysis. In figure~\ref{fig:structure/gtex/fraction_of_trascriptome} the point where the curve reaches $1$ corresponds to the total number of genes expressed, the remaining ones have a $0$ expression and do not contribute to the transcript. This can be visualized again with the Heaps' law: the number of genes expressed seen in the Heaps' law plot is the number of genes necessary to explain the whole transcriptome. In figure~\ref{fig:structure/gtex/heaps_tissue}, it is evident that there is some kind of tissue differentiation even when looking at the Heaps' law. In other words, two samples with the same size but of different tissues have a different number of genes expressed.
 \begin{figure}[htb!]

@@ -6,7 +6,7 @@
  \rotatebox[origin=c]{90}{Components}&
   $\left(\begin{array}{ccccc}{n_{11}} & {n_{12}} & {n_{13}} & {\dots} & {n_{1 R}} \\ {n_{2 1}} & {n_{2 2}} & {n_{2 3}} & {\dots} & {n_{2 R}} \\ {\vdots} & {\vdots} & {\vdots} & {\ddots} & {\vdots} \\ {n_{N 1}} & {n_{N 2}} & {n_{N 3}} & {\dots} & {n_{N R}}\end{array}\right)$\\
 \end{tabular}
-\caption{Structure of a matrix representing component systems with $i=0\dots N$ rows and $j=0\dots R$ columns.}
+\caption{Matrix representing component systems with $i=0\dots N$ rows and $j=0\dots R$ columns. The entry $n_{i j}$ represents the abundance of component $i$ in realization $j$.}
 \label{fig:componetstable}
 \end{figure}
 The most common example of such systems is a set of books, in this case one puts on the rows the words in the whole vocabulary and the books' titles on the columns; the entry that corresponds to row $i$ and column $j$ is the number of times the word $i$ appears in the book $j$. The same happens if one considers Wikipedia's pages. Other examples are Lego$\textsuperscript{\tiny\textregistered}$ sets where components are the Lego$\textsuperscript{\tiny\textregistered}$ bricks and realizations the Lego$\textsuperscript{\tiny\textregistered}$ packages and protein domains; all these were described and well studied in~\cite{mazzolini2018heaps, Mazzolini2018zipf}.
@@ -31,7 +31,7 @@ naturally brings to the \textbf{frequency of a component} in the whole corpus
 \begin{equation}\label{eq:fi}
 f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}.
 \end{equation}
-Dividing the abundance of a component by the sum of all abundances in a realization gives the \textbf{frequency} of the component in that specific realization
+The abundance of a component divided by the sum of all abundances in a realization gives the \textbf{frequency} of the component in that specific realization
 \begin{equation}
 f_{ij}=\frac{n_{ij}}{\sum_{c=1}^{N}n_{cj}}.
 \end{equation}
@@ -40,7 +40,7 @@ The sum of all abundances in the same realization
 \begin{equation}\label{eq:size}
 M_j=\sum_{c=1}^{N}n_{cj}
 \end{equation}
-represent the \textbf{size} of the realization.
+represents the \textbf{size} of the realization.
 
 It is expected that frequencies distribute according to the so-called Zipf's law
 \begin{equation}\label{eq:zipf}

@@ -7,7 +7,7 @@ Firstly it is necessary to build a bipartite network of genes and samples, then 
     \includegraphics[width=0.7\linewidth]{pictures/topic/bipartite.pdf}
     \caption{An example of a bipartite network. Samples are on the left, genes are on the right. Each link is weighted by gene expression value. On the left side, all nodes of the same colour are clusters of samples. On the right side, all nodes with the same colour are a set of genes, also known as topics.\\
     Blue lines represent the cluster structure, each blue squared-dot is a set of nodes, lines delineate the hierarchical structure.\\
-    It is clear in the middle the network separation between genes and samples.}
+    It is clear, in the middle, the network separation between genes and samples.}
     \label{fig:topic/bipartite}
 \end{figure}
 
@@ -17,7 +17,7 @@ In this work, an innovative and recent approach to topic model is proposed. The 
 
 The ultimate goal is being able to separate healthy and diseased samples, then find and separate well-known tumour types and finally extend the actual knowledge and retrieve the tumour sub-types.
 
-One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers of resolution. So the output has got different resolutions and different number of clusters at each layer. One extreme layer is the one which separates genes ($\simeq$ words) and samples ($\simeq$ samples), by definition. In the other layers, it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
+One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers of resolution. So the output has got different resolutions and a different number of clusters at each layer. One extreme layer is, by definition, the one which separates genes ($\simeq$ words) and samples ($\simeq$ samples) in two blocks. In the other layers, it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.
 \begin{figure}[htb!]
   \centering
   \includegraphics[width=0.6\linewidth]{pictures/topic/peixioto_hierarchic.jpg}
@@ -37,9 +37,9 @@ Moreover, the likelihood $P(G | \theta)$, can be written as $\frac{1}{\Omega}$ w
 \[
 S=\frac{1}{2}\Sigma_{r,s} n_r n_s H\left(\frac{e_{rs}}{n_rn_s}\right),
 \]
-where $n_r$ is the number of nodes in the block $r$, $e_{rs}$ the number of links between nodes of group $r$ and nodes of group $s$ and $H$ is the Shannon entropy $H(x)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows finding groups with nodes very disconnected or topic and clusters with a lot of connections. Note that the description length depends on the entropy:
+where $n_r$ is the number of nodes in the block $r$, $e_{rs}$ the number of links between nodes of group $r$ and nodes of group $s$ and $H$ is the Shannon entropy $H(x)=xLog_2(x)+(1-x)Log_2(1-x)$. Note that $S$ is minimal if $\frac{e_{rs}}{n_rn_s}$ is close to zero, $r$ and $s$ are two completely separated blocks or if it is close to $1$, $r$ and $s$ are groups with many connections; this allows finding groups with nodes very disconnected or topic and clusters with a lot of connections. Note that the description length of a network's state is related to the entropy of the states' ensemble:
 \[
-\Sigma=S-lnP(\theta),
+\Sigma=S-lnP(\theta).
 \]
 The algorithm tries to minimize $S$, so that $\Sigma$ is minimized, so $e^{-\Sigma}$ is maximized, but this is $P(\theta | G)$ that is the required probability to maximize.
 
@@ -66,13 +66,13 @@ in figure~\ref{fig:topic_peixioto_move} an example of these steps.
 
 In order to remove eventual biases due to the initial configuration the model is run with $5$ different initial states, then the final state with the minimal entropy is selected.
 
-Once the model run it is possible to estimate the probability distribution of words inside a topic
+Once the model runned, it is possible to estimate the probability distribution of words inside a topic
 \[P(w|t_w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $t_w$}}\]
 and the topic distribution inside a document
-\[P(t_w|d)=\frac{\text{\# of edges on $d$ from $t_w$}}{\text{\# of edges on $d$}}\]
-This algorithm can set to have overlapping partitions; in this case, the presence of a word in a topic is not trivial and can be estimated as
-\[P(t_w|w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $w$}}\]
-or the presence of a document in a cluster
-\[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}\]
+\[P(t_w|d)=\frac{\text{\# of edges on $d$ from $t_w$}}{\text{\# of edges on $d$}}.\]
+This algorithm can be set to accept overlapping partitions; in this case, the presence of a word in a topic is not trivial and can be estimated as
+\[P(t_w|w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $w$}}.\]
+The membership of a document in a cluster is
+\[P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}.\]
 
 See appendix~\ref{app:hsbm} for a detailed analysis of the maths behind the algorithm and \url{https://hub.docker.com/r/fvalle01/hsbm} for the extension of~\cite{gerlach2018network} to non-linguistics component systems datasets.
