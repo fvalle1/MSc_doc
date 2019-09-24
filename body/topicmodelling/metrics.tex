@@ -1,10 +1,10 @@
-\section{Metrics and benchmarks}
-Before running topic modelling, it is useful to define some metrics to test and benchmark the model. In particular the model searches sets on the two sides of the network: the one containing samples and the one containing genes. Samples are extracted from datasets where much metadata are available, some of these metadata labels will be used to benchmark the model. To study genes enrichment test are instead necessary.
+\section{Test the model with metrics and benchmarks}
+Before running topic modelling, it is useful to define some metrics to test and benchmark the model. In particular the model searches sets on the two sides of the network: the one containing samples and the one containing genes. Samples are extracted from datasets where much metadata are available, some of these metadata labels will be used to benchmark the model. To study genes, enrichment test are instead necessary.
 
-Looking at the samples side of the network, the outputs are sets of samples, let's call these clusters. One can state that the model works if all, or at least the majority, of samples in the same cluster share some label. Here the tissue is considered as the main label.
+Looking at the samples side of the network, the outputs are sets of samples, let's call these clusters. One can state that the model works if all, or at least the majority, of samples in the same cluster share some label. Here the sample primary site is considered as the main label.
 
 Note that this work's model is a non-supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let's call this $P(C)$ and a certain probability of being in a cluster (model's output), let's call this $P(K)$.
-It is possible to define some quantities, the homogeneity
+It is possible to define, for instance, the homogeneity
 \begin{equation}\label{eq:homogeneity}
     h=1-\frac{H(C|K)}{H(C)}
 \end{equation}
@@ -24,21 +24,19 @@ Ideally one wants a method which output is both homogeneous and complete. So it 
 \begin{equation}\label{eq:mutualinformation}
     \mathrm{V-measure}=2\frac{h c}{h + c},
 \end{equation}
-which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/hc} a simplified example of the homogeneity and completenesses ideas.
-\begin{figure}[htb!]
-	\caption{Homogeneity and completeness examples: each ball is a node and each colour represents a label.}
-	\label{fig:topic/hc}
-	\begin{minipage}{0.5\linewidth}
-		\includegraphics[page=2,width=0.8\linewidth]{pictures/topic/hc.pdf}
-		\caption{Examples of homogeneous and non homogeneous clusters. Two clusters are full of red nodes: they have $h=1$ and are full homogeneous. On the bottom an example of a non homogeneous cluster: many colours are present in these clusters.}
-	\end{minipage}
-\hspace{2mm}
-	\begin{minipage}{0.5\linewidth}
-	\includegraphics[page=3,width=0.8\linewidth]{pictures/topic/hc.pdf}
-			\caption{Examples of completeness. Red nodes are distributed over two different clusters, they are not complete. All the pink nodes are in the same cluster: they are complete.\\}
-\end{minipage}
-\end{figure}
-
+which is actually the normalized mutual information between $P(C)$ and $P(K)$~\cite{rosenberg2007v}. Please refer to appendix~\ref{app:vmeasure} for the detailed maths. In figure~\ref{fig:topic/cartoon/hc_table} a simplified example of the homogeneity and completenesses ideas.
+\begin{table}[htb!]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		&Homogeneous & Not homogeneous\\ \hline
+		\rotatebox[origin=l]{90}{Complete}&    \includegraphics[width=0.2\textwidth]{pictures/topic/cartoon/cartoon_hc.pdf}&\includegraphics[width=0.2\textwidth]{pictures/topic/cartoon/cartoon_c.pdf}  \\ \hline
+		\rotatebox{90}{Not complete}&   \includegraphics[width=0.2\textwidth]{pictures/topic/cartoon/cartoon_h.pdf}&\includegraphics[width=0.2\textwidth]{pictures/topic/cartoon/cartoon.pdf} \\ \hline
+	\end{tabular}
+	\caption{Examples of homogeneity and completeness. Homogeneous clusters contain all nodes with the same label. A label is complete if it is fully represented by a single cluster. In this image some extreme examples of these definitions.}
+	\label{tab:topic/cartoon/hc_table}
+\end{table}
+			
 In figure~\ref{fig:topic/metric_scores_primarysite} an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. This happens because if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.
 \begin{figure}[htb!]
     \centering

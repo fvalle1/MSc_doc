@@ -1,5 +1,5 @@
 \subsection{Hierarchical clustering}\label{sec:hc}
-The first algorithm considered for comparison is hierarchical clustering. Hierarchical clustering is a general family of clustering algorithms; it builds nested clusters by merging or splitting them successively. This hierarchy of clusters can be represented as a tree or dendrogram. The root of the tree is the unique cluster that gathers all the samples, the leaves being the clusters with only one sample. To perform hierarchical clustering and merge the samples successively the \texttt{AgglomerativeClustering} function from \textit{scikit-learn} was used. Note that this approach was applied just to the samples, nothing was done to classify genes. In this case, genes are only dimensions in which samples are represented.
+The first algorithm considered for comparison is hierarchical clustering. Hierarchical clustering is a general family of clustering algorithms; they build nested clusters by merging or splitting them successively. This hierarchy of clusters can be represented as a tree or dendrogram. The root of the tree is the unique cluster that gathers all the samples, the leaves being the clusters with only one sample. To perform hierarchical clustering and merge the samples successively the \texttt{AgglomerativeClustering} function from \textit{scikit-learn} was used. Note that this approach was applied just to the samples, nothing was done to classify genes. In this case, genes are only dimensions in which samples are represented.
 
 The \texttt{AgglomerativeClustering} object performs a hierarchical clustering using a bottom-up approach: each observation starts in its cluster, and clusters are successively merged. A linkage criterium determines the metric used for the merging strategy. 
 
@@ -30,7 +30,7 @@ In figure~\ref{fig:topic/hc} an example of hierarchical clustering. Note that no
 
 \subsection{Latent Dirichlet Allocation}\label{sec:lda}
 Latent Dirichlet Allocation is the standard and well-known approach to topic models. It has got more restrictive priors than hierarchical Stochastic Block Model and needs some parameters to be set. It uses some different methods to maximize the posterior probability to observe some latent variables given the data.
-As well described in~\cite{Zhou2016} LDA is a generative model and can be summarised as follows:
+As well described in~\cite{Zhou2016} LDA is a generative model and can be summarized as follows:
 \begin{itemize}
 	\item set number of topic $K$ and parameters $\eta$ and $\alpha$
 	\item for each topic $k$ generate $\beta_k\sim \text{Dirichlet}(\bullet |\eta)$
@@ -47,7 +47,7 @@ As well described in~\cite{Zhou2016} LDA is a generative model and can be summar
 	\caption{LDA schematic representation.}
 	\label{fig:LDA}
 \end{figure}
-this process is summarised in figure~\ref{fig:LDA}. These steps are useful to maximize the posterior probability
+this process is represented in figure~\ref{fig:LDA}. The goal is to maximize the posterior probability
 \begin{equation}\label{eq:lda}
 P(w, z,\beta, \theta| \alpha, \eta)=\prod_{d=1}^N P(\theta_d | \alpha)\prod_{n=1}^{N_d} P(w_{dn}|z_{dn},\beta_k)P(z_{dn}|\theta_d)\prod_{k=1}^KP(\beta_k|\eta)
 \end{equation}

@@ -1,7 +1,7 @@
 \subsection{Run on Gene Tissues Expression dataset}
 Once the model was set and adapted to RNA-Sequencing data, it was run on a subset of the GTEx dataset. A subset of samples was chosen randomly to reduce the computing time needed. The analysis hereby described took about 2 days to be run on a 16 core CPU, 100GB memory facility. The great amount of memory is needed to temporary store the network configuration at each step of the Monte Carlo simulation.
 
-First of all to rapidly have information about the interest of the oncoming result the metric above described were considered. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores} it is represented the V-measure score versus the number of clusters found at different layers.
+First of all, to rapidly have information about the interest of the oncoming result the metric above described were considered. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores} it is represented the V-measure score versus the number of clusters found at different layers.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf}
@@ -10,7 +10,7 @@ First of all to rapidly have information about the interest of the oncoming resu
 \end{figure}
 The result is quite good, the maximum score is over $0.8$. Considering that, for example,~\cite{Farver2018} obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score. Moreover, the secondary site score's peak is at a higher number of clusters coherently with the fact that there is a greater number of sub-tissue labels. This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.
 
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relation between the clusters at different layers it is evident. Each row is a layer of the hierarchy and arrows represent the path of a node across the hierarchy. Note that clusters don't overlap and the separation done at the greater level is maintained across all the hierarchy. This representation gives an idea of the point of the hierarchy where the tissues separate, see in figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} cluster $2$ that splits in two clusters separating \textit{breast} and \textit{adipose tissue}.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} the relationship between the clusters at different layers is evident. Each row is a layer of the hierarchy and arrows represent the path of a node across the hierarchy. Note that clusters don't overlap and the separation done at the greater level is maintained across all the hierarchy. This representation gives an idea of the point of the hierarchy where the tissues separate, see in figure~\ref{fig:topic/gtex/oversigma_10tissue/bipartite_rebuild} cluster $2$ that splits in two clusters separating \textit{breast} and \textit{adipose tissue}.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/bipartite_rebuild.pdf}
@@ -33,7 +33,7 @@ In the normalized representation of the same clusters the homogeneity of the clu
     \caption{Normalized composition of clusters. Again each column is a cluster, each colour is a label.}
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site}
 \end{figure}
-Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}, demonstrates that at this point all the tissues are separated and each cluster is full of nodes sharing the same tissue.
+Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure~\ref{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site}, demonstrates that, at this point, all the tissues are separated and each cluster is full of nodes sharing the same tissue.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site.pdf}
@@ -48,11 +48,11 @@ Even looking at sub-tissues the results is quite good. It is not always easy to 
     \label{fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site}
 \end{figure}
 
-\subsection{Shuffling}
+\subsection{Null model shuffling labels}
 A null model of cluster composition is necessary if one would be able to state that a result is better than expected. This was done by doing the same analysis but reshuffling the labels of the nodes. Reshuffling was done exchanging the label of each node with the one of another node picked up uniformly random. Doing so the number of clusters and the cluster sizes are maintained. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site} an example of clustering with random labels, it is evident that all clusters have similar and homogeneous composition. Note that not every tissue has the same number of samples, so, for example, \textit{brain} is more represented than other tissues.
 \begin{figure}[htb!]
 	\centering
-	\includegraphics[width=0.8\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site}
+	\includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site}
 	\caption{Example of visualization of clusters with reshuffled labels.}
 	\label{fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site}
 \end{figure}
@@ -68,7 +68,7 @@ being $n_{l k}$ the number of nodes labelled $l$ in cluster $k$ and $n_k$ is the
     \caption{The fraction of cluster composed by the representative label versus cluster. On the right the distributions of this measure.}
     \label{fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site}
 \end{figure}
-In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This because at this level clusters are very small and so it is easier to pick up nodes with the same label (in the extreme case of a cluster with size 1 it is always full of the same label). This shows that the deeper level it is not interesting, results are the same with random labels; moreover the reshuffling null model is good to show up eventual biases due to small cluster sizes.
+In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*} the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This happens because, at this level, clusters are very small and so it is easier to pick up nodes with the same label (in the extreme case of a cluster with size 1 it is always full of the same label). This shows that the deepest level is not interesting: results are the same with random labels; moreover the reshuffling null model is good to show up eventual biases due to small cluster sizes.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -119,7 +119,7 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*} the
 	\label{fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*}
 \end{figure}
 \FloatBarrier
-At this point to deeper investigate the structure of the clusters it can be interesting to study how many labels are present in each cluster. The fraction of the most represented label defined above carries no information of what happens to the remaining labels. For example, if one cluster is composed of $80\%$ by label \textbf{A} and $20\%$ by label \textbf{B} and another cluster is composed $80\%$ by label \textbf{A}, $10\%$ by label \textbf{B} and $10\%$ by label \textbf{C} they have both a fraction of maximum representative label $80\%$ but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this kind of effects. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site} it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.
+At this point to investigate deeper the structure of the clusters, it can be interesting to study how many labels are present in each cluster. The fraction of the most represented label defined above carries no information of what happens to the remaining labels. For example, if one cluster is composed of $80\%$ by label \textbf{A} and $20\%$ by label \textbf{B} and another cluster is composed $80\%$ by label \textbf{A}, $10\%$ by label \textbf{B} and $10\%$ by label \textbf{C} they have both a fraction of maximum representative label $80\%$ but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this kind of effects. In figure~\ref{fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site} it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf}
@@ -158,7 +158,7 @@ Moreover, remembering the V-measure or normalized mutual information defined in~
 \end{figure}
 \FloatBarrier
 
-\subsection{Standard algorithms}
+\subsection{Comparison with standard algorithms}
 At this point, it was verified that the model has got interesting output: it reaches high scores and has got a strong signal against the null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-studied similar algorithms.
 First of all, a comparison is made with hierarchical clustering. This is done using the standard scipy package~\cite{jones2014scipy}, the metrics used was the euclidean one and the linkage method was set to Ward as briefly introduced in section~\ref{sec:hc}. This is quite fast, it needs a couple of minutes on a dual-core, 8GB memory machine.
 In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_hier} the comparison between these scores, the hierarchical algorithm performs worse than hierarchical Stochastic Block Model and as highly expected better than the random model.
@@ -169,21 +169,21 @@ In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_hier} the compari
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_hier}
 \end{figure}
 
-Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in~\ref{sec:lda}. Running LDA in standard scipy package is quite fast and is comparable with hierarchical clustering in terms of CPU time. Note that once LDA package extracts the topics, it is necessary to define some clusters, to do so a standard Agglomerative clustering approach was used, the distance was set to euclidean and the linkage to Ward. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_all} are reported the V-measure score for all the algorithms described until this point. What is clear is that the hierarchical Stochastic Block Model performs better than all the others, LDA gains a little worse score and hierarchical clustering is the worst of the three. It is highly expected that all models are quite different from the random model. The fact that hSBM and LDA have higher scores suggests that a topic model approach can be very useful in this kind of problems. 
+Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in~\ref{sec:lda}. Running LDA, as implemented standard scipy package, is quite fast and is comparable with hierarchical clustering in terms of CPU time. Note that once LDA package extracts the topics, it is necessary to define some clusters, to do so a standard Agglomerative clustering approach was used, the distance was set to \textit{euclidean} and the linkage to \textit{Ward}. In figure~\ref{fig:topic/gtex/oversigma_10tissue/metric_scores_all} the V-measure scores for all the algorithms described until this point are reported. It is clear that the hierarchical Stochastic Block Model performs better than all the others, LDA gains a little worse score and hierarchical clustering is the worst of the three. It is highly expected that all models are quite different from the random model. The fact that hSBM and LDA have higher scores suggests that a topic model approach can be very useful in this kind of problems. 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/topic/gtex/oversigma_10tissue/metric_scores_all.pdf}
     \caption{Scores across hierarchy for all algorithms used in this work.}
     \label{fig:topic/gtex/oversigma_10tissue/metric_scores_all}
 \end{figure}
-Note that LDA and hierarchical cluster models were not fine-tuned and default parameters were used. Maybe a fine-tuning of these packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine-tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model. Moreover, the number of clusters was set to the one obtained from hSBM; LDA is not able to select the number of clusters.
+Note that LDA and hierarchical cluster models were not fine-tuned and default parameters were used. Maybe a fine-tuning of these packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine-tuning and standard parameters were set. This fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of models. Moreover, the number of topics was set to the one obtained from hSBM; LDA is not able to select the number of topics.
 
 \FloatBarrier
-\subsection{Topics}
+\subsection{Topics enrichment tests}
 The analyses up to this point considered only one of the two sides of the bipartite network; nothing was told yet about the genes (words in topic models).
 The model outputs some clusters of genes, though.  From now on these clusters of genes will be called topics.
 
-If one has got a set of genes to catch any important information and discover if there is any biological meaning behind it, it is possible to perform an enrichment test. Enrichment analysis checks whether an input set of genes significantly overlaps with annotated gene sets.
+If one has got a set of genes, it is possible to perform an enrichment test to catch any important information and discover if there are any biological meanings behind it. Enrichment analysis checks whether an input set of genes significantly overlaps with annotated gene sets.
 In this work tests were made using Gene Set Enrichment Analysis (GSEA)~\cite{subramanian2005gene} python tool~\cite{Kuleshov2016}, which performs a Fisher exact test (hypergeometric test). The Benjamini-Hochberg adjusted P-values is reported. Genes' annotation terms were searched in the following sets: 
 \begin{itemize}
 		\item GO\footnote{Gene Ontology} Molecular Function 2018
@@ -291,9 +291,9 @@ In tables~\ref{tab:topic/enrich/pancreas},~\ref{tab:topic/enrich/brain} and~\ref
 	\caption{Enrichment test of a topic. It is clear the enrichment for blood-related gene sets.}
 		\label{tab:topic/enrich/blood}
 \end{table}
-Tests were made on the topics at the level of the hierarchy which obtained the higher V-measure score on the sample side clustering. These results are very interesting, these enrichment tests demonstrate that not only the sample side of the network is well clustered but only the topics have a non-trivial meaning.
+Tests were made on the topics at the level of the hierarchy which obtained the higher V-measure score on the sample side of the network. These results are very interesting, these enrichment tests demonstrate that not only the sample side of the network is well clustered but also the topics have a non-trivial meaning.
 
 So also the topics are related to the tissues and somehow are tissue-specific. In the next examples, the relationship between the topics and the samples will be further investigated. In particular following what was done by~\cite{dey2017visualizing} the importance of each topic inside each sample, the $P(\text{topic} | \text{sample})$, will be discussed.
 
 \FloatBarrier
-Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. It is not always easy to identify and classify cancer tissues. In particular, being able to separate tumour sub-types would be the ideal pursuance of this work. So let's switch to the analysis of diseased samples.
+Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be being able to classify diseased samples. It is not always easy to identify and classify cancer tissues. In particular, being able to separate tumour sub-types would be the ideal pursuance of this work. So let's switch to the analysis of diseased samples.
