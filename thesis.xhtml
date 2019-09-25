@@ -1,0 +1,1152 @@
+
+<p><img src="head/logo.png" alt="image" /></p>
+
+
+
+<p><br />
+<br />
+</p>
+
+
+
+
+
+
+
+<p>The imagination of nature is far, far greater<br />
+than the imagination of man<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.<br />
+Richard P. Feynman.<em></em><br />
+</p>
+
+<h1 id="abstract" class="unnumbered unnumbered">Abstract</h1>
+<p>The interest in studying complex systems is increasingly spreading. Complex systems can be found anywhere and many common behaviours are observable, systems with different origins and purposes may share, for instance, some statistical laws.</p>
+<p>An example can be the Zipf’s law, well-known in linguistics and texts analysis. It can be easily observed in the distribution of gene expressions in different samples of cancer tissues.</p>
+<p>In recent years datasets with a large amount of cancer samples’ data are available, the most complete is The Cancer Genome Atlas (TCGA). From this dataset, it is easy to get, for example, gene expression data from RNA-sequencing experiments together with a lot of information about the samples themselves. Another dataset containing healthy tissues (GTEx) will be analysed for comparison and benchmark.</p>
+<p>If one studies the number of samples in which a gene is expressed above a certain threshold, the so-called occurrence, it is easily verified that there are different kinds of genes. Some are present in the majority of samples, some others are present only in a subset of the whole dataset. The same behaviour can be found analysing words in a corpus of texts; some words, such as <em>the</em>, are present everywhere, other specific words are present only in texts regarding a certain subject. This suggests that there are similarities between a system of words and documents and a system of genes and samples.</p>
+<p>Given a corpus of documents, they can be classified by their specific subject. Similarly, a set of samples can be classified, for example, by the tissue it comes from or by the type of the disease it is referred to.</p>
+<p>The similarities between gene expression data and linguistics suggest the possibility to use topic modelling to classify data and separate samples and genes in different clusters. Topic modelling is a set of clustering algorithms in networks’ theory. Given a set of words and documents, these algorithms describe documents as a mixture of topics. Topics are nothing but communities of words each one with a given probability.</p>
+<p>Purpose of this work is to build a bipartite network of genes and samples and use topic modelling to find communities. The goal is to separate samples depending on the site the tumour was and the disease type of the sample. Moreover, it is possible to separate genes depending on their specific functions. Once a community structure of genes emerges, it is possible to run a hypergeometric test on the whole set to verify if they reveal some type of enrichment and to inspect their common properties.</p>
+<p>The specific algorithm used in this work is particularly unique because it needs no priors and makes no assumptions on the data; moreover, it can be set to accept overlapping clusters so it is possible to find genes belonging to different topics and can be hierarchic all these facts empower a lot of new possibilities to investigate a network.</p>
+<p>A hierarchic approach make it possible to classify data at different layers. An ideal goal would be to separate healthy and diseased samples at the first layer, then separate by tissue, then by tumour type and so on.</p>
+
+
+
+
+<h1 id="ch:intro" class="unnumbered unnumbered">Introduction</h1>
+
+<p>In recent years the study of complex systems is becoming more interesting especially when some different systems that share some fundamental properties are found. Network theory has been proven to be a useful proxy to model and represent such complex systems.</p>
+<p>This work wants to study and find universal statistical laws in different kinds of biological systems. If one finds that two different systems share some statistical laws and that they have a somehow similar data structure, therefore it is possible to use tools developed from different fields to study and gain information about each other. In particular two datasets containing information about some human healthy and diseased tissues will be analysed. These data come from biological experiments of RNA-sequencing.</p>
+<p>The ultimate goal of this work would be to study, develop and build a machine learning’s model which is able, at the beginning, to discriminate healthy and diseased tissues. Once diseased tissues are found, the next goal is to separate cancer types and ultimately sub-types, which is not always easy clinically. The interest in the development of a method able to separate well this kind of data is increasing <span class="citation" data-cites="Farver2018"></span>.</p>
+<p>The methods to gain this goal are derived firstly from linguistics; in particular, a topic model approach will be widely described. A hierarchic approach will be useful to gain different layers of information.</p>
+<p>In chapter <a href="#ch:data" data-reference-type="ref" data-reference="ch:data">1</a>, I will describe the datasets used and introduce some basic biological properties of these datasets. In particular, I’ll use two datasets of gene expression data from cancer and healthy tissues.</p>
+<p>In chapter <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a>, I will describe the basics of component systems and give some useful mathematical definitions. Here it will be shown that RNA-sequencing data have many aspects in common with linguistics data. Examples of Zipf’s law, well-known and in-depth studied in linguistics, will demonstrate that different sources of data (genomic and linguistics) can share some statistical properties. Some analyses will be shown to explain the different behaviour of different tissues.</p>
+<p>In chapter <a href="#ch:scalinglaws" data-reference-type="ref" data-reference="ch:scalinglaws">3</a>, I will study the gene expression across samples of all the genes. This analysis is preparatory to the following sections where some gene selection would be necessary.</p>
+<p>Demonstrated that linguistics and biological data share some statistical laws, in chapter <a href="#ch:topicmodelling" data-reference-type="ref" data-reference="ch:topicmodelling">4</a>, the main one, I will describe how topic modelling can perform network analysis on these datasets. Topic modelling is an advanced clustering algorithm developed in linguistics to classify text and used in different fields of science. Different approaches to topic modelling are possible starting from the standard ones <span class="citation" data-cites="Zhou2016"></span> to some new proposals <span class="citation" data-cites="Lancichinetti2015 Martini2017 gerlach2018network"></span>. Using topic modelling one would find the inner structure of the data. One would find clusters such that all samples in a cluster share the tissue or the tumour type. Benchmarks and metrics to test and evaluate this algorithm will be widely discussed.</p>
+<p>In chapter <a href="#ch:conclusions" data-reference-type="ref" data-reference="ch:conclusions">5</a>, I will sum up the results and propose some future developments of this work.</p>
+<p>Many methods of the pipeline, written in C<code>++</code> using openMP and Boost <span class="citation" data-cites="siek2002boost"></span>, are encapsulated in a tool available at <a href="https://github.com/fvalle1/tacos" class="uri">https://github.com/fvalle1/tacos</a>. During this work, I used different python libraries such as pandas <span class="citation" data-cites="mckinney2010data"></span>, scipy <span class="citation" data-cites="jones2014scipy"></span>, numpy <span class="citation" data-cites="oliphant2006guide"></span> and matplotlib <span class="citation" data-cites="hunter2007matplotlib"></span>. Some advanced analysis required Tensorflow <span class="citation" data-cites="tensorflow2015-whitepaper"></span> and pySpark <span class="citation" data-cites="Zaharia:2016:ASU:3013530.2934664"></span>. The topic modelling stochastic block model’s minimization functions are implemented in the graph-tool library <span class="citation" data-cites="peixoto_graph-tool_2014"></span>. Computing resources were made available by EGI Foundation <span class="citation" data-cites="fernandez2015egi"></span> and from C<span class="math inline"><em></em><sup>3</sup></span>S <span class="citation" data-cites="occamchep"></span>.</p>
+<p>The full work repository is available on GitHub<sup></sup> at <a href="https://github.com/fvalle1/master_thesis" class="uri">https://github.com/fvalle1/master_thesis</a> and runnable as a Docker<sup></sup> container that can be pulled from <a href="https://hub.docker.com/r/fvalle01/thesis" class="uri">https://hub.docker.com/r/fvalle01/thesis</a>.</p>
+<h1 id="ch:data">Data presentation</h1>
+<h2 id="sec:rnaseq">RNA-sequencing</h2>
+<p>Data considered in this work come from RNA-sequencing <span class="citation" data-cites="wang2009rna"></span> experiments. These experiments aim to quantify how much a gene is expressed in a particular sample of a tissue. RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the sample.</p>
+<p>Briefly, long RNAs are first converted into a library of complementary DNA (cDNA) fragments through either RNA fragmentation or DNA fragmentation. Sequencing adaptors are subsequently added to each cDNA fragment and a short sequence is obtained from each cDNA using high-throughput sequencing technology. The resulting sequence reads are aligned with the reference genome or transcriptome, and classified as three types: exonic reads, junction reads and poly(A) end-reads. These three types are used to generate a base-resolution expression profile for each gene.</p>
+<p>The general steps to prepare a cDNA library for sequencing are, in general:</p>
+<ul class="incremental">
+<li><p>RNA Isolation: RNA is isolated from tissue and the amount of genomic DNA is reduced;</p></li>
+<li><p>RNA selection/depletion: to analyse signals of interest, the isolated RNA can either be kept as is or filtered for RNA that binds specific sequences. The non-coding RNA is removed because it represents over 90<span class="math inline">%</span> of the RNA in a cell, which, if kept, would drown out other data in the transcriptome;</p></li>
+<li><p>cDNA synthesis: RNA is reverse transcribed to cDNA (DNA sequencing technology is more mature). Fragmentation and size selection are performed to purify sequences that are the appropriate length for the sequencing machine. Fragmentation is followed by size selection when either small sequences are removed or a tight range of sequence lengths are selected. Because small RNAs like miRNAs are lost, these are analysed independently. The cDNA for each experiment can be indexed with a hexamer or octamer barcode, so that these experiments can be pooled into a single lane for multiplexed sequencing.</p></li>
+</ul>
+<p>To collect gene expression data is sufficient to count how many reads are mapped to a specific exon or gene. The ultimate output of this analysis, where this work begins, are nothing but lists of gene expression values for each sample.</p>
+<h5 id="normalization">Normalization</h5>
+<p><br />
+Usually gene expression data can be normalized in different ways, for example, it is possible to use:</p>
+<ul class="incremental">
+<li><p>counts,</p></li>
+<li><p>RPK,</p></li>
+<li><p>TPM,</p></li>
+<li><p>FPKM.</p></li>
+</ul>
+<p>Count reads correspond to raw data. Counts need no normalization to be treated but may be biased. For example, longer genes may have more reads than shorter ones just because they are longer. That’s why other kind of normalization can be used. Note that this is not always the case: in fact, some sequencing techniques consider just the start of the gene, so the gene length doesn’t matter.</p>
+<p>RPK<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> normalization removes the length bias by dividing counts by the gene length <span class="math inline"><em>L</em></span>: <span class="math inline">$\text{RPK}=\frac{\text{counts}}{L}$</span>. This solves some problems but doesn’t take care of the different sizes of the transcript in different samples.</p>
+<p>FPKM<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> calculation normalizes read count by dividing it by the gene length and by the total number of reads mapped to protein-coding genes in that sample. <br /><span class="math display">$$\text{FPKM} = \frac{RC_g*10^9}{RC_{pc}*L}$$</span><br /> being</p>
+<ul class="incremental">
+<li><p><span class="math inline"><em>R</em><em>C</em><sub><em>g</em></sub></span>: Number of reads mapped to the gene</p></li>
+<li><p><span class="math inline"><em>R</em><em>C</em><sub><em>p</em><em>c</em></sub></span>: Number of reads mapped to all protein-coding genes</p></li>
+<li><p><span class="math inline"><em>L</em></span>: Length of the gene in base pairs.</p></li>
+</ul>
+<p>When dealing with FPKM it is necessary to put some thresholds: in particular FPKM below <span class="math inline">0, 1</span> and above <span class="math inline">10<sup>5</sup></span> should not be considered, maybe these values come from some kind of experimental error.</p>
+<p>TPM<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> tries to unify the sizes of the samples: <span class="math inline">$\text{TPM} = \frac{RC_g*10^9}{\sum_{g\prime} \left(\frac{RC_{g^\prime}}{l_{g^\prime}}\right) RC_{pc}*L}$</span>.</p>
+<p>In this work the idea is to not introduce any normalization, so when possible raw counts will be considered. Sometimes especially if it is necessary to compare different sources TPM or FPKM will be taken in account. Some analysis as the sizes’ distribution needs not to be made with TPM, because the quantity that’s going to be studied is the quantity the normalization trashes out.</p>
+<h2 id="datasets">Datasets</h2>
+<p><br />
+In this work two datasets were used. The first one contains RNA-sequencing data of post-mortem collected samples. It is the Gene Tissue Expression (GTEx) dataset <span class="citation" data-cites="carithers2015novel"></span>. GTEx <em>2016-01-15 v7 RNASeQCv1.1.8</em> version was downloaded<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. GTEx contains <span class="math inline">11688</span> samples of <span class="math inline">53</span> tissues. For many of them, a sub-tissue label is available. As highlighted in <span class="citation" data-cites="dey2017visualizing"></span> these data present a challenge to clustering tools, because of both the relatively large number of samples and the complex structure created by the inclusion of many different tissues.</p>
+<p>The other dataset considered is The Cancer Genome Atlas (TCGA) dataset <span class="citation" data-cites="grossman2016toward"></span>. Data were collected via Genomic Data Commons tools<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> considering <em>Gene Expression Quantification</em> as data type, <em>Transcriptome Profiling</em> as data category, <em>RNA-Seq</em> as experimental strategy, <em>HTSeq - Counts</em> or <em>HTSeq - FPKM</em> as workflow type. On TCGA there are <span class="math inline">12683</span> samples and <span class="math inline">68</span> primary site or tissues. On this dataset there is a great quantity of metadata, in particular the <em>disease type</em> will be considered in this work.</p>
+<p>Another source of data used in this work is <span class="citation" data-cites="Wang2017"></span> which authors tried to unify GTEx and TCGA <span class="citation" data-cites="Betel2018"></span>, when possible.</p>
+<h5 id="protein-coding">Protein-coding</h5>
+<p>Each dataset contains infos on approximately <span class="math inline">60000</span> elements with a different <em>ENSG</em> identifier. Only <span class="math inline"> ≃ 20000</span> of this are protein-coding genes, using Ensemble<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> protein-coding genes are selected. In chapters <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a> and <a href="#ch:scalinglaws" data-reference-type="ref" data-reference="ch:scalinglaws">3</a> some analysis explaining the different behaviour of coding and non-coding genes will be described.</p>
+<h1 id="ch:structure">Data structure</h1>
+<p>The data studied in this work can be represented as component systems. These component systems can be represented by a two-dimensional matrix in which rows represent components and columns are the possible realizations buildable given subset of the components. Entries of this matrix are the number of the components on the row needed during the realization of the column. In figure <a href="#fig:componetstable" data-reference-type="ref" data-reference="fig:componetstable">[fig:componetstable]</a> an example of this kind of matrices.</p>
+<h2 id="component-systems">Component systems</h2>
+
+<p><span>cc</span> &amp;Realizations<br />
+&amp; <span class="math inline">$\left(\begin{array}{ccccc}{n_{11}} &amp; {n_{12}} &amp; {n_{13}} &amp; {\dots} &amp; {n_{1 R}} \\ {n_{2 1}} &amp; {n_{2 2}} &amp; {n_{2 3}} &amp; {\dots} &amp; {n_{2 R}} \\ {\vdots} &amp; {\vdots} &amp; {\vdots} &amp; {\ddots} &amp; {\vdots} \\ {n_{N 1}} &amp; {n_{N 2}} &amp; {n_{N 3}} &amp; {\dots} &amp; {n_{N R}}\end{array}\right)$</span><br />
+</p>
+<p>The most common example of such systems is a set of books, in this case one puts on the rows the words in the whole vocabulary and the books’ titles on the columns; the entry that corresponds to row <span class="math inline"><em>i</em></span> and column <span class="math inline"><em>j</em></span> is the number of times the word <span class="math inline"><em>i</em></span> appears in the book <span class="math inline"><em>j</em></span>. The same happens if one considers Wikipedia’s pages. Other examples are Lego<span class="math inline">$\textsuperscript{\tiny\textregistered}$</span> sets where components are the Lego<span class="math inline">$\textsuperscript{\tiny\textregistered}$</span> bricks and realizations the Lego<span class="math inline">$\textsuperscript{\tiny\textregistered}$</span> packages and protein domains; all these were described and well studied in <span class="citation" data-cites="mazzolini2018heaps Mazzolini2018zipf"></span>.</p>
+<p>Given a matrix with <span class="math inline"><em>N</em></span> components on the rows and <span class="math inline"><em>R</em></span> realizations on the columns and relative abundances <span class="math inline"><em>n</em><sub><em>i</em><em>j</em></sub></span> as the entries, it is interesting to study some quantities that are universal and general characteristics of component systems.</p>
+<p>First of all, the <strong>occurrence</strong> of a component is defined as <br /><span class="math display">$$\label{eq:occurrence}
+O_i=\frac{\sum_{j=1}^{R}(1-\delta_{n_{ij},0})}{R}$$</span><br /> and is the fraction of realizations in which the component’s abundance is not null. A component that is present in all the realizations has got <span class="math inline"><em>O</em><sub><em>i</em></sub> = 1</span>, the ensemble of all components with <span class="math inline"><em>O</em><sub><em>i</em></sub> = 1</span> is known as the <strong>core</strong>. Components with high (<span class="math inline"> ≃ 1</span>) occurrence are present in mostly all realizations of the datasets, in linguistics articles (such as <em>the</em>) are present everywhere, so they have high occurrence. Components with low occurrence <span class="math inline"> ≃ 0</span> are present only in a few realizations and are the most specific ones <span class="citation" data-cites="altmann2016statistical"></span>.</p>
+<p>The sum across all columns is called <strong>abundance</strong> of a component and is defined as: <br /><span class="math display">$$\label{eq:abundance}
+a_i=\sum_{j=1}^{R}n_{ij};$$</span><br /> dividing this by the global abundance <br /><span class="math display">$$a=\sum_{i=1}^{N}a_i$$</span><br /> naturally brings to the <strong>frequency of a component</strong> in the whole corpus <br /><span class="math display">$$\label{eq:fi}
+f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}.$$</span><br /> Dividing the abundance of a component by the sum of all abundances in a realization gives the <strong>frequency</strong> of the component in that specific realization <br /><span class="math display">$$f_{ij}=\frac{n_{ij}}{\sum_{c=1}^{N}n_{cj}}.$$</span><br /></p>
+<p>The sum of all abundances in the same realization <br /><span class="math display">$$\label{eq:size}
+M_j=\sum_{c=1}^{N}n_{cj}$$</span><br /> represent the <strong>size</strong> of the realization.</p>
+<p>It is expected that frequencies distribute according to the so-called Zipf’s law <br /><span class="math display"><em>f</em><sub><em>i</em></sub> ∝ <em>r</em><sub><em>i</em></sub><sup> − <em>α</em></sup></span><br /> where <span class="math inline"><em>r</em></span> is the rank: the position of a component when sorting all components by their frequencies in the whole dataset.</p>
+<h2 id="sec:universallaws">Universal laws in gene expression datasets</h2>
+<h5 id="tcga">TCGA</h5>
+<p><br />
+The first interesting quantity, analysed in TCGA, dataset is the sorted abundance. This gives the possibility to approach the so-called Zipf’s law. In figure <a href="#fig:structure/tcga/globalZipf" data-reference-type="ref" data-reference="fig:structure/tcga/globalZipf">[fig:structure/tcga/globalZipf]</a>, it is shown the frequency rank plot. Interestingly, this kind of data distribute according to a power law, this same behaviour can be found in many systems such as linguistics’ ones <span class="citation" data-cites="altmann2016statistical"></span>.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/globalzipf_fpkmall.pdf" id="fig:structure/tcga/globalZipf" /><figcaption>Zipf’s law from FPKM normalized data. On the right considering only protein-coding genes.<span label="fig:structure/tcga/globalZipf"></span></figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/structure/tcga/globalzipf_fpkm.pdf" id="fig:structure/tcga/globalZipf" /><figcaption>Zipf’s law from FPKM normalized data. On the right considering only protein-coding genes.<span label="fig:structure/tcga/globalZipf"></span></figcaption>
+</figure>
+<p>Another interesting fact is that considering in the analysis both coding and non-coding genes this gives a double-scaled power law. This happens since non-coding genes are specific and rare, so their frequencies are quite small compared to protein-coding genes’ ones.</p>
+<p>Changing the normalization and considering counts instead of FPKM, the result is quite similar. The power law is flatter, meaning that genes have more similar abundances in the whole dataset.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/globalzipf_counts.pdf" /><figcaption>Zipf’s law of protein-coding genes considering counts.</figcaption>
+</figure>
+<p><span id="fig:structure/tcga/globalzipf_count" label="fig:structure/tcga/globalzipf_count">[fig:structure/tcga/globalzipf_count]</span></p>
+<h5 id="gtex">GTEx</h5>
+<p><br />
+The exact analysis can be performed on GTEx healthy samples. RNA-sequencing raw counts are considered now. All <span class="math inline"> ∼ 11000</span> samples available were considered at this time.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/globalZipf.pdf" /><figcaption>Zipf’s law from GTEx count data. On the left, all genes are considered, on the right only protein-coding ones.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/structure/gtex/globalZipf_c.pdf" /><figcaption>Zipf’s law from GTEx count data. On the left, all genes are considered, on the right only protein-coding ones.</figcaption>
+</figure>
+<p><span id="fig:my_label" label="fig:my_label">[fig:my_label]</span></p>
+<p>Not surprisingly in the GTEx dataset it is retrieved the same behaviour described before. The power law is found and considering non-coding genes leads to a knee in the power law.</p>
+<p>Going further in the analysis it is possible to make a histogram of occurrences defined in <a href="#eq:occurrence" data-reference-type="ref" data-reference="eq:occurrence">[eq:occurrence]</a>, also known as <span class="math inline"><em>U</em></span>s.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/U_gtex_cnc.pdf" /><figcaption>The histogram of the occurrences <span class="math inline"><em>O</em><sub><em>i</em></sub></span>. Coding and non-coding entries are coloured and normalized to <span class="math inline">1</span>.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/U_cnc" label="fig:structure/gtex/U_cnc">[fig:structure/gtex/U_cnc]</span></p>
+<p>Even in this kind of analysis, it is possible to see the different behaviour of coding and non-coding genes. The protein-coding genes express almost in every sample, so their occurrence is near to <span class="math inline">1</span>, non-coding genes are more specific, so they are present only in a subset of the dataset and many of them have a small occurrence.</p>
+
+<figure>
+<img src="pictures/structure/gtex/U_Breast.png" alt="Differences in coding and non-coding occurrences is observed also when looking at one tissue a time." /><figcaption>Differences in coding and non-coding occurrences is observed also when looking at one tissue a time.</figcaption>
+</figure>
+
+<figure>
+<img src="pictures/structure/gtex/U_Brain.png" alt="Differences in coding and non-coding occurrences is observed also when looking at one tissue a time." /><figcaption>Differences in coding and non-coding occurrences is observed also when looking at one tissue a time.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/U_tissues" label="fig:structure/gtex/U_tissues">[fig:structure/gtex/U_tissues]</span></p>
+<p>The same behaviour can be observed considering not all the samples but just the ones of a given tissue. In this case <span class="math inline"><em>O</em><sub><em>i</em></sub> = 0</span> means that a gene has a non-zero expression in just one of the samples of the tissue considered; in other words, if a gene never expresses in a tissue it is not considered when constructing this tissue specific <span class="math inline"><em>U</em></span> distribution.</p>
+<p>From now on except were explicitly declared analysis will be made considering protein-coding genes and counts with no normalization.</p>
+<h2 id="sec:nullmodel">Null model construction</h2>
+<p>The kind of data considered in this work comes from RNA-sequencing experiments. These experiments use wet biology methods to extract information from samples. If one imagines it exists an unknown function that describes the gene expression across the samples considered, what experimental people do is to sample this function, picking up some genes.</p>
+<p>In this section it is described a null model of sampling, this is useful to verify if the data distributions seen are just an effect of this experimental sample or if they carry some useful and interesting information.</p>
+<p>As described in <span class="citation" data-cites="Mazzolini2018"></span>, a random matrix has to be created. This matrix is a collection of components and realizations exactly as <a href="#fig:componetstable" data-reference-type="ref" data-reference="fig:componetstable">[fig:componetstable]</a>. The values of each component abundances in each realization <span class="math inline"><em>n</em><sub><em>i</em><em>j</em></sub></span> are randomly assigned with a probability determined by the global abundance in the whole dataset <a href="#eq:abundance" data-reference-type="ref" data-reference="eq:abundance">[eq:abundance]</a>. Values of each column are extracted until the size <a href="#eq:size" data-reference-type="ref" data-reference="eq:size">[eq:size]</a> is reached. Strictly speaking it is a multinomial process with probability <br /><span class="math display">$$P\left( \{ n_i\} ;M\right) =\frac{M!}{\prod_{i=1}^{N} n_i}\prod_{i=1}^N f_i^{n_i}$$</span><br /> where <span class="math inline"><em>n</em><sub><em>i</em></sub></span> is the number of times the component with frequency <span class="math inline"><em>f</em><sub><em>i</em></sub></span> appears, being <span class="math inline">$f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}$</span> as defined in <a href="#eq:fi" data-reference-type="ref" data-reference="eq:fi">[eq:fi]</a>.</p>
+<p>Figure <a href="#fig:structure/randomsampling" data-reference-type="ref" data-reference="fig:structure/randomsampling">[fig:structure/randomsampling]</a> shows an example of this, <span class="math inline"><em>M</em></span> components are picked up concerning their frequency in the dataset. The most abundant components, which are also the ones with the highest frequencies (frequency is nothing but the normalized abundance), have a greater probability to be picked up. An ensemble of these matrices is created and then averaged to gain statistics.</p>
+
+<figure>
+<img src="pictures/structure/randomsampling.png" alt="Random sampling of components to build a realization of size M." id="fig:structure/randomsampling" /><figcaption>Random sampling of components to build a realization of size <span class="math inline"><em>M</em></span>.<span label="fig:structure/randomsampling"></span></figcaption>
+</figure>
+<p>Using this construction on real counts data, by definition the Zipf’s law sampled is identical to the data’s one.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/globalzipf_null.pdf" /><figcaption>Zipf’s law sampled. TCGA cancer data on the left and GTEx healthy samples on the right. By definition original frequencies and sampled ones are identical.</figcaption>
+</figure>
+
+
+<figure>
+<embed src="pictures/structure/gtex/globalzipf_null.pdf" /><figcaption>Zipf’s law sampled. TCGA cancer data on the left and GTEx healthy samples on the right. By definition original frequencies and sampled ones are identical.</figcaption>
+</figure>
+<p><span id="fig:structure/globalzipf_null" label="fig:structure/globalzipf_null">[fig:structure/globalzipf_null]</span></p>
+<p>By construction, the distribution of the sizes of the sampling and the data are also identical.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/sizeDistr_null.pdf" /><figcaption>Distribution of sizes <span class="math inline"><em>M</em></span>. TCGA cancer data on the left and GTEx healthy samples on the right. By definition sampling and original sizes are identical.</figcaption>
+</figure>
+
+
+<figure>
+<embed src="pictures/structure/gtex/sizeDistr_null.pdf" /><figcaption>Distribution of sizes <span class="math inline"><em>M</em></span>. TCGA cancer data on the left and GTEx healthy samples on the right. By definition sampling and original sizes are identical.</figcaption>
+</figure>
+<p><span id="fig:structure/sizeDistr_null" label="fig:structure/sizeDistr_null">[fig:structure/sizeDistr_null]</span></p>
+<p>Looking at the <span class="math inline"><em>U</em></span>s in figure <a href="#fig:structure/globalU_null" data-reference-type="ref" data-reference="fig:structure/globalU_null">[fig:structure/globalU_null]</a>, it is evident that data behave differently from sampling. This is a signal that the null model is not enough to explain the data matrices. In particular, it is evident that the null model generates matrices which components have higher occurrence comparing to the original data. This can be easily explained, in fact in the real world some genes are highly expressed but only in a subset of the whole dataset; these genes are specific for certain type of samples. The null model gets the information that such genes are highly expressed (they have a high abundance) and so samples these quite often (components with high abundance have a greater chance to be picked up by the null model sampling). This set of genes with <span class="math inline"><em>O</em><sub><em>i</em></sub> = 1</span> is called <strong>core</strong>, in figure <a href="#fig:structure/globalU_null" data-reference-type="ref" data-reference="fig:structure/globalU_null">[fig:structure/globalU_null]</a> it is evident the difference between the real one and the sampled one.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/globalU_null.pdf" /><figcaption>Occurrence distributions. TCGA cancer data on the left and GTEx healthy samples on the right. Sampling is reported for comparison.</figcaption>
+</figure>
+
+
+<figure>
+<embed src="pictures/structure/gtex/globalU_null.pdf" /><figcaption>Occurrence distributions. TCGA cancer data on the left and GTEx healthy samples on the right. Sampling is reported for comparison.</figcaption>
+</figure>
+<p><span id="fig:structure/globalU_null" label="fig:structure/globalU_null">[fig:structure/globalU_null]</span></p>
+<p>Plotting on the abscissa the size of samples and on the ordinate the number of genes expressed one point per sample, it is possible to obtain the so-called Heaps’s law <span class="citation" data-cites="Heaps:1978:IRC:539986"></span>. In figure <a href="#fig:structure/heaps_null" data-reference-type="ref" data-reference="fig:structure/heaps_null">[fig:structure/heaps_null]</a> the Heaps’ law is presented compared to the one obtained by sampling. Again the curves differ and the null model is not enough to explain the trend. Note that each data point shares the abscissa with a sampling one (figures <a href="#fig:structure/sizeDistr_null" data-reference-type="ref" data-reference="fig:structure/sizeDistr_null">[fig:structure/sizeDistr_null]</a> are nothing but the histograms of the abscissas of <a href="#fig:structure/heaps_null" data-reference-type="ref" data-reference="fig:structure/heaps_null">[fig:structure/heaps_null]</a>). Moreover, it is interesting that the ordinate does not start from zero, this happens because there are a lot of genes that express everywhere, the core. It happens that the sampling curve is translated above the data’s one. This means that to build a sample of size <span class="math inline"><em>M</em></span> just by sampling it is necessary to use a greater number of different genes than the number of different genes actually expressed in nature. In other words in the real world only the genes that are really useful in a sample are expressed, and this is not describable just by sampling. This fact is coherent with the fact that the <span class="math inline"><em>U</em></span>s differ.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/heaps_null.pdf" /><figcaption>Heaps’ law. TCGA cancer data on the left and GTEx healthy samples on the right. Sampling is reported for comparison.</figcaption>
+</figure>
+
+
+<figure>
+<embed src="pictures/structure/gtex/heaps_null.pdf" /><figcaption>Heaps’ law. TCGA cancer data on the left and GTEx healthy samples on the right. Sampling is reported for comparison.</figcaption>
+</figure>
+<p><span id="fig:structure/heaps_null" label="fig:structure/heaps_null">[fig:structure/heaps_null]</span></p>
+<p>Another way to see this is by looking at the histograms of the number of different genes expressed, actually the distribution of the <a href="#fig:structure/heaps_null" data-reference-type="ref" data-reference="fig:structure/heaps_null">[fig:structure/heaps_null]</a> y-axis. Figure <a href="#fig:structure/diffwordsDistr_null" data-reference-type="ref" data-reference="fig:structure/diffwordsDistr_null">[fig:structure/diffwordsDistr_null]</a> shows that these distributions are completely different if one looks at the data and the sampling.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/diffwordsDistr_null.pdf" /><figcaption>Number of genes expressed in a sample. TCGA cancer data on the left and GTEx healthy samples on the right. The difference between the original data and sampling is evident.</figcaption>
+</figure>
+
+
+<figure>
+<embed src="pictures/structure/gtex/diffwordsDistr_null.pdf" /><figcaption>Number of genes expressed in a sample. TCGA cancer data on the left and GTEx healthy samples on the right. The difference between the original data and sampling is evident.</figcaption>
+</figure>
+<p><span id="fig:structure/diffwordsDistr_null" label="fig:structure/diffwordsDistr_null">[fig:structure/diffwordsDistr_null]</span></p>
+
+<h2 id="statistical-laws-differentiate-by-tissue">Statistical laws differentiate by tissue</h2>
+<p>Considering the GTEx dataset of healthy samples it is possible to study differences in tissues; <span class="citation" data-cites="mele2014"></span> suggests some approaches.</p>
+<p>First of all, it could be interesting to study which is the fraction of transcriptome that can be explained by a certain number of genes. To do this, it is necessary to get all the samples of a given tissue. Then one estimates the average expression per each component (gene). At this point, one has the average abundance of each gene in a tissue, dividing by the sum of all the components it is possible to obtain the fraction of the total counts in the tissue due to each gene. Sorting from greater to smaller and integrating (cumulative summing) one have the fraction of transcript due to <span class="math inline">1, 2, 3…</span> genes. This is reported in figure <a href="#fig:structure/gtex/fraction_of_trascriptome" data-reference-type="ref" data-reference="fig:structure/gtex/fraction_of_trascriptome">[fig:structure/gtex/fraction_of_trascriptome]</a>. This analysis is done using TPM to avoid biases due to gene lengths or to samples sizes.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/fraction_of_trascriptome.pdf" /><figcaption>The integral of the sorted abundances for each tissue.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/fraction_of_trascriptome" label="fig:structure/gtex/fraction_of_trascriptome">[fig:structure/gtex/fraction_of_trascriptome]</span></p>
+
+<p>Here, when a curve is steep it means that a few genes’ expression represents a great fraction of the total size of the transcriptome. If a curve is smooth it means that many genes are necessary to describe the whole transcriptome for that particular tissue. This analysis shows that different tissues have a different complexity in terms of the number of genes necessary to build the transcriptome (in average). In figure <a href="#fig:structure/gtex/fraction_of_trascriptome_Brain" data-reference-type="ref" data-reference="fig:structure/gtex/fraction_of_trascriptome_Brain">[fig:structure/gtex/fraction_of_trascriptome_Brain]</a> the same analysis is done for the sub-tissues of brain, also these sub-types present a great separation.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/fraction_of_trascriptome_Brain.pdf" /><figcaption>The integral of the sorted abundances for sub-types of brain. This is done using TPM to avoid biases due to gene lengths. Blood is plotted for reference.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/fraction_of_trascriptome_Brain" label="fig:structure/gtex/fraction_of_trascriptome_Brain">[fig:structure/gtex/fraction_of_trascriptome_Brain]</span></p>
+<p>Another way to interpret this analysis is thinking <a href="#fig:structure/gtex/fraction_of_trascriptome" data-reference-type="ref" data-reference="fig:structure/gtex/fraction_of_trascriptome">[fig:structure/gtex/fraction_of_trascriptome]</a> as the integral of the Zipf’s law. So it could be interesting to examine the Zipf’s law one tissue a time. In figure <a href="#fig:structure/gtex/zipf_tissue" data-reference-type="ref" data-reference="fig:structure/gtex/zipf_tissue">[fig:structure/gtex/zipf_tissue]</a> the Zipf’s law for some tissues with an extremal behaviour are reported.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/zipf_tissue.pdf" /><figcaption>Different tissues present different power law.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/zipf_tissue" label="fig:structure/gtex/zipf_tissue">[fig:structure/gtex/zipf_tissue]</span></p>
+<p>From this point of view, each tissue has its particular slope. The steeper the Zipf the simplest is the tissue: the transcript can be described with few genes. Coming back to the transcriptome analysis. In figure <a href="#fig:structure/gtex/fraction_of_trascriptome" data-reference-type="ref" data-reference="fig:structure/gtex/fraction_of_trascriptome">[fig:structure/gtex/fraction_of_trascriptome]</a> the point where the curve reaches <span class="math inline">1</span> corresponds to the total number of genes expressed, the remaining ones have a <span class="math inline">0</span> expression and do not contribute to the transcript. This can be visualized again with the Heaps’ law: the number of genes expressed seen in the Heaps’ law plot is the number of genes necessary to explain the whole transcriptome. In figure <a href="#fig:structure/gtex/heaps_tissue" data-reference-type="ref" data-reference="fig:structure/gtex/heaps_tissue">[fig:structure/gtex/heaps_tissue]</a>, it is evident that there is some kind of tissue differentiation even when looking at the Heaps’ law. In other words, two samples with the same size but of different tissues have a different number of genes expressed.</p>
+
+<figure>
+<embed src="pictures/structure/gtex/heaps_tissue.pdf" /><figcaption>Different tissues express a different number of genes fixed the sample size. This plot was done using counts, using TPM it is not possible because the size on the x-axis is a would be a constant.</figcaption>
+</figure>
+<p><span id="fig:structure/gtex/heaps_tissue" label="fig:structure/gtex/heaps_tissue">[fig:structure/gtex/heaps_tissue]</span></p>
+<p>The same analysis can be made by looking at the disease type of cancer samples. In this case, there is no evident differentiation as shown in figure <a href="#fig:structure/tcga/fraction_of_trascriptome_disease" data-reference-type="ref" data-reference="fig:structure/tcga/fraction_of_trascriptome_disease">[fig:structure/tcga/fraction_of_trascriptome_disease]</a>. The only diseases that behave differently are <em>Parangliomas</em>, but these are associated only to brain, so the differentiation seen is just a brain separation. This means that separate diseases would be tricky and much more difficult than just separate tissues. The hierarchic approach described in the next chapters will be useful because it is able to separate tissues and disease types at different layers of the hierarchy.</p>
+
+<figure>
+<embed src="pictures/structure/tcga/fraction_of_trascriptome_disease.pdf" /><figcaption>The integral of the sorted abundances for each disease type.</figcaption>
+</figure>
+<p><span id="fig:structure/tcga/fraction_of_trascriptome_disease" label="fig:structure/tcga/fraction_of_trascriptome_disease">[fig:structure/tcga/fraction_of_trascriptome_disease]</span></p>
+
+<p>All these analyses suggest that there must be a sort of hidden structure in the data that is somehow related to the tissue each sample comes from. In particular, there are many Zipf’s laws hidden behind the data and each sample is build looking at one of these. Moreover, given two samples with a similar size, it happens that the number of genes necessary to build that realization is not always the same (shown by Heaps’ law) and it is somehow related to the tissue of the sample.</p>
+<h5 id="in-conclusion">In conclusion</h5>
+<p>some interesting laws were found in the datasets considered in this work. Statistical laws from linguistics were identified and studied with different normalizations. Some interesting facts emerged: for example, the differences between coding and not-coding genes or the great core of protein-coding genes. The interesting fact, useful in the next sections of this work, is that behind the data there are different power laws and these are different for each tissue. In the next chapters, it will be discussed how to use this fact to train a model able to distinguish samples in a dataset.</p>
+<h1 id="ch:scalinglaws">Scaling laws</h1>
+<p>One of the goals of this work is to search, reveal, study and use universal laws in bulk gene expression data. Approaches from different field of science are considered at this point, as already done in chapter <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a>. </p>
+<p>In can be interesting to study how the gene expression changes and behave across all the samples.</p>
+<p>Given a matrix of components and realizations as <a href="#fig:componetstable" data-reference-type="ref" data-reference="fig:componetstable">[fig:componetstable]</a> with expression entries <span class="math inline"><em>n</em><sub><em>i</em><em>j</em></sub></span> it all begins selecting a row and estimate its mean <span class="math inline"><em>m</em><sub><em>i</em></sub> = ⟨<em>n</em><sub><em>i</em><em>j</em></sub>⟩<sub><em>j</em></sub></span> and its variance <span class="math inline"><em>σ</em><sub><em>i</em></sub><sup>2</sup> = ⟨<em>n</em><sub><em>i</em><em>j</em></sub><sup>2</sup>⟩<sub><em>j</em></sub> − ⟨<em>n</em><sub><em>i</em><em>j</em></sub>⟩<sub><em>j</em></sub><sup>2</sup></span>. A row is nothing but a component that, in the data considered in this work, is represented by a gene. At this point, the analyses consider raw counts as entries.</p>
+<h5 id="variance-versus-mean">Variance versus mean</h5>
+<p><br />
+First of all, it could be interesting to study the variance of expression <span class="math inline"><em>σ</em><sub><em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em></sub><sup>2</sup></span> versus the average <span class="math inline">⟨<em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em>⟩</span> across tissues.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/allgenes/varmean_loglog.png" alt="Variance versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. All genes are considered." /><figcaption>Variance versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. All genes are considered.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/allgenes/varmean_loglog_density" label="fig:scalinglaws/gtex/allgenes/varmean_loglog_density">[fig:scalinglaws/gtex/allgenes/varmean_loglog_density]</span></p>
+<p>In figure <a href="#fig:scalinglaws/gtex/allgenes/varmean_loglog_density" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/allgenes/varmean_loglog_density">[fig:scalinglaws/gtex/allgenes/varmean_loglog_density]</a> the scatter plot of variance versus mean reveals some interesting facts. First of all, it is evident that data have a double scaling behaviour: when the mean is small (<span class="math inline"> ≲ 1</span>) data have a Poisson-like scaling (<span class="math inline"><em>σ</em><sub><em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em></sub><sup>2</sup> ∼ ⟨<em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em>⟩</span>), at higher means data have instead a quadratic scaling (<span class="math inline"><em>σ</em><sub><em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em></sub><sup>2</sup> ∼ ⟨<em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em>⟩<sup>2</sup></span>) known in ecology as Taylor’s law <span class="citation" data-cites="Eisler2008"></span>. This means that at low averages data’s behaviour is due to the sampling process; on the contrary, Taylor’s law reveals the non-trivial distribution across samples of the gene expression. Another interesting fact is that looking at the density of points (colours in figure <a href="#fig:scalinglaws/gtex/allgenes/varmean_loglog_density" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/allgenes/varmean_loglog_density">[fig:scalinglaws/gtex/allgenes/varmean_loglog_density]</a>) two clouds of points emerge: one at low averages, one at high averages. These correspond to coding and non-coding genes, remembering section <a href="#sec:universallaws" data-reference-type="ref" data-reference="sec:universallaws">2.2</a> these two kind of genes have different behaviours: coding genes are highly expressed in the majority of the samples, non-coding ones are less expressed (and so less sampled) in a few samples.</p>
+<h5 id="coefficient-of-variation">Coefficient of Variation</h5>
+<p><br />
+A similar analysis, common in literature, is the analysis of the coefficient of variation squared <span class="math inline">$CV^2=\frac{\sigma^2_{\mathrm{counts}}}{\left\langle \mathrm{counts}\right\rangle^2}$</span> represented in figure <a href="#fig:scalinglaws/gtex/allgenes/cvmean_loglog" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/allgenes/cvmean_loglog">[fig:scalinglaws/gtex/allgenes/cvmean_loglog]</a>.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/allgenes/cvmean_loglog.png" alt="Coefficient of variation squared versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. All genes are considered." /><figcaption>Coefficient of variation squared versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. All genes are considered.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/allgenes/cvmean_loglog" label="fig:scalinglaws/gtex/allgenes/cvmean_loglog">[fig:scalinglaws/gtex/allgenes/cvmean_loglog]</span></p>
+<p>The behaviour is complementary to the one discussed above; a double scaling, quite common in the literature looking at single-cell RNA sequencing data <span class="citation" data-cites="Islam2013"></span>, is present. Even looking at <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span> it is evident the presence of the coding and non-coding clouds of points. The non-coding genes are on the Poisson-like scaling, <span class="math inline"><em>σ</em><sub><em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em></sub><sup>2</sup> ∼ ⟨<em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em>⟩</span> so <span class="math inline">$CV^2=\frac{\sigma^2_{\mathrm{counts}}}{\left\langle \mathrm{counts}\right\rangle^2}\sim\frac{1}{\left\langle \mathrm{counts}\right\rangle}$</span>, otherwise the protein-coding genes are on the Taylor-like curve <span class="math inline">$CV^2=\frac{\sigma^2_{\mathrm{counts}}}{\left\langle \mathrm{counts}\right\rangle^2}\sim \text{constant}$</span>.</p>
+<h5 id="protein-coding-genes">Protein-coding genes</h5>
+<p>can be isolated and considered on their own. The same analysis confirms that the cloud of genes’ points on the Taylor-like scaling are effective the protein-coding genes.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/varmean_loglog_density.png" alt="Variance versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. Only protein-coding genes are considered." /><figcaption>Variance versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. Only protein-coding genes are considered.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/varmean_loglog_density" label="fig:scalinglaws/gtex/varmean_loglog_density">[fig:scalinglaws/gtex/varmean_loglog_density]</span></p>
+<p>Following the sampling model of <span class="citation" data-cites="Mazzolini2018"></span> summed up in section <a href="#sec:nullmodel" data-reference-type="ref" data-reference="sec:nullmodel">2.3</a> the averages and variances can be estimated on null matrices. In figure <a href="#fig:scalinglaws/gtex/varmean_3sigma" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/varmean_3sigma">[fig:scalinglaws/gtex/varmean_3sigma]</a> the comparison between real genes and sampling data. The sampling has got a double scaling as well; this is quite interesting, it means that the global scaling is due to the Zipf distribution and the sizes’ distribution themselves, they are identical in data and sampling by definition. Moreover, the sampling points draw a lower bound of the data, this encodes the information that the data are more variable (have higher variance) than just sampling, so there must be some biological information hidden that causes this over-variable behaviour.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/varmean_3sigma.png" alt="Variance versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. In orange the sampling components. Only protein-coding genes are considered." /><figcaption>Variance versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. In <span style="color: pythonorange">orange</span> the sampling components. Only protein-coding genes are considered.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/varmean_3sigma" label="fig:scalinglaws/gtex/varmean_3sigma">[fig:scalinglaws/gtex/varmean_3sigma]</span></p>
+<p>Again it is possible to analyse the <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span>, this time considering only protein-coding genes. Figure <a href="#fig:scalinglaws/gtex/allgenes/cvmean_loglog" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/allgenes/cvmean_loglog">[fig:scalinglaws/gtex/allgenes/cvmean_loglog]</a> confirms that the cloud of points near the Taylor-like scaling is made of protein-coding genes and a double scaling is seen once again.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/cvmean_loglog_density.png" alt="Coefficient of variation squared versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. Only protein coding genes are considered." /><figcaption>Coefficient of variation squared versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. Only protein coding genes are considered.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/cvmean_loglog" label="fig:scalinglaws/gtex/cvmean_loglog">[fig:scalinglaws/gtex/cvmean_loglog]</span></p>
+<p>In figure <a href="#fig:scalinglaws/gtex/cvmean_loglog_sampling" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/cvmean_loglog_sampling">[fig:scalinglaws/gtex/cvmean_loglog_sampling]</a> the same plot compared to the sampling data. The double scaling is evident also for the sampling points. Note that <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span> has got a lower bound at <span class="math inline">0</span> which corresponds to the less variable case: all expressions are identical in all samples (<span class="math inline"><em>σ</em><sub><em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>s</em></sub><sup>2</sup></span>). There is an upper bound at <span class="math inline"><em>N</em> − 1</span>, with <span class="math inline"><em>N</em></span> the number of realizations, that corresponds to the most variable case: a component express in only one realization and is <span class="math inline">0</span> elsewhere.</p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/cvmean_loglog_sampling.png" alt="Coefficient of variation squared versus average. In red the Poisson-like scaling, in green the Taylor-like scaling. In orange the sampling components." /><figcaption>Coefficient of variation squared versus average. In <span style="color: pythonred">red</span> the Poisson-like scaling, in <span style="color: pythongreen">green</span> the Taylor-like scaling. In <span style="color: pythonorange">orange</span> the sampling components.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/cvmean_loglog_sampling" label="fig:scalinglaws/gtex/cvmean_loglog_sampling">[fig:scalinglaws/gtex/cvmean_loglog_sampling]</span></p>
+<p>Finally, the data have a double scaling when looking at their global variance across realizations, a Poisson-like where the sampling experimental process is more important and a Taylor-like where the complexity of the data emerges. Non-coding genes have got low expression and are rare, protein-coding genes, otherwise, express a lot and everywhere and carry more information following a double scaling. All genes are more variable than a sampling null model and this is the evidence that something interesting is hidden behind the data.</p>
+
+<h5 id="average-versus-occurrence">Average versus occurrence</h5>
+<p><br />
+Another interesting analysis can be the study of the relation between the occurrence and the average expression. In figure <a href="#fig:scalinglaws/gtex/meanDiff_binned_sampling" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/meanDiff_binned_sampling">[fig:scalinglaws/gtex/meanDiff_binned_sampling]</a> it is shown the result: it is clear that there is a relation between occurrence and average, genes that express in more realizations (higher occurrence and right in the figure) have a higher average. Moreover, there aren’t genes that have high expression in few realizations; rare genes are also difficult to find so have a small average. Note that the average has got a bound because counts are integer numbers, so if, for example, one gene express in <span class="math inline"><em>n</em></span> of the <span class="math inline"><em>R</em></span> samples, it has occurrence <span class="math inline">$O_i=\frac{n}{R}$</span> and its average can’t be lower than <span class="math inline">$\left\langle \mathrm{counts}\right\rangle=\frac{1*n}{R}$</span></p>
+
+<figure>
+<img src="pictures/scalinglaws/gtex/meanDiff_binned_sampling.png" alt="Relationship between the occurrence of a gene and its average across realizations." /><figcaption>Relationship between the occurrence of a gene and its average across realizations.</figcaption>
+</figure>
+<p><span id="fig:scalinglaws/gtex/meanDiff_binned_sampling" label="fig:scalinglaws/gtex/meanDiff_binned_sampling">[fig:scalinglaws/gtex/meanDiff_binned_sampling]</span></p>
+
+<h5 id="in-conclusion-1">In conclusion</h5>
+<p>the study of gene expression across samples reveals interesting facts. Coding and non-coding genes have different behaviours. The null model isn’t, again, enough to explain the data. Real data genes revealed themselves as more variable than expected.</p>
+<p>The analyses described in this chapter will be useful in the next part of the work: in fact, they empower the possibility to define a gene selection model to isolate highly variable genes if necessary.</p>
+<h1 id="ch:topicmodelling">Topic modelling</h1>
+<p>Once extensively analysed the structure of the dataset, the goal becomes to develop a machine learning method to learn the hidden structure of the data.</p>
+<p>Remembering chapter <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a>, it emerged some kind of structure behind data: each tissue seemed to be sampled by a different power law. A topic modelling approach is here proposed. Topic modelling has been developed and studied to approach linguistics problems, so this algorithm was developed considering a network of words and books in input, links represent the abundance of a word in a book. In chapter <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a>, it was evident that there are many similarities between data considered in this work and linguistics’ corpora. Referring to data used in this project <strong>samples</strong> will be the documents and <strong>genes</strong> will be the words. It is expected that topics represent some properties of the system due to the gene expression distribution in samples.</p>
+<p>The idea is that behind data there are hidden variables that describe the relationship between the genes and the samples. Let’s call these variables topics. Firstly it is necessary to build a bipartite network of genes and samples, then nodes are linked considering the gene expression value in the dataset.</p>
+
+<figure>
+<embed src="pictures/topic/bipartite.pdf" id="fig:topic/bipartite" /><figcaption>An example of a bipartite network. Samples are on the left, genes are on the right. Each link is weighted by gene expression value. On the left side, all nodes of the same colour are clusters of samples. On the right side, all nodes with the same colour are a set of genes, also known as topics.<br />
+Blue lines represent the cluster structure, each blue squared-dot is a set of nodes, lines delineate the hierarchical structure.<br />
+It is clear in the middle the network separation between genes and samples.<span label="fig:topic/bipartite"></span></figcaption>
+</figure>
+<p>The output of this kind of models consists of sets of genes, the topics, with a probability distribution <span class="math inline"><em>P</em>(gene|topic)</span> and probability distributions of these topics inside each sample <span class="math inline"><em>P</em>(topic|sample)</span>, together they give the relationship between a <em>sample</em> and a <em>gene</em>.</p>
+<p>In this work, an innovative and recent approach to topic model is proposed. The algorithm was presented by <span class="citation" data-cites="gerlach2018network"></span> and <span class="citation" data-cites="Peixoto2017"></span> explained it in details. This model is an evolution of a stochastic block model <span class="citation" data-cites="Holland1983"></span>. It is called hierarchical Stochastic Block Model (hSBM).</p>
+<p>The ultimate goal is being able to separate healthy and diseased samples, then find and separate well-known tumour types and finally extend the actual knowledge and retrieve the tumour sub-types.</p>
+<p>One of the advantages of this particular algorithm is that it is hierarchical, so it applies community detection at different layers of resolution. So the output has got different resolutions and different number of clusters at each layer . One extreme layer is the one which separates genes (<span class="math inline">≃</span> words) and samples (<span class="math inline">≃</span> samples), by definition. In the other layers, it is possible to have few big clusters until the other extreme were the number of clusters is comparable with the number of nodes.</p>
+
+<figure>
+<img src="pictures/topic/peixioto_hierarchic.jpg" alt="Example of a hierarchical structure. At l=0 the number of cluster is comparable with the number of nodes, is the situation with many small clusters. Then they’re merged in bigger clusters at other layers of the hierarchy." /><figcaption>Example of a hierarchical structure. At <span class="math inline"><em>l</em> = 0</span> the number of cluster is comparable with the number of nodes, is the situation with many small clusters. Then they’re merged in bigger clusters at other layers of the hierarchy.</figcaption>
+</figure>
+<p><span id="fig:topic_peixioto_hierarchic" label="fig:topic_peixioto_hierarchic">[fig:topic_peixioto_hierarchic]</span></p>
+<p>What the algorithm does is to run a sort of Monte Carlo simulation and find the best partition of the data. The probability that the hidden variables <span class="math inline"><em>θ</em></span> describe the data <span class="math inline"><em>G</em></span> <span class="math inline"><em>P</em>(<em>θ</em>|<em>G</em>)</span> can be written as a likelihood times a prior probability as <br /><span class="math display">$$P(\theta|G)=\frac{P(G|\theta)\overbrace{P(\theta)}^{prior}}{\underbrace{P(G)}_{\sum_{\theta}P(G|\theta)P(\theta)}}.$$</span><br /> It is possible to define a description length <br /><span class="math display"><em>Σ</em> =  − <em>l</em><em>n</em><em>P</em>(<em>G</em>|<em>θ</em>) − <em>l</em><em>n</em><em>P</em>(<em>θ</em>),</span><br /> so that <span class="math inline"><em>P</em>(<em>θ</em>|<em>G</em>) ∝ <em>e</em><sup> − <em>Σ</em></sup></span>. Moreover, the likelihood <span class="math inline"><em>P</em>(<em>G</em>|<em>θ</em>)</span>, can be written as <span class="math inline">$\frac{1}{\Omega}$</span> where <span class="math inline"><em>Ω</em>(<em>θ</em>)</span> is the number of networks that is possible to build given <span class="math inline"><em>θ</em></span>. This corresponds to a microcanonical ensemble with entropy <span class="math inline"><em>S</em> = <em>L</em><em>n</em>(<em>Ω</em>)</span>. According to <span class="citation" data-cites="peixoto2017nonparametric"></span> entropy <span class="math inline"><em>S</em></span> can be written as <br /><span class="math display">$$S=\frac{1}{2}\Sigma_{r,s} n_r n_s H\left(\frac{e_{rs}}{n_rn_s}\right),$$</span><br /> where <span class="math inline"><em>n</em><sub><em>r</em></sub></span> is the number of nodes in the block <span class="math inline"><em>r</em></span>, <span class="math inline"><em>e</em><sub><em>r</em><em>s</em></sub></span> the number of links between nodes of group <span class="math inline"><em>r</em></span> and nodes of group <span class="math inline"><em>s</em></span> and <span class="math inline"><em>H</em></span> is the Shannon entropy <span class="math inline"><em>H</em>(<em>x</em>) = <em>x</em><em>L</em><em>o</em><em>g</em><sub>2</sub>(<em>x</em>) + (1 − <em>x</em>)<em>L</em><em>o</em><em>g</em><sub>2</sub>(1 − <em>x</em>)</span>. Note that <span class="math inline"><em>S</em></span> is minimal if <span class="math inline">$\frac{e_{rs}}{n_rn_s}$</span> is close to zero, <span class="math inline"><em>r</em></span> and <span class="math inline"><em>s</em></span> are two completely separated blocks or if it is close to <span class="math inline">1</span>, <span class="math inline"><em>r</em></span> and <span class="math inline"><em>s</em></span> are groups with many connections; this allows finding groups with nodes very disconnected or topic and clusters with a lot of connections. Note that the description length depends on the entropy: <br /><span class="math display"><em>Σ</em> = <em>S</em> − <em>l</em><em>n</em><em>P</em>(<em>θ</em>),</span><br /> The algorithm tries to minimize <span class="math inline"><em>S</em></span>, so that <span class="math inline"><em>Σ</em></span> is minimized, so <span class="math inline"><em>e</em><sup> − <em>Σ</em></sup></span> is maximized, but this is <span class="math inline"><em>P</em>(<em>θ</em>|<em>G</em>)</span> that is the required probability to maximize.</p>
+<p>The Monte Carlo simulation works in a few steps:</p>
+<ul class="incremental">
+<li><p>a node <span class="math inline"><em>i</em></span> is chosen,</p></li>
+<li><p>the group of <span class="math inline"><em>i</em></span> is called <span class="math inline"><em>r</em></span>,</p></li>
+<li><p>a node <span class="math inline"><em>j</em></span> is chosen from <span class="math inline"><em>i</em></span>’s neighbours, the group of <span class="math inline"><em>j</em></span> is called <span class="math inline"><em>t</em></span>,</p></li>
+<li><p>a random group <span class="math inline"><em>s</em></span> is selected,</p></li>
+<li><p>move of node <span class="math inline"><em>i</em></span> to group <span class="math inline"><em>s</em></span> is accepted with probability <span class="math inline">$P(r\to s|t)=\frac{e_{ts}+\epsilon}{e_t+\epsilon B}$</span>,</p></li>
+<li><p>if the move to <span class="math inline"><em>s</em></span> is not accepted, a random edge <span class="math inline"><em>e</em></span> is chosen from group <span class="math inline"><em>t</em></span> and node <span class="math inline"><em>i</em></span> is assigned to the endpoint of <span class="math inline"><em>e</em></span> which is not in <span class="math inline"><em>t</em></span>;</p></li>
+</ul>
+<p>in figure <a href="#fig:topic_peixioto_move" data-reference-type="ref" data-reference="fig:topic_peixioto_move">[fig:topic_peixioto_move]</a> an example of these steps.</p>
+
+<figure>
+<img src="pictures/topic/peixioto_move.jpg" alt="Left: Local neighbourhood of node i belonging to block r, and a randomly chosen neighbour j  belonging to block t.  Right: Block multi-graph, indicating the number of edges between blocks, represented as the edge thickness.  In this example, the attempted move bi \to s is made with a larger probability than either bi \to u or bi \to r (no movement), since e_{ts}&gt;e_{tu} and e_{ts}&gt;e_{tr}." /><figcaption>Left: Local neighbourhood of node <span class="math inline"><em>i</em></span> belonging to block <span class="math inline"><em>r</em></span>, and a randomly chosen neighbour <span class="math inline"><em>j</em></span>  belonging to block <span class="math inline"><em>t</em></span>.  Right: Block multi-graph, indicating the number of edges between blocks, represented as the edge thickness.  In this example, the attempted move <span class="math inline"><em>b</em><em>i</em> → <em>s</em></span> is made with a larger probability than either <span class="math inline"><em>b</em><em>i</em> → <em>u</em></span> or <span class="math inline"><em>b</em><em>i</em> → <em>r</em></span> (no movement), since <span class="math inline"><em>e</em><sub><em>t</em><em>s</em></sub> &gt; <em>e</em><sub><em>t</em><em>u</em></sub></span> and <span class="math inline"><em>e</em><sub><em>t</em><em>s</em></sub> &gt; <em>e</em><sub><em>t</em><em>r</em></sub></span>.</figcaption>
+</figure>
+<p><span id="fig:topic_peixioto_move" label="fig:topic_peixioto_move">[fig:topic_peixioto_move]</span></p>
+<p>In order to remove eventual biases due to the initial configuration the model is run with <span class="math inline">5</span> different initial states, then the final state with the minimal entropy is selected.</p>
+<p>Once the model run it is possible to estimate the probability distribution of words inside a topic <br /><span class="math display">$$P(w|t_w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $t_w$}}$$</span><br /> and the topic distribution inside a document <br /><span class="math display">$$P(t_w|d)=\frac{\text{\# of edges on $d$ from $t_w$}}{\text{\# of edges on $d$}}$$</span><br /> This algorithm can set to have overlapping partitions; in this case, the presence of a word in a topic is not trivial and can be estimated as <br /><span class="math display">$$P(t_w|w)=\frac{\text{\# of edges on $w$ to $t_w$}}{\text{\# of edges on $w$}}$$</span><br /> or the presence of a document in a cluster <br /><span class="math display">$$P(t_d|d)=\frac{\text{\# of edges on $d$ to $t_d$}}{\text{\# of edges on $d$}}$$</span><br /></p>
+<p>See appendix <a href="#app:hsbm" data-reference-type="ref" data-reference="app:hsbm">6</a> for a detailed analysis of the maths behind the algorithm and <a href="https://hub.docker.com/r/fvalle01/hsbm" class="uri">https://hub.docker.com/r/fvalle01/hsbm</a> for the extension of <span class="citation" data-cites="gerlach2018network"></span> to non-linguistics component systems datasets.</p>
+<h2 id="metrics-and-benchmarks">Metrics and benchmarks</h2>
+<p>Before running topic modelling, it is useful to define some metrics to test and benchmark the model. In particular the model searches sets on the two sides of the network: the one containing samples and the one containing genes. Samples are extracted from datasets where much metadata are available, some of these metadata labels will be used to benchmark the model. To study genes enrichment test are instead necessary.</p>
+<p>Looking at the samples side of the network, the outputs are sets of samples, let’s call these clusters. One can state that the model works if all, or at least the majority, of samples in the same cluster share some label. Here the tissue is considered as the main label.</p>
+<p>Note that this work’s model is a non-supervised one, but a ground truth is available from metadata. So every sample has a certain probability to have a certain property (the true tissue label), let’s call this <span class="math inline"><em>P</em>(<em>C</em>)</span> and a certain probability of being in a cluster (model’s output), let’s call this <span class="math inline"><em>P</em>(<em>K</em>)</span>. It is possible to define some quantities, the homogeneity <br /><span class="math display">$$\label{eq:homogeneity}
+    h=1-\frac{H(C|K)}{H(C)}$$</span><br /> defining the entropy <br /><span class="math display">$$\label{eq:hck}
+    H(C|K)=\sum_{c\in \mathrm{labels},\\ k \in \mathrm{clusters}}\frac{n_{c k}}{N}Log\left(\frac{n_{c k}}{n_k}\right)$$</span><br /> where <span class="math inline"><em>n</em><sub><em>c</em><em>k</em></sub></span> is the number of nodes of type <span class="math inline"><em>c</em></span> in cluster <span class="math inline"><em>k</em></span>, <span class="math inline"><em>N</em></span> the number of nodes and <span class="math inline"><em>n</em><sub><em>k</em></sub></span> the number of nodes in cluster <span class="math inline"><em>k</em></span>. It is evident that if all nodes inside cluster <span class="math inline"><em>k</em></span> are of the same type <span class="math inline"><em>c</em></span> <span class="math inline"><em>n</em><sub><em>c</em><em>k</em></sub> = <em>n</em><sub><em>k</em></sub></span>, <span class="math inline"><em>H</em>(<em>C</em>|<em>K</em>) = 0</span> and <span class="math inline"><em>h</em> = 1</span>, it is actually a full homogeneous situation.</p>
+<p>Another quantity can be defined: the so-called completeness <br /><span class="math display">$$\label{eq:completness}
+    c=1-\frac{H(K|C)}{H(K)},$$</span><br /> <span class="math inline"><em>H</em>(<em>K</em>|<em>C</em>)</span> is defined in the same way as <a href="#eq:hck" data-reference-type="ref" data-reference="eq:hck">[eq:hck]</a>. Completeness measures how well nodes of the same type are distributed in the same cluster.</p>
+<p>Ideally one wants a method which output is both homogeneous and complete. So it is possible to define the V-measure as the harmonic average of the two: <br /><span class="math display">$$\label{eq:mutualinformation}
+    \mathrm{V-measure}=2\frac{h c}{h + c},$$</span><br /> which is actually the normalized mutual information between <span class="math inline"><em>P</em>(<em>C</em>)</span> and <span class="math inline"><em>P</em>(<em>K</em>)</span> <span class="citation" data-cites="rosenberg2007v"></span>. Please refer to appendix <a href="#app:vmeasure" data-reference-type="ref" data-reference="app:vmeasure">7</a> for the detailed maths. In figure <a href="#fig:topic/metric_scores_primarysite" data-reference-type="ref" data-reference="fig:topic/metric_scores_primarysite">[fig:topic/metric_scores_primarysite]</a> an example of the V-measure score estimated at the different layers of the hierarchy; note that the number of clusters increases going deeper in the hierarchy. In the same figure homogeneity and completeness are reported, note that with few clusters the situation is more complete, but when the number of clusters increases completeness goes down and homogeneity increases. This happens because if a cluster is small it is easier to fulfil it with similar objects. On the other side if one has few clusters it is easier to complete them putting similar objects in the same cluster.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/metric_scores_primarysite.pdf" /><figcaption>Score across hierarchy. The V-measure or normalized mutual information MI is the harmonic average between homogeneity and completeness.</figcaption>
+</figure>
+<p><span id="fig:topic/metric_scores_primarysite" label="fig:topic/metric_scores_primarysite">[fig:topic/metric_scores_primarysite]</span></p>
+<p>In order to validate the model, it will be compared to more standard approaches such as standard hierarchical clustering and a classical topic model approach using Latent Dirichlet Allocation.</p>
+<h3 id="sec:hc">Hierarchical clustering</h3>
+<p>The first algorithm considered for comparison is hierarchical clustering. Hierarchical clustering is a general family of clustering algorithms; it builds nested clusters by merging or splitting them successively. This hierarchy of clusters can be represented as a tree or dendrogram. The root of the tree is the unique cluster that gathers all the samples, the leaves being the clusters with only one sample. To perform hierarchical clustering and merge the samples successively the <code>AgglomerativeClustering</code> function from <em>scikit-learn</em> was used. Note that this approach was applied just to the samples, nothing was done to classify genes. In this case, genes are only dimensions in which samples are represented.</p>
+<p>The <code>AgglomerativeClustering</code> object performs a hierarchical clustering using a bottom-up approach: each observation starts in its cluster, and clusters are successively merged. A linkage criterium determines the metric used for the merging strategy.</p>
+<p>First of all, distances between all elements are estimated; in this work standard euclidean distance was used. Then elements are merged using the linkage criterium; in this work standard <em>Ward linkage</em> was used. The Ward linkage minimizes the sum of squared differences between the distances. It is a variance-minimizing approach. Here the specific configuration used in this work:</p>
+<pre style="mypython"><code>from sklearn.cluster import AgglomerativeClustering
+AgglomerativeClustering(
+    affinity=&#39;euclidean&#39;,
+    compute_full_tree=&#39;auto&#39;,
+    linkage=&#39;ward&#39;,
+    n_clusters=x,
+    )</code></pre>
+<p>note that the number of clusters is a free variable <code>x</code>: hierarchical clustering is not able to determine the ideal number of clusters. This was set from the output of the hierarchical Stochastic Block Model. In figure <a href="#fig:topic/hc" data-reference-type="ref" data-reference="fig:topic/hc">[fig:topic/hc]</a> an example of hierarchical clustering. Note that nodes with short distance are linked firstly.</p>
+
+<figure>
+<embed src="pictures/topic/clusters.pdf" id="fig:topic/hc" /><figcaption>Example of hierarchical clustering. Nodes are merged creating a tree (on the right).<span label="fig:topic/hc"></span></figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/hierarchical_clustering_simple_diagram.pdf" id="fig:topic/hc" /><figcaption>Example of hierarchical clustering. Nodes are merged creating a tree (on the right).<span label="fig:topic/hc"></span></figcaption>
+</figure>
+<h3 id="sec:lda">Latent Dirichlet Allocation</h3>
+<p>Latent Dirichlet Allocation is the standard and well-known approach to topic models. It has got more restrictive priors than hierarchical Stochastic Block Model and needs some parameters to be set. It uses some different methods to maximize the posterior probability to observe some latent variables given the data. As well described in <span class="citation" data-cites="Zhou2016"></span> LDA is a generative model and can be summarised as follows:</p>
+<ul class="incremental">
+<li><p>set number of topic <span class="math inline"><em>K</em></span> and parameters <span class="math inline"><em>η</em></span> and <span class="math inline"><em>α</em></span></p></li>
+<li><p>for each topic <span class="math inline"><em>k</em></span> generate <span class="math inline"><em>β</em><sub><em>k</em></sub> ∼ Dirichlet( • |<em>η</em>)</span></p></li>
+<li><p>for each document <span class="math inline"><em>d</em></span> generate <span class="math inline"><em>θ</em><sub><em>d</em></sub> ∼ Dirichlet( • |<em>α</em>)</span></p></li>
+<li><p>for each word in <span class="math inline"><em>d</em></span></p>
+<ul class="incremental">
+<li><p>generate <span class="math inline"><em>z</em> ∼ Multinomial( • |<em>θ</em><sub><em>d</em></sub>)</span></p></li>
+<li><p>generate <span class="math inline"><em>w</em> ∼ Multinomial( • |<em>β</em><sub><em>k</em></sub>)</span></p></li>
+</ul></li>
+</ul>
+
+<figure>
+<img src="pictures/topic/LDA.jpeg" alt="LDA schematic representation." id="fig:LDA" /><figcaption>LDA schematic representation.<span label="fig:LDA"></span></figcaption>
+</figure>
+<p>this process is summarised in figure <a href="#fig:LDA" data-reference-type="ref" data-reference="fig:LDA">[fig:LDA]</a>. These steps are useful to maximize the posterior probability <br /><span class="math display">$$\label{eq:lda}
+P(w, z,\beta, \theta| \alpha, \eta)=\prod_{d=1}^N P(\theta_d | \alpha)\prod_{n=1}^{N_d} P(w_{dn}|z_{dn},\beta_k)P(z_{dn}|\theta_d)\prod_{k=1}^KP(\beta_k|\eta)$$</span><br /> where</p>
+<ul class="incremental">
+<li><p><span class="math inline"><em>N</em></span> is the number of documents</p></li>
+<li><p><span class="math inline"><em>K</em></span> is the number of topics as set by the user</p></li>
+<li><p><span class="math inline"><em>w</em></span> are words</p></li>
+<li><p><span class="math inline"><em>N</em><sub><em>d</em></sub></span> is the number of words in document d</p></li>
+<li><p><span class="math inline"><em>α</em></span> and <span class="math inline"><em>η</em></span> are parameters of the model (usually <span class="math inline"><em>η</em> = 0.01</span> and <span class="math inline"><em>α</em> = 50/<em>K</em></span>)</p></li>
+<li><p><span class="math inline"><em>P</em>(<em>θ</em>|<em>α</em>)</span> and <span class="math inline"><em>P</em>(<em>β</em>|<em>η</em>)</span> are Dirichlet distributions</p></li>
+</ul>
+<p>When <span class="math inline"><em>β</em></span>, <span class="math inline"><em>θ</em></span> and <span class="math inline"><em>z</em></span> are estimated, the outputs are the topic distribution in documents <span class="math inline"><em>P</em>(<em>z</em>|<em>d</em>)</span> and the word distribution in topics <span class="math inline"><em>P</em>(<em>w</em>|<em>z</em>)</span>. Again the number of topics <span class="math inline"><em>K</em></span> is not found by the model and needs to be set, this has been got from hierarchical Stochastic Block Model’s output.</p>
+<h2 id="pre-process">Pre-process</h2>
+<p>This work aims to use the hierarchical Stochastic Block Model (hSBM) described before. Data considered in this work have <span class="math inline"> ∼ 11000</span> samples as documents and <span class="math inline"> ∼ 60000</span> genes as words (<span class="math inline"> ∼ 20000</span> if considering only protein-coding genes). The original paper <span class="citation" data-cites="gerlach2018network"></span> considers <span class="math inline">63</span> Wikipedia articles along with <span class="math inline">3140</span> words. The great amount of data requires some tricks to filter the network and make the computation faster. Different approaches were tested to pre-process the data, all of them involving the quantities defined in chapter <a href="#ch:structure" data-reference-type="ref" data-reference="ch:structure">2</a>. The goal is to identify components which can best separate the realizations or, in other words, isolate the most interesting genes.</p>
+<h5 id="low-occurrence-genes">Low occurrence genes</h5>
+<p>were selected firstly to approach topic modelling. A <span class="math inline">0.5</span> threshold was set on occurrence. This method selects genes that appear (have expression greater than zero) only in less than half samples. This approach has some limitations, for instance it doesn’t consider genes that appear everywhere (with occurrence <span class="math inline"> ≃ 1</span>) but changes their behaviour across realizations.</p>
+<h5 id="tf-idf-term-frequencyinverse-document-frequency">Tf-idf (term frequency–inverse document frequency)</h5>
+<p>should help. This approach doesn’t take into account original expression values <span class="math inline"><em>n</em><sub><em>i</em><em>j</em></sub></span>, but a transformed version <br /><span class="math display">$$n^{new}_{ij}=\frac{n_{i j}}{M_j}\times \left(1-Log\left(o_i\right)\right)$$</span><br /> which increases the importance of components with small occurrence <span class="math inline"><em>o</em><sub><em>i</em></sub></span>. This is widely used in linguistics to trash out common words. Tf-idf doesn’t select or reduce the number of components (genes), which is still an issue.</p>
+<h5 id="highly-variable">Highly variable</h5>
+<p>genes can be selected. This is done using the <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span> analysis done in chapter <a href="#ch:scalinglaws" data-reference-type="ref" data-reference="ch:scalinglaws">3</a>.</p>
+
+<figure>
+<img src="pictures/topic/cvmean_oversigma.png" alt="Highly variable genes. In cyan genes that are 1 \sigma over the average of their bin." /><figcaption>Highly variable genes. In <span style="color: pythoncyan">cyan</span> genes that are <span class="math inline">1<em>σ</em></span> over the average of their bin.</figcaption>
+</figure>
+<p><span id="fig:topic/cvmean_oversigma" label="fig:topic/cvmean_oversigma">[fig:topic/cvmean_oversigma]</span></p>
+<p>Plotting the coefficient of variation versus the mean, one point for each component, reveals components that have higher variance than components which, on average, have similar behaviour. Binned averages and variances were estimated. Only genes with a <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span> over a <span class="math inline"><em>σ</em></span> were considered. This method seems useful to select genes even if the binned average bound is quite noisy.</p>
+<h5 id="distance-from-boundaries">Distance from boundaries</h5>
+<p>can be a similar and alternative method to select highly variable genes. In this case, the boundary is both smooth and well-defined.</p>
+
+<figure>
+<img src="pictures/topic/cvmean_oversampling.png" alt="In cyan genes which distance from boundaries is greater than 10 CV^2." /><figcaption>In <span style="color: pythoncyan">cyan</span> genes which distance from boundaries is greater than <span class="math inline">10<em>C</em><em>V</em><sup>2</sup></span>.</figcaption>
+</figure>
+<p><span id="fig:topic/cvmean_oversampling" label="fig:topic/cvmean_oversampling">[fig:topic/cvmean_oversampling]</span></p>
+<p>The distribution as discussed in <a href="#ch:scalinglaws" data-reference-type="ref" data-reference="ch:scalinglaws">3</a> have Poisson-like and Taylor-like boundaries. So it is possible to consider only components that are the most distant from these boundaries. Moreover, these boundaries can be found with a simple null model, as shown in figure <a href="#fig:scalinglaws/gtex/cvmean_loglog_sampling" data-reference-type="ref" data-reference="fig:scalinglaws/gtex/cvmean_loglog_sampling">[fig:scalinglaws/gtex/cvmean_loglog_sampling]</a> the sampling model defines the lower bound of the data. The last two approaches are the ones which lead to better results, in the following section gene selection was done by getting only highly variables genes. To reduce the number of documents, samples are picked up uniformly random from a subset of all the available ones.</p>
+
+<h2 id="sec:run">Run</h2>
+<h3 id="run-on-gene-tissues-expression-dataset">Run on Gene Tissues Expression dataset</h3>
+<p>Once the model was set and adapted to RNA-Sequencing data, it was run on a subset of the GTEx dataset. A subset of samples was chosen randomly to reduce the computing time needed. The analysis hereby described took about 2 days to be run on a 16 core CPU, 100GB memory facility. The great amount of memory is needed to temporary store the network configuration at each step of the Monte Carlo simulation.</p>
+<p>First of all to rapidly have information about the interest of the oncoming result the metric above described were considered. In figure <a href="#fig:topic/gtex/oversigma_10tissue/metric_scores" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/metric_scores">[fig:topic/gtex/oversigma_10tissue/metric_scores]</a> it is represented the V-measure score versus the number of clusters found at different layers.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/metric_scores.pdf" /><figcaption>Scores across the hierarchy. The performances classifying the primary site and secondary site are compared. Note that with one cluster the completeness is <span class="math inline">1</span> but the homogeneity is <span class="math inline">0</span> so the score goes down.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/metric_scores" label="fig:topic/gtex/oversigma_10tissue/metric_scores">[fig:topic/gtex/oversigma_10tissue/metric_scores]</span></p>
+<p>The result is quite good, the maximum score is over <span class="math inline">0.8</span>. Considering that, for example, <span class="citation" data-cites="Farver2018"></span> obtained a similar score analysing similar dataset considering just homogeneity, this can be considered a quite good result. A second interesting fact is that both the tissue label (primary site) and the sub-tissue label (secondary site) obtain such a good score. Moreover, the secondary site score’s peak is at a higher number of clusters coherently with the fact that there is a greater number of sub-tissue labels. This score can be useful to extract the correct level of the hierarchy the consequent analysis should be made on.</p>
+<p>In figure <a href="#fig:topic/gtex/oversigma_10tissue/bipartite_rebuild" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/bipartite_rebuild">[fig:topic/gtex/oversigma_10tissue/bipartite_rebuild]</a> the relation between the clusters at different layers it is evident. Each row is a layer of the hierarchy and arrows represent the path of a node across the hierarchy. Note that clusters don’t overlap and the separation done at the greater level is maintained across all the hierarchy. This representation gives an idea of the point of the hierarchy where the tissues separate, see in figure <a href="#fig:topic/gtex/oversigma_10tissue/bipartite_rebuild" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/bipartite_rebuild">[fig:topic/gtex/oversigma_10tissue/bipartite_rebuild]</a> cluster <span class="math inline">2</span> that splits in two clusters separating <em>breast</em> and <em>adipose tissue</em>.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/bipartite_rebuild.pdf" /><figcaption>Hierarchy of the files’ nodes. In the top the layers where the output consists of many small clusters, in the bottom the output with few big clusters. Arrows represent how nodes pass from a hierarchy layer to another. The bigger the balls, the bigger the cluster. The more yellow the link the more nodes are in common between the clusters of the two different layers. Plotted using clustree <span class="citation" data-cites="clustree"></span>.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/bipartite_rebuild" label="fig:topic/gtex/oversigma_10tissue/bipartite_rebuild">[fig:topic/gtex/oversigma_10tissue/bipartite_rebuild]</span></p>
+
+<p>In figure <a href="#fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site]</a> each column is a cluster and each colour is a tissue of the dataset. It is evident that the majority of the tissues are identified: the first, second, fourth, fifth, sixth, seventh, and tenth columns are fully and uniformly coloured of the same colour. These correspond to an identification of <em>brain</em>, <em>skin</em>, <em>lung</em>, <em>blood</em> and <em>testis</em>.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site.pdf" /><figcaption>Clusters composition at the level of the hierarchy with the higher score. Each column is a cluster, each colour is a label.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site" label="fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/clustercomposition_l3_primary_site]</span></p>
+<p>In the normalized representation of the same clusters the homogeneity of the clusters is more evident.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site.pdf" /><figcaption>Normalized composition of clusters. Again each column is a cluster, each colour is a label.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site" label="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l3_primary_site]</span></p>
+<p>Going deeper in the hierarchy and looking at a layer with more cluster the result, shown in figure <a href="#fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site">[fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site]</a>, demonstrates that at this point all the tissues are separated and each cluster is full of nodes sharing the same tissue.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site.pdf" /><figcaption>Normalized composition of clusters at a deeper level.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site" label="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site">[fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_primary_site]</span></p>
+<p>Even looking at sub-tissues the results is quite good. It is not always easy to separate all the sub-parts of the <em>brain</em>, nevertheless, the <em>cerebellum</em> is well identified (column 27) and <em>blood</em> is distinguished in <em>whole blood</em> (columns 4-8) and <em>lymphocytes</em> (column 3).</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site.pdf" /><figcaption>Normalized composition of clusters for the secondary site sub-tissue labels.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site" label="fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site">[fig:topic/gtex/oversigma_10tissue/fraction_clustercomposition_l2_secondary_site]</span></p>
+<h3 id="shuffling">Shuffling</h3>
+<p>A null model of cluster composition is necessary if one would be able to state that a result is better than expected. This was done by doing the same analysis but reshuffling the labels of the nodes. Reshuffling was done exchanging the label of each node with the one of another node picked up uniformly random. Doing so the number of clusters and the cluster sizes are maintained. In figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site]</a> an example of clustering with random labels, it is evident that all clusters have similar and homogeneous composition. Note that not every tissue has the same number of samples, so, for example, <em>brain</em> is more represented than other tissues.</p>
+
+<figure>
+<img src="pictures/topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site" alt="Example of visualization of clusters with reshuffled labels." /><figcaption>Example of visualization of clusters with reshuffled labels.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site" label="fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledclustercomposition_l3_primary_site]</span></p>
+<p>All the results described in the previous pictures are quite qualitative. To have a more objective and mathematical measure of the success of the algorithm it is possible to measure the fraction of the most representative label in each cluster <span class="math inline"><em>k</em></span> <br /><span class="math display">$$max_{l\in labels}\left(\frac{n_{l k}}{n_k}\right)$$</span><br /> being <span class="math inline"><em>n</em><sub><em>l</em><em>k</em></sub></span> the number of nodes labelled <span class="math inline"><em>l</em></span> in cluster <span class="math inline"><em>k</em></span> and <span class="math inline"><em>n</em><sub><em>k</em></sub></span> is the number of nodes in cluster <span class="math inline"><em>k</em></span>. This is represented in figure <a href="#fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site" data-reference-type="ref" data-reference="fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site">[fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site]</a> for the level where the V-measure is maximized (the best results are expected at this resolution). In figure <a href="#fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site" data-reference-type="ref" data-reference="fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site">[fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site]</a> on the left is shown the most representative label fraction for each cluster, on the right the histograms of the same quantity. Models’ clusters are very homogeneous with the majority of cluster full, almost <span class="math inline">100%</span>, of the same tissue. It is also clear that reshuffling the labels the result is very different and so it is possible to admit that the models behave better than expected.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf" /><figcaption>The fraction of cluster composed by the representative label versus cluster. On the right the distributions of this measure.</figcaption>
+</figure>
+<p><span id="fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site" label="fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site">[fig:gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site]</span></p>
+<p>In figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*]</a> the same analysis is done for every level of the hierarchy. It is interesting to notice that at deeper levels (upper left in the figure) the random reshuffling and the real labels have the same behaviour. This because at this level clusters are very small and so it is easier to pick up nodes with the same label (in the extreme case of a cluster with size 1 it is always full of the same label). This shows that the deeper level it is not interesting, results are the same with random labels; moreover the reshuffling null model is good to show up eventual biases due to small cluster sizes.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l0_primary_site.pdf" /><figcaption>The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l1_primary_site.pdf" /><figcaption>The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><br />
+</p>
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l2_primary_site.pdf" /><figcaption>The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_maximum_l3_primary_site.pdf" /><figcaption>The fraction of the most representative label in all clusters for different levels of the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*" label="fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_maximum*]</span></p>
+
+<p>A similar analysis can be made considering not just the number of the cluster but the cluster size, this is shown in figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site]</a>. It is interesting to notice that the shuffle null model and the real labels clusters are different, so there must be some kind of signal. Clearly the model is able to output even big clusters full of the same label (points upper right in figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site]</a>).</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf" /><figcaption>The fraction of the most representative label versus cluster size.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site" label="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site]</span></p>
+<p>In figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*">[fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*]</a> the same analysis for all the levels of the hierarchy. It is interesting to see how going up in the hierarchy the two signals become different, as shown before the deeper layer (upper left in the image) is not different from null model and so it is not interesting.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l0_primary_site.pdf" /><figcaption>The fraction of the most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l1_primary_site.pdf" /><figcaption>The fraction of the most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><br />
+</p>
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l2_primary_site.pdf" /><figcaption>The fraction of the most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l3_primary_site.pdf" /><figcaption>The fraction of the most representative label versus cluster size across the hierarchy. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*" label="fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*">[fig:topic/gtex/oversigma_10tissue/shuffledclusterhomosize_l*]</span></p>
+
+<p>At this point to deeper investigate the structure of the clusters it can be interesting to study how many labels are present in each cluster. The fraction of the most represented label defined above carries no information of what happens to the remaining labels. For example, if one cluster is composed of <span class="math inline">80%</span> by label <strong>A</strong> and <span class="math inline">20%</span> by label <strong>B</strong> and another cluster is composed <span class="math inline">80%</span> by label <strong>A</strong>, <span class="math inline">10%</span> by label <strong>B</strong> and <span class="math inline">10%</span> by label <strong>C</strong> they have both a fraction of maximum representative label <span class="math inline">80%</span> but the second in this example is more heterogeneous. Counting the number of different labels in each cluster can reveal this kind of effects. In figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site]</a> it is represented the number of different labels versus cluster size. It is evident that the reshuffling case is quite different from the real one, almost every cluster in the null model has got every label. It is interesting to notice that the model outputs even big cluster with one label.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf" /><figcaption>The number of different labels in each cluster versus cluster size.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site" label="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site]</span></p>
+<p>In figure <a href="#fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall]</a> the same analysis for all the layer of the hierarchy. Even here the deeper level does not differ from the null model. Nevertheless, in layers with higher V-measure score, there is a strong signal that the reshuffling model is quite different from the model’s output.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l0_primary_site.pdf" /><figcaption>The number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l1_primary_site.pdf" /><figcaption>The number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><br />
+</p>
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l2_primary_site.pdf" /><figcaption>The number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_l3_primary_site.pdf" /><figcaption>The number of different labels in each cluster versus cluster size. From upper left the deeper layer than downright the superficial one.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall" label="fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall">[fig:topic/gtex/oversigma_10tissue/shuffledcluster_shuffle_label_size_lall]</span></p>
+
+<p>Having constructed the null model it is possible to estimate the V-measure score also for the null model. The results are reported in figure <a href="#fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle">[fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle]</a>. Moreover, remembering the V-measure or normalized mutual information defined in <a href="#eq:mutualinformation" data-reference-type="ref" data-reference="eq:mutualinformation">[eq:mutualinformation]</a> it is possible to estimate a mixed score which considers the homogeneity of the primary site and the completeness of the secondary site, doing so the score goes up if going deeper in the hierarchy the model makes more cluster with the same tissue but separates sub-tissues. It is not a big deal if one loses completeness regarding tissues (the model separates one big cluster full of the same label into two small ones) but gain information at the next resolution. This becomes clear if one looks at the big <em>blood</em> cluster that in the next level of the hierarchy is separated into two clusters of <em>blood</em>, one of <em>whole blood</em> and one of <em>lymphocytes</em>. The result is that this mixed score is the highest one.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/metric_scores_shuffle.pdf" /><figcaption>Scores across the hierarchy. The scored is compared with some random labels. In blue the score for the primary site labels, in red for the secondary site labels, in yellow the shuffled labels, in green the mixed score with primary homogeneity and secondary completeness.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle" label="fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle">[fig:topic/gtex/oversigma_10tissue/metric_scores_shuffle]</span></p>
+
+<h3 id="standard-algorithms">Standard algorithms</h3>
+<p>At this point, it was verified that the model has got interesting output: it reaches high scores and has got a strong signal against the null model, at least at some levels of the hierarchy. It is now interesting to compare it with standard and well-studied similar algorithms. First of all, a comparison is made with hierarchical clustering. This is done using the standard scipy package <span class="citation" data-cites="jones2014scipy"></span>, the metrics used was the euclidean one and the linkage method was set to Ward as briefly introduced in section <a href="#sec:hc" data-reference-type="ref" data-reference="sec:hc">4.1.1</a>. This is quite fast, it needs a couple of minutes on a dual-core, 8GB memory machine. In figure <a href="#fig:topic/gtex/oversigma_10tissue/metric_scores_hier" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/metric_scores_hier">[fig:topic/gtex/oversigma_10tissue/metric_scores_hier]</a> the comparison between these scores, the hierarchical algorithm performs worse than hierarchical Stochastic Block Model and as highly expected better than the random model.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/metric_scores_hier.pdf" /><figcaption>Scores across the hierarchy. The score obtained with hSBM is compared with hierarchical clustering and shuffled labels.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/metric_scores_hier" label="fig:topic/gtex/oversigma_10tissue/metric_scores_hier">[fig:topic/gtex/oversigma_10tissue/metric_scores_hier]</span></p>
+<p>Another very used and well-studied algorithm is Latent Dirichlet Allocation briefly described in <a href="#sec:lda" data-reference-type="ref" data-reference="sec:lda">4.1.2</a>. Running LDA in standard scipy package is quite fast and is comparable with hierarchical clustering in terms of CPU time. Note that once LDA package extracts the topics, it is necessary to define some clusters, to do so a standard Agglomerative clustering approach was used, the distance was set to euclidean and the linkage to Ward. In figure <a href="#fig:topic/gtex/oversigma_10tissue/metric_scores_all" data-reference-type="ref" data-reference="fig:topic/gtex/oversigma_10tissue/metric_scores_all">[fig:topic/gtex/oversigma_10tissue/metric_scores_all]</a> are reported the V-measure score for all the algorithms described until this point. What is clear is that the hierarchical Stochastic Block Model performs better than all the others, LDA gains a little worse score and hierarchical clustering is the worst of the three. It is highly expected that all models are quite different from the random model. The fact that hSBM and LDA have higher scores suggests that a topic model approach can be very useful in this kind of problems.</p>
+
+<figure>
+<embed src="pictures/topic/gtex/oversigma_10tissue/metric_scores_all.pdf" /><figcaption>Scores across hierarchy for all algorithms used in this work.</figcaption>
+</figure>
+<p><span id="fig:topic/gtex/oversigma_10tissue/metric_scores_all" label="fig:topic/gtex/oversigma_10tissue/metric_scores_all">[fig:topic/gtex/oversigma_10tissue/metric_scores_all]</span></p>
+<p>Note that LDA and hierarchical cluster models were not fine-tuned and default parameters were used. Maybe a fine-tuning of these packages can lead to better and more satisfying results. This analysis, considering that the comparison was made with hierarchical Stochastic Block Model which is non-parametric and needs no setting, was done without any fine-tuning and standard parameter were set. The fact reveals another good point of hSBM, it extracts not only better clusters, but also the parameters necessary to this kind of model. Moreover, the number of clusters was set to the one obtained from hSBM; LDA is not able to select the number of clusters.</p>
+
+<h3 id="topics">Topics</h3>
+<p>The analyses up to this point considered only one of the two sides of the bipartite network; nothing was told yet about the genes (words in topic models). The model outputs some clusters of genes, though. From now on these clusters of genes will be called topics.</p>
+<p>If one has got a set of genes to catch any important information and discover if there is any biological meaning behind it, it is possible to perform an enrichment test. Enrichment analysis checks whether an input set of genes significantly overlaps with annotated gene sets. In this work tests were made using Gene Set Enrichment Analysis (GSEA) <span class="citation" data-cites="subramanian2005gene"></span> python tool <span class="citation" data-cites="Kuleshov2016"></span>, which performs a Fisher exact test (hypergeometric test). The Benjamini-Hochberg adjusted P-values is reported. Genes’ annotation terms were searched in the following sets:</p>
+<ul class="incremental">
+<li><p>GO<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> Molecular Function 2018</p></li>
+<li><p>GO Biological Process 2018</p></li>
+<li><p>GO Cellular Component 2018</p></li>
+<li><p>Human Phenotype Ontology</p></li>
+<li><p>Tissue Protein Expression from Human Proteome Map</p></li>
+<li><p>KEGG 2019 Human</p></li>
+<li><p>NCI-60 Cancer Cell Lines</p></li>
+<li><p>GTEx Tissue Sample Gene Expression Profiles up</p></li>
+<li><p>GTEx Tissue Sample Gene Expression Profiles down,</p></li>
+</ul>
+<p>in particular the two latter contain annotation specific for GTEx dataset <span class="citation" data-cites="Ardlie2015"></span>.</p>
+<p>In tables <a href="#tab:topic/enrich/pancreas" data-reference-type="ref" data-reference="tab:topic/enrich/pancreas">[tab:topic/enrich/pancreas]</a>, <a href="#tab:topic/enrich/brain" data-reference-type="ref" data-reference="tab:topic/enrich/brain">[tab:topic/enrich/brain]</a> and <a href="#tab:topic/enrich/blood" data-reference-type="ref" data-reference="tab:topic/enrich/blood">[tab:topic/enrich/blood]</a> examples of enrichment test results. Each table is a topic by hSBM. On the results it is put a P-value cut at <span class="math inline">0.05</span> and terms are sorted by the adjusted P-value.</p>
+
+<table>
+<caption>Enrichment test of a topic. It is clear the enrichment for pancreas-related gene sets.<span label="tab:topic/enrich/pancreas"></span></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Term</th>
+<th style="text-align: center;"></th>
+<th style="text-align: right;">Gene set</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 60-69 years</td>
+<td style="text-align: center;">1E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas female 40-49 years</td>
+<td style="text-align: center;">3E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 40-49 years</td>
+<td style="text-align: center;">5E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 30-39 years</td>
+<td style="text-align: center;">1E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas female 20-29 years</td>
+<td style="text-align: center;">1E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">1E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas female 30-39 years</td>
+<td style="text-align: center;">1E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">2E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 40-49 years</td>
+<td style="text-align: center;">2E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 30-39 years</td>
+<td style="text-align: center;">2E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">2E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas female 20-29 years</td>
+<td style="text-align: center;">2E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 40-49 years</td>
+<td style="text-align: center;">3E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas female 50-59 years</td>
+<td style="text-align: center;">4E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">4E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">4E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas female 60-69 years</td>
+<td style="text-align: center;">5E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas female 50-59 years</td>
+<td style="text-align: center;">5E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pancreas male 50-59 years</td>
+<td style="text-align: center;">5E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pancreas male 30-39 years</td>
+<td style="text-align: center;">6E-18</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<caption>Enrichment test of a topic. It is clear the enrichment for brain-related gene sets.<span label="tab:topic/enrich/brain"></span></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Term</th>
+<th style="text-align: center;"></th>
+<th style="text-align: right;">Gene set</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">brain female 40-49 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain male 50-59 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain female 40-49 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 40-49 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain male 60-69 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain male 50-59 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain male 50-59 years</td>
+<td style="text-align: center;">6E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain male 60-69 years</td>
+<td style="text-align: center;">7E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain male 50-59 years</td>
+<td style="text-align: center;">7E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain male 20-29 years</td>
+<td style="text-align: center;">7E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">8E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">8E-05</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">1E-04</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">1E-04</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">brain female 60-69 years</td>
+<td style="text-align: center;">1E-04</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">brain male 60-69 years</td>
+<td style="text-align: center;">1E-04</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+</tbody>
+</table>
+
+
+<table>
+<caption>Enrichment test of a topic. It is clear the enrichment for blood-related gene sets.<span label="tab:topic/enrich/blood"></span></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Term</th>
+<th style="text-align: center;"></th>
+<th style="text-align: right;">Gene set</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">blood male 50-59 years</td>
+<td style="text-align: center;">3E-23</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood male 50-59 years</td>
+<td style="text-align: center;">3E-23</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood male 40-49 years</td>
+<td style="text-align: center;">3E-21</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood male 60-69 years</td>
+<td style="text-align: center;">9E-21</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood male 40-49 years</td>
+<td style="text-align: center;">3E-20</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood female 60-69 years</td>
+<td style="text-align: center;">4E-20</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood male 60-69 years</td>
+<td style="text-align: center;">4E-20</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood female 50-59 years</td>
+<td style="text-align: center;">5E-20</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood female 50-59 years</td>
+<td style="text-align: center;">1E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood male 60-69 years</td>
+<td style="text-align: center;">1E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood male 60-69 years</td>
+<td style="text-align: center;">1E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood female 60-69 years</td>
+<td style="text-align: center;">1E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood male 60-69 years</td>
+<td style="text-align: center;">2E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood male 50-59 years</td>
+<td style="text-align: center;">2E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood female 40-49 years</td>
+<td style="text-align: center;">2E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood female 40-49 years</td>
+<td style="text-align: center;">2E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood female 60-69 years</td>
+<td style="text-align: center;">2E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood male 30-39 years</td>
+<td style="text-align: center;">3E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood female 50-59 years</td>
+<td style="text-align: center;">5E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blood female 60-69 years</td>
+<td style="text-align: center;">5E-19</td>
+<td style="text-align: right;">GTEx Tissue Sample Gene Expression Profiles up</td>
+</tr>
+</tbody>
+</table>
+<p>Tests were made on the topics at the level of the hierarchy which obtained the higher V-measure score on the sample side clustering. These results are very interesting, these enrichment tests demonstrate that not only the sample side of the network is well clustered but only the topics have a non-trivial meaning.</p>
+<p>So also the topics are related to the tissues and somehow are tissue-specific. In the next examples, the relationship between the topics and the samples will be further investigated. In particular following what was done by <span class="citation" data-cites="dey2017visualizing"></span> the importance of each topic inside each sample, the <span class="math inline"><em>P</em>(topic|sample)</span>, will be discussed.</p>
+
+<p>Separate healthy tissues is a good exercise and a good benchmark for models, but the real goals would be to be able to classify diseased samples. It is not always easy to identify and classify cancer tissues. In particular, being able to separate tumour sub-types would be the ideal pursuance of this work. So let’s switch to the analysis of diseased samples.</p>
+
+<h3 id="run-on-the-cancer-genomics-atlas">Run on The Cancer Genomics Atlas</h3>
+<p>The same pipeline described so far can be applied at other datasets. In this section, the hSBM model is run on some samples from the TCGA. The principle is the same, but here samples come from cancer tissues, so there must be more complexity and variability behind the data. Moreover, being able to separate cancer samples is not always easy clinically and develop a method to do this can be fascinating and useful for the scientific community <span class="citation" data-cites="Farver2018"></span>.</p>
+<p>First of all, let’s take a look at the V-measure scores. As shown in figure <a href="#fig:topic/tcga/metric" data-reference-type="ref" data-reference="fig:topic/tcga/metric">[fig:topic/tcga/metric]</a> the maximum score is <span class="math inline"> ≃ 0.8</span>, which is quite good, comparable with the healthy GTEx scenario. The publishers of the dataset <span class="citation" data-cites="Farver2018"></span> obtained similar score considering just homogeneity. In this dataset, there isn’t a sub-tissue label as before, but a <em>disease type</em> cancer information is available. The disease type separation happens but obtain a lower score; the fact that there is no evident difference between Zipf’s laws when separating data by disease type (previously shown in figure <a href="#fig:structure/tcga/fraction_of_trascriptome_disease" data-reference-type="ref" data-reference="fig:structure/tcga/fraction_of_trascriptome_disease">[fig:structure/tcga/fraction_of_trascriptome_disease]</a>) means that all genes contribute to define this specific label. The hierarchic approach which separates firstly tissues and then cancer type is here necessary and useful. In fact, looking at the label <em>disease tissue</em> that considers the cancer types inside each tissue the result is very encouraging. In fact the score is quite high and the results promising. To gain better scores in this situation where samples are affected by the cancer complexity and heterogeneity is probably necessary to add more genes to the network.</p>
+
+<figure>
+<embed src="pictures/topic/tcga/metric.pdf" id="fig:topic/tcga/metric" /><figcaption>Score across the hierarchy for TCGA. In blue the primary site labels were considered, in red the disease types and in purple the mix of the two.<span label="fig:topic/tcga/metric"></span></figcaption>
+</figure>
+
+<p>Looking directly into the cluster composition the tissue separation is quite good and visually appreciable. In figure <a href="#fig:topic/tcga/fraction_clustercomposition_l4_primary_site" data-reference-type="ref" data-reference="fig:topic/tcga/fraction_clustercomposition_l4_primary_site">[fig:topic/tcga/fraction_clustercomposition_l4_primary_site]</a> clusters at the higher level of the hierarchy. Some tissues are well separated at this point, at the same time the model seems to group the samples by system: digestive system is the more evident.</p>
+
+<figure>
+<embed src="pictures/topic/tcga/fraction_clustercomposition_l4_primary_site.pdf" /><figcaption>Clusters of diseased tissues at the higher level of the hierarchy. Breast is well separated, such as skin and brain. Cluster 9 contains digestive systems samples from pancreas and colon.</figcaption>
+</figure>
+<p><span id="fig:topic/tcga/fraction_clustercomposition_l4_primary_site" label="fig:topic/tcga/fraction_clustercomposition_l4_primary_site">[fig:topic/tcga/fraction_clustercomposition_l4_primary_site]</span></p>
+<p>Going deeper in the hierarchy the tissue separation becomes visually appreciable and all the clusters are almost tissue-specific. This is clear in figure <a href="#fig:topic/tcga/fraction_clustercomposition_l3_primary_site" data-reference-type="ref" data-reference="fig:topic/tcga/fraction_clustercomposition_l3_primary_site">[fig:topic/tcga/fraction_clustercomposition_l3_primary_site]</a> which shows the primary site of the tumours well classified.</p>
+
+<figure>
+<embed src="pictures/topic/tcga/fraction_clustercomposition_l3_primary_site.pdf" /><figcaption>Normalized cluster composition from diseased samples. The primary site is here reported.</figcaption>
+</figure>
+<p><span id="fig:topic/tcga/fraction_clustercomposition_l3_primary_site" label="fig:topic/tcga/fraction_clustercomposition_l3_primary_site">[fig:topic/tcga/fraction_clustercomposition_l3_primary_site]</span></p>
+<p>Going further, deep in the hierarchy the disease type associated with each site emerges. In figure <a href="#fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue" data-reference-type="ref" data-reference="fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue">[fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue]</a> it is shown that each tissue is then separated between different disease types. Note that the pure disease type classification is not useful since certain types of tumours can happen in different sites. In this case, the power of a hierarchic approach is evident: firstly the sites are retrieved, but going further also the disease type is classified quite well.</p>
+
+<figure>
+<embed src="pictures/topic/tcga/fraction_clustercomposition_l2_disease_tissue.pdf" /><figcaption>Normalized cluster composition of diseased tissue or couple site and disease type.</figcaption>
+</figure>
+<p><span id="fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue" label="fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue">[fig:topic/tcga/fraction_clustercomposition_l2_disease_tissue]</span></p>
+
+<p>At this point when the model is demonstrated to work on healthy and diseased samples, it can be interesting to study merged healthy and diseased labels and examine how the model behaves when healthy and cancer samples are merged. It can be very useful to determine when the model identifies a diseased sample and when it is able to classify it properly.</p>
+
+<h3 id="healthy-and-diseased-together">Healthy and diseased together</h3>
+<p>In the previous sections it was demonstrated that the model works on samples from different datasets and performs well on both healthy and diseased samples. It can be interesting to see how the model behave when both kinds of data are presented to it. The goal of this part of work is to identify which genes or topics identify and distinguish tissues themselves and which drive cancer and are necessary to understand the differentiation between cancer types.</p>
+<p>For this analysis data from GTEx and TCGA were still analysed, but from a particular dataset available from <span class="citation" data-cites="Wang2017"></span> were authors tried to unify the normalization process from different dataset and sources <span class="citation" data-cites="Betel2018"></span>. This is, in practice, a mixed bigger dataset; note that not every tissue is present in both GTEx and TCGA, so only common tissues are considered here. The first label considered at this point is the tissue primary site, forgetting about its status (healthy or diseased), the secondary label refers to the tissues but separates their status. For example, a healthy brain sample from GTEx and a cancer brain from TCGA share the <em>brain</em> primary site label but have different secondary site assignments.</p>
+<p>Once the model is run, the first element to look at is the V-measure; in figure <a href="#fig:topic/merged/metric_scores_primarysite" data-reference-type="ref" data-reference="fig:topic/merged/metric_scores_primarysite">[fig:topic/merged/metric_scores_primarysite]</a> the result for the primary site is quite satisfying: clusters are very homogeneous and V-measure’s peak is near <span class="math inline">0.8</span>.</p>
+
+<figure>
+<embed src="pictures/topic/merged/metric_scores_primarysite.pdf" /><figcaption>V-measure score for the run with merged healthy and diseased samples. Homogeneity, completeness and mutual information are represented.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/metric_scores_primarysite" label="fig:topic/merged/metric_scores_primarysite">[fig:topic/merged/metric_scores_primarysite]</span></p>
+<p>Estimating the score also for the secondary site, or rather for the tissues with the health state and just the healthy/disease label lead to figure <a href="#fig:topic/merged/metric_scores" data-reference-type="ref" data-reference="fig:topic/merged/metric_scores">[fig:topic/merged/metric_scores]</a>. This result is quite interesting, first of all even the secondary label is well classified and this happens at deeper level respect to the one where tissues are separated; this means that firstly samples are separated by tissues then by their health state. This is very interesting because it is an evidence that the model recognize tissues, never mind where they come from, moreover the difference between datasets are not important here and so the normalization made by <span class="citation" data-cites="Betel2018"></span> brings no problems at this level. Moreover, looking just at the health status label the score is quite low (below <span class="math inline">0.2</span>) so the model does not take over the difference between datasets.</p>
+
+<figure>
+<embed src="pictures/topic/merged/metric_scores.pdf" /><figcaption>V-measure score for the run with merged healthy and diseased samples. Primary site (brain, blood, pancreas…) labels are compared with secondary labels (healthy brain, brain cancer, healthy blood, blood cancer, healthy pancreas, pancreas cancer…). The health status label (healthy / diseased) is plotted.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/metric_scores" label="fig:topic/merged/metric_scores">[fig:topic/merged/metric_scores]</span></p>
+<p>To conclude the score analysis a mixed score is considered (the homogeneity of the primary site is considered with the completeness of secondary label) so that the score increase if going deeper in the hierarchy the separation of a homogeneous cluster brings to the separation of the refined labels. In figure <a href="#fig:topic/merged/metric_scores_all" data-reference-type="ref" data-reference="fig:topic/merged/metric_scores_all">[fig:topic/merged/metric_scores_all]</a> this score is compared with the one obtained with LDA, hierarchical clustering and the null model. What happened here is that hierarchical Stochastic Block Model performs the best, LDA approach is good, hierarchical clustering has a quite bad score and all are better than shuffling null model.</p>
+
+<figure>
+<embed src="pictures/topic/merged/metric_scores_all.pdf" /><figcaption>V-measure score for run with merged healthy and diseased samples. LDA, hierarchical clustering and null model for comparison.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/metric_scores_all" label="fig:topic/merged/metric_scores_all">[fig:topic/merged/metric_scores_all]</span></p>
+
+<h5 id="gene-sets">Gene sets</h5>
+<p>analysis is then performed. Considering the P-value of the term which P-value was the lowest, one P-value for each topic at the level of the hierarchy where the V-measure was maximized, it is possible to realize the <span class="math inline"> − <em>L</em><em>o</em><em>g</em><sub>10</sub>(<em>P</em> − <em>v</em><em>a</em><em>l</em><em>u</em><em>e</em>)</span> histogram. The tests are quite interesting, in fact there is an enrichment with a P-value lower than <span class="math inline">0.05</span> in most cases, so it is possible to assert that topics carry some interesting information more than expected by picking genes at random.</p>
+
+<figure>
+<img src="pictures/topic/merged/pvaluescrosstopic.png" alt="-Log_{10}(\mathrm{P-value}) of the term with the lowest P-value in each topic. In orange the standard 0.05 threshold." id="fig:topic/merged/pvaluescrosstopic" /><figcaption><span class="math inline"> − <em>L</em><em>o</em><em>g</em><sub>10</sub>(<em>P</em> − <em>v</em><em>a</em><em>l</em><em>u</em><em>e</em>)</span> of the term with the lowest P-value in each topic. In orange the standard <span class="math inline">0.05</span> threshold.<span label="fig:topic/merged/pvaluescrosstopic"></span></figcaption>
+</figure>
+<p>In figure <a href="#fig:topic/merged/pvaluecategories" data-reference-type="ref" data-reference="fig:topic/merged/pvaluecategories">[fig:topic/merged/pvaluecategories]</a> are shown the categories of the terms with lower P-values. This explains what aspect of the samples a topic describes. The majority of terms found in topics comes from the GTEx annotation for tissue expression, many are from GO biological process, GO molecular function and some from Human phenotype ontology. Nevertheless, some topics present enrichment for <em>NCI-60 Cancer Cell Lines</em>, meaning that these topics contains genes that are somehow cancer-related.</p>
+
+<figure>
+<embed src="pictures/topic/merged/pvaluecategories.pdf" id="fig:topic/merged/pvaluecategories" /><figcaption>Categories of the terms with lower P-values in each topic.<span label="fig:topic/merged/pvaluecategories"></span></figcaption>
+</figure>
+<p>Going forward in the analysis it is possible to perform enrichment test with other tools such as DAVID <span class="citation" data-cites="huang2008bioinformatics huang2009systematic"></span>. Results are similar to the ones retrieved before. Tissues related terms are found also using this tool and this confirms the absence of tool, sets, or categories related biases. In figures <a href="#fig:topic/merged/DAVID_lung" data-reference-type="ref" data-reference="fig:topic/merged/DAVID_lung">[fig:topic/merged/DAVID_lung]</a>, <a href="#fig:topic/merged/DAVID_brain" data-reference-type="ref" data-reference="fig:topic/merged/DAVID_brain">[fig:topic/merged/DAVID_brain]</a> and <a href="#fig:topic/merged/DAVID_stomach" data-reference-type="ref" data-reference="fig:topic/merged/DAVID_stomach">[fig:topic/merged/DAVID_stomach]</a> the result from DAVID enrichment analysis. Finally, it is interesting to notice that topics are quite small (order <span class="math inline"> ≃ 20</span> genes), so there are no biases that can appear doing enrichment tests on big sets.</p>
+
+<figure>
+<embed src="pictures/topic/merged/DAVID_lung.pdf" /><figcaption>Enrichment test on DAVID platform reveals lung-related genes.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/DAVID_lung" label="fig:topic/merged/DAVID_lung">[fig:topic/merged/DAVID_lung]</span></p>
+
+<figure>
+<embed src="pictures/topic/merged/DAVID_brain.pdf" /><figcaption>Enrichment test on DAVID platform reveals brain-related genes.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/DAVID_brain" label="fig:topic/merged/DAVID_brain">[fig:topic/merged/DAVID_brain]</span></p>
+
+<figure>
+<embed src="pictures/topic/merged/DAVID_stomach.pdf" /><figcaption>Enrichment test on DAVID platform reveals stomach-related genes.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/DAVID_stomach" label="fig:topic/merged/DAVID_stomach">[fig:topic/merged/DAVID_stomach]</span></p>
+
+<h5 id="the-link-between-topics-and-samples">The link between topics and samples</h5>
+<p>has not been investigated so far. The probability distribution of each sample over topics <span class="math inline"><em>P</em>(topic|sample)</span> can be estimated as <br /><span class="math display">$$P(\text{topic}| \text{sample})=\frac{\text{\# of edges on sample from topic}}{\text{\# of edges on sample}}$$</span><br /> after the model is run. Moreover, an average of all samples belonging to a topic can be estimated: <span class="math inline">$P(\text{topic}| \text{tissue})=\frac{1}{\left|tissue\right|}\sum_{sample\in tissue}P(\text{topic}| \text{sample})$</span>.</p>
+<p>In figure <a href="#fig:topic/merged/lifeplot" data-reference-type="ref" data-reference="fig:topic/merged/lifeplot">[fig:topic/merged/lifeplot]</a> it is plotted <span class="math inline"><em>P</em>(topic|tissue)</span> for the first topics. What is clear is that in all samples there is a global trend without many differences between tissues, the topic expression differences between tissues are slightly appreciable at this point. This new point of view carries a profound and very informative message: in nature every tissue needs somehow the expression of all the genes (there is a global trend) and small differences between genes’ expression are fine-tuned to obtain different tissues. In other words, it is possible to describe human tissues assuming that all genes are important and that is the fine structure of their interactions which realizes the complexity observed. In the case of diseased samples, this suggests that it should be possible to discover a cancer type not looking at a few marker genes but looking at the whole expression profile of all the genes.</p>
+
+<figure>
+<embed src="pictures/topic/merged/lifeplot.pdf" id="fig:topic/merged/lifeplot" /><figcaption><span class="math inline"><em>P</em>(topic|tissue)</span> for some topic coloured by tissue. It is evident a global trend and in some topics there are little differences between tissues.<span label="fig:topic/merged/lifeplot"></span></figcaption>
+</figure>
+<p>In order to better understand these differences between topic expression in different tissues some kind of normalization inside each topic is needed. Here it was chosen to study inside each topic which tissues are most differently expressed than average. To do so from each <span class="math inline"><em>P</em>(topic|tissue)</span> it was subtracted the average topic expression <span class="math inline">mean<sub>tissue</sub>(topic) = ⟨<em>P</em>(topic|tissue)⟩<sub><em>t</em><em>i</em><em>s</em><em>s</em><em>u</em><em>e</em></sub></span> and the result was divided by the standard deviation <span class="math inline"><em>σ</em><sub>tissue</sub>(topic)</span>. In figure <a href="#fig:topic/merged/lifeplot_normalised_level3_hd" data-reference-type="ref" data-reference="fig:topic/merged/lifeplot_normalised_level3_hd">[fig:topic/merged/lifeplot_normalised_level3_hd]</a> some most characteristic topics are reported. This analysis reveals that tissues have a different behaviour than average in different topics. When a tissue is distant from the average in a topic, usually that topic means something for that particular tissue. This analysis is useful to determine what is the role of each topic, moreover if a topic reveals cancer the difference between the healthy tissue and its diseased counterpart emerges as shown in the figure.</p>
+
+<figure>
+<embed src="pictures/topic/merged/lifeplot_normalised_level3_hd.pdf" /><figcaption><span class="math inline">$\frac{\left|P(topic | tissue) - \left\langle P(\text{topic}| \text{tissue})\right\rangle_{tissue}\right|}{\sigma_{\text{tissue}}(\text{topic})}$</span> or the distance of each tissue from the average tissue expression in each topic. Some low occurrence topics are reported. Note <em>breast</em> cancer and healthy <em>thyroid</em> emerge.</figcaption>
+</figure>
+<p><span id="fig:topic/merged/lifeplot_normalised_level3_hd" label="fig:topic/merged/lifeplot_normalised_level3_hd">[fig:topic/merged/lifeplot_normalised_level3_hd]</span></p>
+<p>The study of the relationship between topics and samples concludes the topic modelling analysis. In the next section, all results achieved will be summarized.</p>
+
+<h2 id="sec:topic/results">Results</h2>
+<p>The analysis using topic modelling leads to many interesting results.</p>
+<p>The first result achieved is the development of a model that can reproduce the distinction between different tissues from RNA-sequencing datasets. This is evident looking at the cluster composition. Moreover, if one defines more objective metrics based on the entropy the score is quite high, this encouraged further analysis. In particular, in many cases, the model not only reproduces the main tissue classification but was demonstrated that at different layers of the hierarchy even the sub-tissue labels are distinguished. The mutual information score confirms this model’s behaviour: tissues are separated at a higher level of the hierarchy and in the deeper layers the sub-tissues are distinguished.</p>
+<p>A null model realized shuffling the labels confirms that the results achieved are non-trivial. Studying some quantities such as the fraction of cluster with the same label or the number of labels in a cluster and comparing these with the null models’ ones it is possible to affirm that clusters are more homogeneous than expected.</p>
+<p>The output of the model presented in this work (hSBM) was compared with more standard approaches such as Latent Dirichlet Allocation and hierarchical clustering. hSBM outputs better results than standard approaches, moreover, it gains higher scores. An interesting fact is that topic modelling (both hSBM and LDA) is better than standard algorithms. This confirms the good quality of a topic model approach and, inside topic models, hSBM seems better than LDA. All algorithms are distant from the null model as highly expected.</p>
+<p>It was also demonstrated that not only clustering of the sample was satisfying but even the genes’ classification is interesting. If one looks at the block of genes, the so-called topics, enrichment tests confirm that topics represent an interesting group of genes. In particular, some dataset-specific labels were found in GTEx analysis.</p>
+<p>In the end, the relationship between samples and topics reveals interesting facts. The distribution of the topic abundance across samples reveals that it is possible to describe the tissue differentiation as a complex mechanism of relationships between genes’ expression. This isn’t possible using an LDA approach where genes can have either a uniform or peaked distribution. Biologically this means that all genes are necessary everywhere and a fine-tuning of their expression differentiate by tissue.</p>
+<p>The sample clustering, topic analysis and the relationship between samples and topics were made on three different datasets. GTEx containing just healthy samples, TCGA containing cancer samples and <span class="citation" data-cites="Wang2017"></span> which merged the two. Analysing the dataset with both healthy and diseased samples the differentiation between tissues is still evident and going deeper in the hierarchy the separation involves also the healthy or diseased status. The tissue separation in the firsts layer confirms that what the algorithm does is separating tissues and there isn’t a bias involving differences between datasets. Each of these cases reveals interesting facts. Being able to reproduce GTEx labels is a good benchmark of the quality of the algorithm; to accurately reproduce TCGA labels is the real challenge that can improve scientific community knowledge and here was partially achieved. Analysing both at the same time helps in understanding which genes are somehow involved in cancer development.</p>
+<h1 id="ch:conclusions">Conclusions</h1>
+<p>Finally, this work demonstrates that RNA-sequencing datasets can be analysed from a component systems point of view.</p>
+<p>Gene expression data show typical trends well-known, for example, in linguistics, moreover some interesting biological signatures were found. RNA-sequencing datasets have a great core of protein-coding genes that express everywhere, this is evident looking at <span class="math inline"><em>U</em></span>s or at Heaps’ law. The presence of a power law distribution in the ranked abundances, the so-called Zipf’s law is observed and characterizes the distribution of genes expression data.</p>
+<p>In the first part of this work, a dataset (GTEx) containing samples from healthy tissues was analysed. One of the most interesting evidence was the presence of different Zipf’s law when considering each tissue independently. Very similar results were obtained considering TCGA, a dataset containing thousands of cancer samples.</p>
+<p>The power law distributions and the similarities with what was found in linguistics encouraged to explore the possibility of using a topic model approach to reveal the hidden structure of these datasets. This approach, originally developed to classify text, was useful both to find clusters of samples that share some properties and to find the relation between genes and samples.</p>
+<p>Many goals were achieved during the topic modelling analysis. The pipeline begins filtering the data and selecting highly variable genes, then this network is processed with hierarchical Stochastic Block Model algorithm, then clusters are analysed and enrichment tests are performed; in the meanwhile, an objective and a well-defined score is estimated. All the analysis confirmed that this approach is successful. Three different datasets were analysed and, in every case, the model performed well. What was found is that clusters contain samples that share some properties, in particular, the tissue they are related to; enrichment tests found tissue-related terms in the topics along with Gene Ontology terms. The relation between genes and samples is non-trivial and revealed a complex structure in gene expression data. Nevertheless, this structure is sufficient to discriminate between tissues.</p>
+<p>In conclusion, topic modelling reveals itself as a useful approach to find the hidden structure of gene expression data. The prior analysis to select highly variables genes make it possible to run the algorithm faster without losing necessary information.</p>
+<p>During this work the foundations have been laid for further analyses; for example, it should be interesting to study the variability of gene expression between tissues and between individual, ideally genes that change their behaviour inter different tissues and not intra the same tissue are more likely tissue-specific. Trying to remove the sampling effect from the data could be another interesting analysis, in particular reproducing <span class="citation" data-cites="Grilli"></span> on RNA-sequencing data could lead to the removal of sampling effects, here this was done just considering the sampling as a <span class="math inline"><em>C</em><em>V</em><sup>2</sup></span> boundary. Derive analytically the expression of the bound could be another goal. Use an innovation dynamic point of view to study the matrices discussed in this work can lead to other interesting results. Applying the model to single cell RNA-sequencing data, maybe from other kinds of animal, will present new challenges not present in bulk RNA-sequencing datasets considered here. Reproduce mouse data from <span class="citation" data-cites="Scialdone2016"></span> could be an interesting starting point. Maybe it worth to run the model on null data where just sampling is present and verify if there is some bias on the model due to the presence of the sampling.</p>
+<p>The main future development of this work is indeed to run the model on a specific cancer tissue and find cancer subtypes, for instance, the breast or colon-rectal ones. Obtaining a hierarchy that at some level is able to identify cancer sub-types would be an ideal and great goal surely able to push further the human knowledge about cancer.</p>
+
+<h1 id="app:hsbm">Hierarchical stochastic block model</h1>
+<p>The algorithm called hierarchic Stochastic Block Model (hSBM) from <span class="citation" data-cites="gerlach2018network"></span> is hereby summed up.</p>
+<p>The first step of hierarchical stochastic block model, as discussed in <span class="citation" data-cites="peixoto2014efficient"></span>, is to create a bipartite network <span class="math inline"><em>G</em></span> with two kinds of nodes: <strong>words</strong> and <strong>documents</strong>. Every time a word <span class="math inline"><em>w</em></span> is present in a document <span class="math inline"><em>d</em></span> an edge <span class="math inline"><em>e</em><sub><em>w</em><em>d</em></sub></span> is created. If a word count in the entire corpus is under a certain threshold, that word could be ignored (this is not done in this work). The aim is to find a partition <span class="math inline"><em>b</em> ∈ {<em>b</em><sub><em>i</em></sub>}</span> with <span class="math inline"><em>B</em> = |{<em>b</em><sub><em>i</em></sub>}|</span> blocks.</p>
+<p>This model belongs to the so-called <em>generative models</em>: given the data, the model should generate a network <span class="math inline"><em>G</em></span> with probability <span class="math inline"><em>P</em>(<em>G</em>|<em>θ</em>, <em>b</em>)</span>, where <span class="math inline"><em>b</em></span> is the partition and <span class="math inline"><em>θ</em></span> any additional parameter of the model.</p>
+<p>Using the well-known Bayes theorem one could estimate the probability that an observed network was generated by the partition <span class="math inline"><em>b</em></span>: <br /><span class="math display">$$\label{eq:PbonG}
+  P(b,\theta|G)=\frac{P(G|b,\theta)\overbrace{P(b,\theta)}^{prior}}{\underbrace{P(G)}_{\sum_{\theta}P(G|\theta, b)P(\theta, b)}}$$</span><br /> defining the amount of information needed to describe the data as the description length <br /><span class="math display"><em>Σ</em> =  − <em>l</em><em>n</em><em>P</em>(<em>G</em>|<em>b</em>, <em>θ</em>) − <em>l</em><em>n</em><em>P</em>(<em>b</em>, <em>θ</em>)</span><br /> the <a href="#eq:PbonG" data-reference-type="ref" data-reference="eq:PbonG">[eq:PbonG]</a> can be written as <span class="math inline">$\frac{e^{-\Sigma}}{P(G)}$</span>, so maximizing the posterior probability is equivalent to minimize the description length <a href="#eq:descriptionlenght" data-reference-type="ref" data-reference="eq:descriptionlenght">[eq:descriptionlenght]</a>. The probability of obtaining a graph from a set of parameters is <span class="math inline">$P(G|b,\theta)=\frac{1}{\Omega(A,\{n_r\})}$</span>, where <span class="math inline"><em>Ω</em>(<em>A</em>, {<em>n</em><sub><em>r</em></sub>})</span> is the number of graphs that is possible to generate with adjacency matrix <span class="math inline"><em>A</em></span> and <span class="math inline">{<em>n</em><sub><em>r</em></sub>}</span> the counts distribution of block partition <span class="math inline">{<em>b</em><sub><em>i</em></sub>}</span> sizes. Note that the description length depends on the entropy: <br /><span class="math display"><em>Σ</em> = <em>S</em> − <em>l</em><em>n</em><em>P</em>(<em>θ</em>),</span><br /> So minimize <span class="math inline"><em>S</em></span> one minimizes <span class="math inline"><em>Σ</em></span> and maximize the posterior <span class="math inline"><em>P</em>(<em>θ</em>|<em>G</em>)</span>. In case of a weighted network the likelihood becomes <span class="math inline"><em>P</em>(<em>G</em>, <em>x</em>|<em>b</em>, <em>θ</em>)</span>, where <span class="math inline"><em>x</em></span> are the weights.</p>
+<h5 id="algorithm">Algorithm</h5>
+<p><br />
+First of all, a <span class="math inline"><em>B</em> × <em>B</em></span> matrix is created. The entry <span class="math inline"><em>e</em><sub><em>r</em><em>s</em></sub></span> of this matrix represents the number of links between nodes of group <span class="math inline"><em>r</em></span> and nodes of group <span class="math inline"><em>s</em></span>, with <span class="math inline"><em>r</em>, <em>s</em> ∈ {<em>b</em><sub><em>i</em></sub>}</span>. At the beginning, <span class="math inline"><em>B</em></span> groups are formed at random and the initial <span class="math inline"><em>B</em></span> is a hyper-parameter of the model.</p>
+
+<figure>
+<embed src="pictures/topic/peixioto_ers.pdf" id="fig:hsbm-ers" /><figcaption>Example of an edge’s matrix from <span class="citation" data-cites="peixoto_graph-tool_2014"></span>.<span label="fig:hsbm-ers"></span></figcaption>
+</figure>
+<p>It is useful to define a traditional entropy: <br /><span class="math display">$$\label{eq:hSBMentropyt}
+  S_t=\frac{1}{2}\Sigma_{r,s} n_rn_sH\left(\frac{e_{rs}}{n_rn_s}\right)$$</span><br /> where <span class="math inline"><em>n</em><sub><em>r</em></sub></span> is the number of nodes in groups <span class="math inline"><em>r</em></span>, <span class="math inline"><em>e</em><sub><em>r</em><em>s</em></sub></span> is the number of edges between nodes of group <span class="math inline"><em>r</em></span> and nodes of group <span class="math inline"><em>s</em></span>, and <span class="math inline"><em>H</em>(<em>x</em>) =  − <em>x</em><em>l</em><em>n</em>(<em>x</em>) − (1 − <em>x</em>)<em>l</em><em>n</em>(1 − <em>x</em>)</span>. This entropy is equivalent to the micro-canonical entropy of a system with <span class="math inline"><em>Ω</em>(<em>A</em>, {<em>n</em><sub><em>r</em></sub>})</span> accessible states <span class="math inline"><em>S</em><sub><em>t</em></sub> = <em>L</em><em>n</em><em>Ω</em></span>.</p>
+<p>The algorithm uses a Markov Chain Monte Carlo to minimize this entropy. Made it simple, at each step a node changes block and the new configuration is accepted if <span class="math inline"><em>S</em></span> is decreased.</p>
+<p>Note that <a href="#eq:hSBMentropyt" data-reference-type="ref" data-reference="eq:hSBMentropyt">[eq:hSBMentropyt]</a> can be corrected taking care of degree distribution obtaining corrected entropy <span class="math inline"><em>S</em><sub><em>c</em></sub></span> <br /><span class="math display">$$S_c=-\Sigma_{r,s}\frac{e_{rs}}{2}-\Sigma_k
+  N_kln(k!)-\frac{1}{2}\Sigma_{r,s}e_{rs}ln\left(\frac{e_{rs}}{e_re_s}\right),$$</span><br /> being <span class="math inline"><em>k</em></span> the degree distribution.</p>
+<h5 id="how-to-change-the-group-of-a-node">How to change the group of a node?</h5>
+<p><br />
+At each step according to <span class="citation" data-cites="peixoto2014efficient"></span> node <span class="math inline"><em>i</em></span> can change group from <span class="math inline"><em>r</em></span> to <span class="math inline"><em>s</em></span> with a probability <br /><span class="math display">$$\label{eq:Prst}
+  P(r\to s|t)=\frac{e_{ts}+\epsilon}{e_t+\epsilon B}$$</span><br /> where <span class="math inline"><em>j</em></span> is a random neighbour of <span class="math inline"><em>i</em></span>: <span class="math inline"><em>j</em> ∈ <em>N</em><sub><em>i</em></sub></span>, <span class="math inline"><em>t</em> ∈ {<em>b</em><sub><em>j</em></sub>}</span> its block as defined in <span class="citation" data-cites="peixoto2014efficient"></span>. <span class="math inline"><em>ϵ</em></span> is a parameter that according to <span class="citation" data-cites="peixoto2017nonparametric"></span> it hasn’t significant impact in the algorithm, provided it is sufficiently small. Equation <a href="#eq:Prst" data-reference-type="ref" data-reference="eq:Prst">[eq:Prst]</a> can be rewritten as <br /><span class="math display">$$P(r\to s|t)=(1-R_t)\frac{e_{ts}}{e_t}+\frac{R_t}{B}$$</span><br /> defining <span class="math inline">$R_t=\frac{\epsilon B}{e_t + \epsilon B}$</span>. The simulation consists of four steps: for each node <span class="math inline"><em>i</em></span></p>
+<ul class="incremental">
+<li><p>a node <span class="math inline"><em>j</em></span> is chosen from <span class="math inline"><em>i</em></span>’s neighbours, the group of <span class="math inline"><em>j</em></span> is called <span class="math inline"><em>t</em></span>,</p></li>
+<li><p>a random group <span class="math inline"><em>s</em></span> is selected,</p></li>
+<li><p>move of node <span class="math inline"><em>i</em></span> to group <span class="math inline"><em>s</em></span> is accepted with probability <span class="math inline"><em>R</em><sub><em>t</em></sub></span>,</p></li>
+<li><p>if <span class="math inline"><em>s</em></span> is not accepted, a random edge <span class="math inline"><em>e</em></span> is chosen from group <span class="math inline"><em>t</em></span> and node <span class="math inline"><em>i</em></span> is assigned to the endpoint of <span class="math inline"><em>e</em></span> which is not in <span class="math inline"><em>t</em></span>.</p></li>
+</ul>
+<p>These steps mime probability <a href="#eq:Prst" data-reference-type="ref" data-reference="eq:Prst">[eq:Prst]</a>; note that for <span class="math inline"><em>ϵ</em> → ∞</span> this gives a uniform probability.</p>
+<p>To enchant the probability to find a minimum, a bounce of these moves is made, only the set of moves with the minimum <span class="math inline"><em>S</em></span> is accepted. Moreover, to remove eventual biases due to the initial configuration the model is run with different initial states, then the final state with the minimal entropy is selected.</p>
+<h5 id="how-many-blocks-b">How many blocks <span class="math inline"><em>B</em></span>?</h5>
+<p><br />
+Note that the number of blocks <span class="math inline"><em>B</em></span> is a free parameter and must be inferred as described in <span class="citation" data-cites="peixoto2017nonparametric"></span>. This implies a slight modification of the algorithm such that it became possible to admit the creation of a new group. When a group <span class="math inline"><em>s</em></span> is chosen, the algorithm can now accept a <strong>new group</strong> and <a href="#eq:Prst" data-reference-type="ref" data-reference="eq:Prst">[eq:Prst]</a> became <br /><span class="math display">$$\label{eq:PrstB1}
+  P(r\to s)=\Sigma_t P(t|i)\frac{e_{ts}+\epsilon}{e_t+\epsilon (B+1)}$$</span><br /> being <span class="math inline">$P(t|i)=\Sigma_j\frac{A_{ij}\delta(b_j, t)}{k_i}$</span> the fraction of neighbours of <span class="math inline"><em>i</em></span> belonging to group <span class="math inline"><em>t</em></span>, <span class="math inline"><em>e</em><sub><em>t</em></sub></span> the number of edges in group <span class="math inline"><em>t</em></span>, <span class="math inline"><em>k</em><sub><em>i</em></sub></span> the degree, and <span class="math inline"><em>b</em><sub><em>j</em></sub></span> groups.</p>
+<p>Using this modification it is now possible to add new groups and <span class="math inline"><em>B</em></span> is no longer a parameter.</p>
+<h5 id="how-to-find-hierarchical-layers">How to find hierarchical layers?</h5>
+<p><br />
+After the algorithm is run, one would add a new hierarchic level, this is done considering the <span class="math inline"><em>B</em></span> groups as nodes and repeating the process. As done before a matrix of edges like <a href="#fig:hsbm-ers" data-reference-type="ref" data-reference="fig:hsbm-ers">[fig:hsbm-ers]</a> is created, where edges are considered between groups of the previous layer. The posterior probability became <br /><span class="math display">$$\label{eq:posteriorL}
+  P(\{b_l\}|A)=\frac{P(A|\{b_l\})P(\{b_l\})}{P(A)}=\prod_l^L P(b_l|e_l,b_{l-1})$$</span><br /> where <span class="math inline"><em>l</em> = 0…<em>L</em></span> is the layer, <span class="math inline"><em>A</em></span> the audience matrix, <span class="math inline"><em>b</em><sub><em>i</em></sub></span> blocks. Note that <span class="math inline"><em>e</em><sub>0</sub> = <em>A</em></span> and <span class="math inline"><em>B</em><sub><em>L</em></sub> = 1</span>. Maximizing <a href="#eq:posteriorL" data-reference-type="ref" data-reference="eq:posteriorL">[eq:posteriorL]</a> gives the correct number of layers.</p>
+<p>Adding a layer is done in 3 steps described in <span class="citation" data-cites="peixoto2014hierarchic"></span>:</p>
+<ul class="incremental">
+<li><p>find <span class="math inline"><em>B</em><sub><em>l</em></sub> ∈ [<em>B</em><sub><em>l</em> − 1</sub>, <em>B</em><sub><em>l</em> + 1</sub>]</span> by bisection,</p></li>
+<li><p>a layer <span class="math inline"><em>l</em></span>,</p></li>
+<li><p><span class="math inline"><em>l</em></span> and linking nodes from layer <span class="math inline"><em>l</em> − 1</span> directly to groups of layer <span class="math inline"><em>l</em> + 1</span>.</p></li>
+</ul>
+<p>One marks initially all levels as <em>not done</em> and starts at the top-level <span class="math inline"><em>l</em> = <em>L</em></span> <span class="citation" data-cites="peixoto2014hierarchic"></span>. For the current level <span class="math inline"><em>l</em></span>, if it is marked <em>done</em> it is skipped and one moves to the level <span class="math inline"><em>l</em> − 1</span>. Otherwise, all three moves are attempted. If any of the moves succeed in decreasing the description length <span class="math inline"><em>Σ</em></span> (<a href="#eq:descriptionlenght" data-reference-type="ref" data-reference="eq:descriptionlenght">[eq:descriptionlenght]</a>), one marks the levels <span class="math inline"><em>l</em> − 1</span> and <span class="math inline"><em>l</em> + 1</span> (if they exist) as <em>not done</em>, the level <span class="math inline"><em>l</em></span> as <em>done</em>, and one proceeds (if possible) to the upper level <span class="math inline"><em>l</em> + 1</span>, and repeats the procedure. If no improvement is possible, the level <span class="math inline"><em>l</em></span> is marked as <em>done</em> and one proceeds to the lower level <span class="math inline"><em>l</em> − 1</span>. When the lowest level <span class="math inline"><em>l</em> = 0</span> is reached and cannot be improved, the algorithm ends.</p>
+<h5 id="overlapping-partitions">Overlapping partitions</h5>
+<p><br />
+As described in <span class="citation" data-cites="peixoto2015model"></span> one of the advantages of this approach is that it is possible to let a node belonging to multiple groups. In this case <span class="math inline"><em>b</em><sub><em>i</em></sub></span> becomes <span class="math inline">$\vec{b_i}$</span>, with component <span class="math inline"><em>b</em><sub><em>i</em><em>r</em></sub> = 1</span> if node <span class="math inline"><em>i</em></span> is in group <span class="math inline"><em>r</em></span>, <span class="math inline">0</span> otherwise. The number of <span class="math inline">1</span>s in vector <span class="math inline">$\vec{b_i}$</span> is called <span class="math inline">$d_i=|\vec{b_i}|$</span>.</p>
+<p>The probability of having a graph <span class="math inline"><em>G</em></span> being generated from an adjacency matrix <span class="math inline"><em>A</em></span> and a partition <span class="math inline">$\{\vec{b_i}\}$</span> is <br /><span class="math display">$$P(G|A,\{\vec{b_i}\})=\frac{1}{\Omega}$$</span><br /> if <span class="math inline"><em>Ω</em></span> is the number of possible graphs. Entropy <a href="#eq:hSBMentropyt" data-reference-type="ref" data-reference="eq:hSBMentropyt">[eq:hSBMentropyt]</a> is <span class="math inline"><em>S</em><sub><em>t</em></sub> = <em>L</em><em>n</em><em>Ω</em></span>. This corresponds to an augmented graph generated via a non overlapping block model with <span class="math inline"><em>N</em>′ = <em>Σ</em><sub><em>r</em></sub><em>n</em><sub><em>r</em></sub> &gt; <em>N</em></span> nodes and the same adjacency matrix <span class="math inline"><em>A</em></span>.</p>
+<p>First of all, it is necessary to sample the distribution of mixture sizes <span class="math inline"><em>P</em>({<em>n</em><sub><em>d</em></sub>})</span> where <span class="math inline"><em>n</em><sub><em>d</em></sub></span> is the number of nodes which mixture has got size <span class="math inline"><em>d</em></span>, <span class="math inline"><em>n</em><sub><em>d</em></sub> ∈ [0, <em>N</em>]</span> and <span class="math inline"><em>d</em> ∈ [0, <em>D</em>]</span> (typically <span class="math inline"><em>D</em> = <em>B</em></span> and in the non-overlapping case <span class="math inline"><em>D</em> = 1</span>), this is done by sampling uniformly from <br /><span class="math display">$$P(\{n_d\}|B)=\left(\binom{D}{N}\right)^{-1}$$</span><br /> which is probability of having <span class="math inline"><em>n</em></span> nodes whose mixture has size <span class="math inline"><em>d</em></span>. <span class="math inline">$\left(\binom{B}{N}\right)$</span> is the number of histograms with area <span class="math inline"><em>N</em></span> and <span class="math inline"><em>B</em></span> distinguishable bins. <span class="math inline"><em>B</em> − 1</span> can be used instead of <span class="math inline"><em>B</em></span> to avoid node with no group, in this case <span class="math inline"><em>d</em> ∈ [1, <em>B</em>]</span>.</p>
+<p>Given the mixture sizes, the distribution of node membership is sampled from <br /><span class="math display">$$P(\{d_i\}|\{n_d\})=\frac{\prod_{d} n_d!}{N!}.$$</span><br /></p>
+<p>At this point for each set of nodes with <span class="math inline"><em>d</em><sub><em>i</em></sub> = <em>d</em></span> it is necessary to sample <span class="math inline"><em>n</em><sub><em>b⃗</em></sub></span>: the number of nodes with a particular mixture <span class="math inline"><em>b⃗</em></span>. It is sampled from <br /><span class="math display">$$P(\{n_{\vec{b}}\}_d|n_d)=\left(\binom{\binom{D}{d}}{n_d}\right)^{-1},$$</span><br /> next all mixtures <span class="math inline">$\vec{b_i}$</span> of size <span class="math inline"><em>d</em></span> must be sampled, they are given by <br /><span class="math display">$$P(\{\vec{b_i}\}_d|\{n_{\vec{b}}\}_d)=\frac{\prod_{|\vec{b_i}|=d} n_b!}{n_d!}$$</span><br /> the global posterior as defined in <span class="citation" data-cites="peixoto2015model"></span> is <br /><span class="math display">$$P(\{\vec{b_i}\}|B)=\left[\prod_{d=1}^B  P(\{\vec{b_i}\}_d|\{n_{\vec{b}}\}_d) P(\{n_{\vec{b}}\}_d|n_d)\right]P({d_i}|{n_d})P(n_d|B)$$</span><br /></p>
+<p>At this time it is necessary to obtain the distribution of the edges between mixtures. Defined <span class="math inline"><em>e</em><sub><em>r</em></sub> = <em>Σ</em><sub><em>s</em></sub><em>e</em><sub><em>r</em><em>s</em></sub></span> the number of half-edges labelled <span class="math inline"><em>r</em></span>, <span class="math inline"><em>m</em><sub><em>r</em></sub> = <em>Σ</em><sub><em>b⃗</em></sub><em>b</em><sub><em>r</em></sub></span> the number of mixtures containing group <span class="math inline"><em>r</em></span> the algorithm samples the probability distribution of the edges count <br /><span class="math display">$$P(\{e_{\vec{b}}\}|\{\vec{b_i}\}, A)=\prod_r\left(\binom{m_r}{e_r}\right)^{-1}$$</span><br /> and the labelled degree sequence <span class="math inline">$\{\vec{k_i}\}$</span> from <br /><span class="math display">$$P(\{\vec{k_i}\}_{\vec{b}}|\{e_{\vec{b}}\}, \{\vec{b_i}\})=\frac{\prod_k n_k^{\vec{b}}!}{n_{\vec{b}}!}$$</span><br /></p>
+
+<figure>
+<img src="pictures/topic/peixioto_passages.png" alt="Illustration of the generative process of the microcanonical SBM. Given a partition of the nodes, the edge counts between groups are sampled (left), followed by the degrees of the nodes (centre) and finally the network itself (right). From ." id="fig:hsbm-sum" /><figcaption>Illustration of the generative process of the microcanonical SBM. Given a partition of the nodes, the edge counts between groups are sampled (left), followed by the degrees of the nodes (centre) and finally the network itself (right). From <span class="citation" data-cites="Peixoto2017"></span>.<span label="fig:hsbm-sum"></span></figcaption>
+</figure>
+<h5 id="word-documents-separation">Word documents separation</h5>
+<p><br />
+Following what is done in <span class="citation" data-cites="gerlach2018network"></span>, the probability of a group <span class="math inline"><em>P</em>(<em>b</em><sub><em>l</em></sub>)</span> at a certain level <span class="math inline"><em>l</em></span> is intended as the disjoint probability of group of words and group of documents: <br /><span class="math display"><em>P</em>(<em>b</em><sub><em>l</em></sub>) = <em>P</em><sub><em>w</em></sub>(<em>b</em><sub><em>l</em></sub><sup><em>w</em></sup>)<em>P</em><sub><em>d</em></sub>(<em>b</em><sub><em>l</em></sub><sup><em>d</em></sup>).</span><br /> Doing this let words and documents be separated by construction. Considering the process described above if two nodes are not connected at the beginning it is impossible that they end up in the same block. It is easily verified in <span class="citation" data-cites="peixoto2014efficient"></span> that this property is preserved and fully reflected in the final block structure.</p>
+<h1 id="app:vmeasure">Homogeneity, completeness and V-measure</h1>
+<p>Using algorithms that are unsupervised, but with a ground truth available it is useful to define some metrics.</p>
+<p>One is the homogeneity <br /><span class="math display">$$h=1-\frac{H(C|K)}{H(C)}$$</span><br /> defining the entropy <br /><span class="math display">$$H(C|K)=\sum_{c\in \mathrm{model labels},\\ k \in \mathrm{clusters}}\frac{n_{c k}}{N}Log\left(\frac{n_{c k}}{n_k}\right)$$</span><br /> where <span class="math inline"><em>n</em><sub><em>c</em><em>k</em></sub></span> is the number of nodes of type <span class="math inline"><em>c</em></span> in cluster <span class="math inline"><em>k</em></span>, <span class="math inline"><em>N</em></span> the number of nodes and <span class="math inline"><em>n</em><sub><em>k</em></sub></span> the number of nodes in cluster <span class="math inline"><em>k</em></span>. It is evident that if all nodes inside cluster <span class="math inline"><em>k</em></span> are of the same type <span class="math inline"><em>c</em></span> <span class="math inline"><em>n</em><sub><em>c</em><em>k</em></sub> = <em>n</em><sub><em>k</em></sub></span>, <span class="math inline"><em>H</em>(<em>C</em>|<em>K</em>) = 0</span> and <span class="math inline"><em>h</em> = 1</span>, it is actually a full homogeneous situation. The completeness: <br /><span class="math display">$$c=1-\frac{H(K|C)}{H(K)},$$</span><br /> <span class="math inline"><em>H</em>(<em>K</em>|<em>C</em>)</span> is defined in the same way as <span class="math inline"><em>H</em>(<em>C</em>|<em>K</em>)</span>. Completeness measures if all nodes of the same type are in the same cluster. Ideally one wants a model which output is both homogeneous and complete. So it is possible to define the V-measure <span class="citation" data-cites="rosenberg2007v"></span>, which is the harmonic average of the two: <br /><span class="math display">$$2\frac{h c}{h + c}.$$</span><br /></p>
+<p>The product <span class="math inline"><em>h</em><em>c</em></span> is equal to <br /><span class="math display">$$\frac{(H(C)-H(C|K))(H(K)-H(K|C))}{H(K) H(C)},$$</span><br /> the sum <span class="math inline"><em>h</em> + <em>c</em></span> is <br /><span class="math display">$$\frac{H(K)(H(C)-H(C|K))+H(C)(H(K)-H(K|C))}{H(K) H(C)}.$$</span><br /> Expressing the conditional entropy <br /><span class="math display">$$H(K|C)=\sum_{k c} P(k,c)Log_2(P(k|c))
+\\=\sum_{k c} P(k,c)Log_2\left(\frac{P(k,c)}{P(c)}\right)
+\\=H(K,C) - H(C)$$</span><br /> in terms of the conjunct entropy <span class="math inline"><em>H</em>(<em>K</em>, <em>C</em>)</span> which is symmetric by exchanges of <span class="math inline"><em>C</em></span> and <span class="math inline"><em>K</em></span> <br /><span class="math display"><em>H</em>(<em>K</em>, <em>C</em>) = <em>H</em>(<em>K</em>|<em>C</em>) + <em>H</em>(<em>C</em>) = <em>H</em>(<em>C</em>|<em>K</em>) + <em>H</em>(<em>K</em>) = <em>H</em>(<em>C</em>, <em>K</em>)</span><br /> it is easy to verify that <br /><span class="math display"><em>H</em>(<em>C</em>) − <em>H</em>(<em>C</em>|<em>K</em>) = <em>H</em>(<em>K</em>) − <em>H</em>(<em>K</em>|<em>C</em>)</span><br /> so <br /><span class="math display">$$h c = \frac{(H(C)-H(C|K))^2}{H(K) H(C)}$$</span><br /> and <br /><span class="math display">$$h + c = \frac{(H(C)-H(C|K))(H(K)+H(C))}{H(K) H(C)}.$$</span><br /> The harmonic average <span class="math inline">$2\frac{h c}{h + c}$</span> gives <br /><span class="math display">$$\mathrm{V-measure}=2\frac{H(C)-H(C|K)}{H(K)+H(C)}=2\frac{H(C)+H(K)-H(K,C)}{H(K)+H(C)}=2\frac{MI(C,K)}{H(K)+H(C)}$$</span><br /> which is actually the mutual information between <span class="math inline"><em>P</em>(<em>C</em>)</span> and <span class="math inline"><em>P</em>(<em>K</em>)</span> normalized to <span class="math inline">1</span> by the term <span class="math inline"><em>H</em>(<em>C</em>) + <em>H</em>(<em>K</em>)</span>. In fact if <span class="math inline"><em>P</em>(<em>C</em>) = <em>P</em>(<em>K</em>)</span> <span class="math inline"><em>H</em>(<em>K</em>, <em>C</em>) = <em>H</em>(<em>K</em>) = <em>H</em>(<em>C</em>)</span> and the measure is <span class="math inline">1</span>, if <span class="math inline"><em>P</em>(<em>C</em>)</span> and <span class="math inline"><em>P</em>(<em>K</em>)</span> are completely independent <span class="math inline"><em>H</em>(<em>K</em>, <em>C</em>) = <em>H</em>(<em>K</em>) + <em>H</em>(<em>C</em>)</span> and the measure is <span class="math inline">0</span>.</p>
+
+
+
+
+
+
+
+
+
+<h1 id="acknowledgements" class="unnumbered unnumbered">Acknowledgements</h1>
+<p><span style="color: red">compila l’altro..</span></p>
+<p>Infine ringrazio l’intero gruppo ByoPhys <a href="http://personalpages.to.infn.it/~caselle/BioPhys/BioPhys.html" class="uri">http://personalpages.to.infn.it/~caselle/BioPhys/BioPhys.html</a>: Michele Prof. Caselle e Matteo Dott. Osella per avermi instradato a fare questo lavoro e per avermi supportato anche molto oltre le loro aree di competenza. Francesco, Marta, Mattia, Eleonora, Marco, Serena, Gabriele è stato bello lavorare con voi, ci vediamo al PhD!</p>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>What do you care what other people think?<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Reads Per Kilobase of transcript<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Fragments Per Kilobase of transcript per Million mapped reads<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>Transcript Per Million<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn5"><p><a href="https://gtexportal.org/home/datasets" class="uri">https://gtexportal.org/home/datasets</a><a href="#fnref5" class="footnote-back">↩</a></p></li>
+<li id="fn6"><p><a href="https://portal.gdc.cancer.gov" class="uri">https://portal.gdc.cancer.gov</a><a href="#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn7"><p><a href="https://ensemble.org" class="uri">https://ensemble.org</a><a href="#fnref7" class="footnote-back">↩</a></p></li>
+<li id="fn8"><p>Gene Ontology<a href="#fnref8" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
