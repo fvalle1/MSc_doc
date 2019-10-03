@@ -16,10 +16,11 @@ defining the amount of information needed to describe the data as the descriptio
   \Sigma=-lnP(G|b,\theta)-lnP(b, \theta)
 \end{equation}
 the~\ref{eq:PbonG} can be written as $\frac{e^{-\Sigma}}{P(G)}$, so maximizing the posterior probability is equivalent to minimize the description length~\ref{eq:descriptionlenght}. The probability of obtaining a graph from a set of parameters is $P(G|b,\theta)=\frac{1}{\Omega(A,\{n_r\})}$, where $\Omega(A,\{n_r\})$ is the number of graphs that is possible to generate with adjacency matrix $A$ and $\{n_r\}$ the counts distribution of block partition $\{b_i\}$ sizes.
-Note that the description length depends on the entropy:
+Note that, given an ensemble of network states, it is possible to define an entropy:
 \[
 \Sigma=S-lnP(\theta),
 \]
+with $S=Ln\left(\Omega\right)$. Note that if the number of group increases $S$ decreases but the prior $P(\theta)$ increases and avoids the risk of over-fitting.
 So minimize $S$ one minimizes $\Sigma$ and maximize the posterior $P(\theta|G)$.
 In case of a weighted network the likelihood becomes $P(G,x|b,\theta)$, where $x$ are the weights.
 
