@@ -57,10 +57,9 @@ where $j$ is a random neighbour of $i$: $j\in N_i$, $t\in\{b_j\}$ its block as d
 Equation~\ref{eq:Prst} can be rewritten as \[P(r\to s|t)=(1-R_t)\frac{e_{ts}}{e_t}+\frac{R_t}{B}\] defining $R_t=\frac{\epsilon B}{e_t + \epsilon B}$.
 The simulation consists of four steps: for each node $i$
 \begin{itemize}
-  \item a node $j$ is chosen from $i$'s neighbours, the group of $j$ is called
-  $t$,
-  \item a random group $s$ is selected,
-  \item move of node $i$ to group $s$ is accepted with probability $R_t$,
+  \item a node $j$ is chosen from $i$'s neighbours, the group of $j$ is called $t$;
+  \item a random group $s$ is selected;
+  \item move of node $i$ to group $s$ is accepted with probability $R_t$;
   \item if $s$ is not accepted, a random edge $e$ is chosen from group $t$ and node $i$ is assigned to the endpoint of $e$ which is not in $t$.
 \end{itemize}
 These steps mime probability in Eq.(\ref{eq:Prst}); note that for $\epsilon\to\infty$ this gives a uniform probability.
