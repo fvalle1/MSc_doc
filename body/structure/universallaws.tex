@@ -1,6 +1,6 @@
 \section{Universal laws in gene expression datasets}\label{sec:universallaws}
 \paragraph{Cancer samples: TCGA}\mbox{} \\
-The first interesting quantity, analysed in TCGA, dataset is the sorted abundance. This gives the possibility to approach the so-called Zipf's law.
+The first interesting quantity, analysed in the TCGA, is the sorted abundance. This gives the possibility to approach the so-called Zipf's law.
 In figure~\ref{fig:structure/tcga/globalZipf}, it is shown the frequency rank plot. Interestingly, this kind of data distributes according to a power law, this same behaviour can be found in many systems such as linguistics' ones~\cite{altmann2016statistical}.
 \begin{figure}[htb!]
 	\centering
@@ -25,7 +25,7 @@ Changing the normalization and considering counts instead of FPKM, the result is
 \end{figure}
 
 \paragraph{Healthy tissues: GTEx}\mbox{} \\
-The exact analysis can be performed on GTEx healthy samples. RNA-sequencing raw counts are considered now. All $\sim11000$ samples available were considered at this time.
+The same analysis can be performed on healthy samples from GTEx dataset. RNA-sequencing raw counts are considered now. All $\sim11000$ samples available were considered at this time.
 \begin{figure}[htb!]
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -40,7 +40,7 @@ The exact analysis can be performed on GTEx healthy samples. RNA-sequencing raw 
 \end{figure}
 Not surprisingly in the GTEx dataset it is retrieved the same behaviour described before. The power law is found and considering non-coding genes leads to a knee in the power law.
 
-Going further in the analysis it is possible to make a histogram of occurrences defined in~\ref{eq:occurrence}, also known as $U$s.
+Going further in the analysis it is possible to make a histogram of occurrences defined in Eq(\ref{eq:occurrence}), also known as $U$s.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.9\linewidth]{pictures/structure/gtex/U_gtex_cnc.pdf}
@@ -61,6 +61,6 @@ Even in this kind of analysis, it is possible to see the different behaviour of 
     \label{fig:structure/gtex/U_tissues}
 \end{figure}
 
-The same behaviour can be observed considering not all the samples but just the ones of a given tissue. In this case $O_i=0$ means that a gene has a non-zero expression in just one of the samples of the tissue considered; in other words, if a gene never expresses in a tissue it is not considered when constructing this tissue-specific $U$ distribution.
+The same behaviour can be observed considering not all the samples but just the ones of a given tissue. In this case, $O_i=0$ means that a gene has a non-zero expression in just one of the samples of the tissue considered; in other words, if a gene never expresses in a tissue it is not considered when constructing this tissue-specific $U$ distribution.
 
-From now on except were explicitly declared analysis will be made considering protein-coding genes and counts with no normalization.
+From now on, except were explicitly declared, analyses will be made considering protein-coding genes and counts with no normalization.

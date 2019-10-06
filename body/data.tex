@@ -1,29 +1,30 @@
 \chapter{Datasets presentation}\label{ch:data}
 \section{Data from RNA-sequencing experiments}\label{sec:rnaseq}
-Data considered in this work come from RNA-sequencing~\cite{wang2009rna} experiments. These experiments aim to quantify how much a gene is expressed in a particular sample of a tissue. RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the sample. 
+Data considered in this work come from RNA-sequencing~\cite{wang2009rna} experiments. These experiments aim to quantify how much a gene is expressed in a particular sample of a given tissue. RNA-Sequencing data provide a unique snapshot of the transcriptomic status of the sample. Data considered are from bulk experiments, this means that each value is an average over multiple cell.
 
 Briefly, long RNAs are first converted into a library of complementary DNA (cDNA) fragments through either RNA fragmentation or DNA fragmentation. Sequencing adaptors are subsequently added to each cDNA fragment and a short sequence is obtained from each cDNA using high-throughput sequencing technology. The resulting sequence reads are aligned with the reference genome or transcriptome, and classified as three types: exonic reads, junction reads and poly(A) end-reads. These three types are used to generate a base-resolution expression profile for each gene.
 
 The general steps to prepare a cDNA library for sequencing are, in general:
 \begin{itemize}
 \item RNA Isolation: RNA is isolated from tissue and the amount of genomic DNA is reduced;
-\item RNA selection/depletion: to analyse signals of interest, the isolated RNA can either be kept as is or filtered for RNA that binds specific sequences. The non-coding RNA is removed because it represents over 90$\%$ of the RNA in a cell, which, if kept, would drown out other data in the transcriptome;
+\item RNA selection/depletion: to analyse signals of interest, the isolated RNA can either be kept as is, or filtered for RNA that binds specific sequences. The non-coding RNA is removed because it represents over 90$\%$ of the RNA in a cell, which, if kept, would drown out other data in the transcriptome;
 \item cDNA synthesis: RNA is reverse transcribed to cDNA (DNA sequencing technology is more mature). Fragmentation and size selection are performed to purify sequences that are the appropriate length for the sequencing machine.  Fragmentation is followed by size selection when either small sequences are removed or a tight range of sequence lengths are selected. Because small RNAs like miRNAs are lost, these are analysed independently. The cDNA for each experiment can be indexed with a hexamer or octamer barcode, so that these experiments can be pooled into a single lane for multiplexed sequencing.
 \end{itemize}
 To collect gene expression data is sufficient to count how many reads are mapped to a specific exon or gene. The ultimate output of this analysis, where this work begins, are nothing but lists of gene expression values for each sample.
 \paragraph{Different normalization are available}\mbox{}\\
 Usually gene expression data can be normalized in different ways, for example, it is possible to use:
 \begin{itemize}
-	\item counts,
-	\item RPK,
-	\item TPM,
+	\item counts;
+	\item RPK;
+	\item TPM;
 	\item FPKM.
 \end{itemize}
-Count reads correspond to raw data. Counts need no normalization to be treated but may be biased. For example, longer genes may have more reads than shorter ones just because they are longer. That's why other kind of normalization can be used. Note that this is not always the case: in fact, some sequencing techniques consider just the start of the gene, so the gene length doesn't matter.   
+Count reads correspond to raw data. Counts need no normalization to be treated but may be biased. For example, longer genes may have more reads than shorter ones just because they are longer. This is why other kind of normalization can be used. Note that this is not always the case: in fact, some sequencing techniques consider just the start of the gene, so the gene length doesn't matter.   
 
-RPK\footnote{Reads Per Kilobase of transcript} normalization removes the length bias by dividing counts by the gene length $L$: \(\text{RPK}=\frac{\text{counts}}{L}\). This solves some problems but doesn't take care of the different sizes of the transcript in different samples.
+RPK\footnote{Reads Per Kilobase of transcript} normalization removes the length bias dividing counts by the gene length $L$, \[\text{RPK}=\frac{\text{counts}}{L}\]. 
+This solves some problems but doesn't take care of the different sizes of the transcript in different samples.
 
-FPKM\footnote{Fragments Per Kilobase of transcript per Million mapped reads} calculation normalizes read count by dividing it by the gene length and by the total number of reads mapped to protein-coding genes in that sample.
+FPKM\footnote{Fragments Per Kilobase of transcript per Million mapped reads} calculation normalizes read counts dividing them by the gene length and by the total number of reads mapped to protein-coding genes in that sample,
 \[
 \text{FPKM} = \frac{RC_g*10^9}{RC_{pc}*L}
 \]
@@ -33,19 +34,19 @@ being
 	\item $RC_{pc}$: Number of reads mapped to all protein-coding genes
 	\item $L$: Length of the gene in base pairs.
 \end{itemize}
-When dealing with FPKM it is necessary to put some thresholds: in particular FPKM below $0,1$ and above $10^5$ should not be considered, maybe these values come from some kind of experimental error.
+When dealing with FPKM it is necessary to put some thresholds: in particular FPKM below $0.1$ and above $10^5$ should not be considered, maybe these values come from some kind of experimental error.
 
 TPM\footnote{Transcript Per Million} tries to unify the sizes of the samples: $\text{TPM} = \frac{RC_g*10^9}{\sum_{g\prime} \left(\frac{RC_{g^\prime}}{l_{g^\prime}}\right) RC_{pc}*L}$.
 
-In this work the idea is to not introduce any normalization, so when possible raw counts will be considered. Sometimes, especially if it is necessary to compare different sources, TPM or FPKM will be taken in account. Some analysis, as the distribution of the sample size, need to be done without TPM, because the quantity that's going to be studied is the quantity the normalization trashes out.
+In this work the idea is to not introduce any normalization, so when possible raw counts will be considered. Sometimes, especially if it is necessary to compare different sources, TPM or FPKM will be taken in account. Some analysis, as the distribution of the sample size, need to be done without TPM, because the quantity studied is the one the normalization trashes out.
 
 \section{Datasets version}\mbox{}\\
 In this work two datasets were used. The first one contains RNA-sequencing data of post-mortem collected samples. It is the Gene Tissue Expression (GTEx) dataset~\cite{carithers2015novel}. GTEx \textit{2016-01-15 v7 RNASeQCv1.1.8} version was downloaded\footnote{\url{https://gtexportal.org/home/datasets}}.
 GTEx contains $11688$ samples of $53$ tissues. For many of them, a sub-tissue label is available. As highlighted in~\cite{dey2017visualizing} these data present a challenge to clustering tools, because of both the relatively large number of samples and the complex structure created by the inclusion of many tissues.
 
-The other dataset considered is The Cancer Genome Atlas (TCGA)~\cite{grossman2016toward}. Data were collected via Genomic Data Commons tools\footnote{\url{https://portal.gdc.cancer.gov}} considering \textit{Gene Expression Quantification} as data type, \textit{Transcriptome Profiling} as data category, \textit{RNA-Seq} as experimental strategy, \textit{HTSeq - Counts} or \textit{HTSeq - FPKM} as workflow type. On TCGA there are $12683$ samples and $68$ primary site or tissues. On this dataset there is a great quantity of metadata, in particular the \textit{disease type} will be considered in this work.
+The other dataset considered is The Cancer Genome Atlas (TCGA)~\cite{grossman2016toward}. Data were collected via Genomic Data Commons tools\footnote{\url{https://portal.gdc.cancer.gov}} considering \textit{Gene Expression Quantification} as data type, \textit{Transcriptome Profiling} as data category, \textit{RNA-Seq} as experimental strategy, \textit{HTSeq - Counts} or \textit{HTSeq - FPKM} as workflow type. On TCGA there are $12683$ samples and $68$ primary sites or tissues. On this dataset there is a great quantity of metadata, in particular the \textit{disease type} will be considered in this work.
 
-Another source of data used in this work is~\cite{Wang2017} which authors tried to unify GTEx and TCGA~\cite{Betel2018}, when possible.
+The third source of data considered in this work is~\cite{Wang2017}. Its authors tried to unify GTEx and TCGA~\cite{Betel2018}, when possible.
 
-\paragraph{Protein-coding selection}
-Each dataset contains infos on approximately $60000$ elements with a different \textit{ENSG} identifier. Only $\simeq 20000$ of this are protein-coding genes, using Ensemble\footnote{\url{https://ensemble.org}} protein-coding genes are selected. In chapters~\ref{ch:structure} and~\ref{ch:scalinglaws} some analysis explaining the different behaviour of coding and non-coding genes will be described.
+\paragraph{Protein-coding gene selection}\mbox{}\\
+Each dataset contains information on approximately $60000$ elements with a different \textit{ENSG} identifier. Only $\simeq 20000$ of this are protein-coding genes, using Ensemble\footnote{\url{https://ensemble.org}} protein-coding genes are selected. In chapters~\ref{ch:structure} and~\ref{ch:scalinglaws} I will propose some analyses that explain the different behaviour of coding and non-coding genes.

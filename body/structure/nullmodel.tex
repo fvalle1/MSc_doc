@@ -1,17 +1,16 @@
 \section{Null model construction}\label{sec:nullmodel}
 The data considered in this work comes from RNA-sequencing experiments. This kind of experiments uses wet biology methods to extract information from samples. If one imagines it exists an unknown function that describes the gene expression across the samples considered, what experimental people do is to sample this function, picking up some genes.
 
-In this section it is described a null model of sampling, this is useful to verify if the data distributions seen are just an effect of this experimental sample or if they carry some useful and interesting information.
+In this section it is described a null model of sampling. This is useful to verify if the data distributions seen are just an effect of this experimental sample or if they carry some useful and interesting information.
 
-As described in~\cite{Mazzolini2018}, a random matrix has to be created. This matrix is a collection of components and realizations exactly as~\ref{fig:componetstable}. The values of each component abundances in each realization $n_{i j}$ are randomly assigned with a probability determined by 
-the global abundance in the whole dataset~\ref{eq:abundance}. Values of each column are extracted until the size~\ref{eq:size} is 
+As described in~\cite{Mazzolini2018}, an ensemble of random matrix has to be created. This matrix is a collection of components and realizations exactly as the table in figure~\ref{fig:componetstable}. The values of each component abundances in each realization $n_{i j}$ are randomly assigned with a probability determined by the global abundance in the whole dataset, Eq.(\ref{eq:abundance}). Values of each column are extracted until the size of Eq.(\ref{eq:size}) is 
 reached. Strictly speaking it is a multinomial process with probability
 \begin{equation}
 P\left( \{ n_i\} ;M\right) =\frac{M!}{\prod_{i=1}^{N} n_i}\prod_{i=1}^N f_i^{n_i}
 \end{equation}
-where $n_i$ is the number of times the component with frequency $f_i$ appears, being $f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}$ as defined in~\ref{eq:fi}.
+where $n_i$ is the number of times the component with frequency $f_i$ appears, being $f_i=\frac{a_i}{\sum_{c=1}^{N}a_{c}}$ as defined in Eq.(\ref{eq:fi}).
 
-Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up concerning their frequency in the dataset. The most abundant components, which are also the ones with the highest frequencies (frequency is nothing but the normalized abundance), have a greater probability to be picked up. An ensemble of these matrices is created and then averaged to gain statistics.
+Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ components are picked up concerning their frequency in the dataset. The most abundant components, which are also the ones with the highest frequencies (frequency is nothing but the normalized abundance), have a greater probability to be picked up. To gain statistics, an ensemble of these matrices is created and then averaged.
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{pictures/structure/randomsampling.png}
@@ -19,7 +18,7 @@ Figure~\ref{fig:structure/randomsampling} shows an example of this, $M$ componen
     \label{fig:structure/randomsampling}
 \end{figure}
 
-Once null matrices are constructed one can compare the real distributions with the ones obtained with this null model.
+Once null matrices are constructed, one can compare the real distributions with the ones obtained with this null model.
 The Zipf's law sampled is identical to the data's one, by definition.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
@@ -49,7 +48,7 @@ By construction, even the distribution of the sizes are identical in the real da
     \label{fig:structure/sizeDistr_null}
 \end{figure}
 
-Looking at the $U$s in figure~\ref{fig:structure/globalU_null}, it is evident that data behave differently from sampling. This is a signal that the null model is not enough to explain the data matrices. In particular, it is evident that the null model generates matrices which components have higher occurrence comparing to the original data. This can be easily explained, in fact in the real world some genes are highly expressed but only in a subset of the whole dataset; these genes are specific for certain type of samples. The null model gets the information that such genes are highly expressed (they have a high abundance) and so samples these quite often (components with high abundance have a greater chance to be picked up by the null model sampling). This set of genes with $O_i=1$ is called \textbf{core}, in figure~\ref{fig:structure/globalU_null} it is evident the difference between the real one and the sampled one.
+Looking at the $U$s in figure~\ref{fig:structure/globalU_null}, it is evident that data behave differently from sampling. This is a signal that the null model is not enough to explain the structure of the data matrix. In particular, it is evident that the null model generates matrices with more components with high occurrence comparing to the original data. This can be easily explained: in the real world some genes are highly expressed but only in a subset of the whole dataset. These genes are specific for certain type of samples. The null model gets the information that such genes are highly expressed (they have a high abundance) and so picks these up quite often (components with high abundance have a greater chance to be picked up by the null model sampling). In figure~\ref{fig:structure/globalU_null} it is evident the difference between the real one and the sampled one: the null model data have a greater core.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
@@ -64,7 +63,7 @@ Looking at the $U$s in figure~\ref{fig:structure/globalU_null}, it is evident th
 \label{fig:structure/globalU_null}
 \end{figure}
 
-Plotting on the abscissa the size of samples and on the ordinate the number of genes expressed one point per sample, it is possible to obtain the so-called Heaps's law~\cite{Heaps:1978:IRC:539986}. In figure~\ref{fig:structure/heaps_null} the Heaps' law is presented compared to the one obtained by sampling. Again the curves differ and the null model is not enough to explain the trend. Note that each data point shares the abscissa with a sampling one (figures~\ref{fig:structure/sizeDistr_null} are nothing but the histograms of the abscissas of~\ref{fig:structure/heaps_null}). Moreover, it is interesting that the ordinate does not start from zero, this happens because there are a lot of genes that express everywhere, the core. It happens that the sampling curve is translated above the data's one. This means that to build a sample of size $M$ just by sampling it is necessary to use a greater number of different genes than the number of different genes actually expressed in nature. In other words in the real world only the genes that are really useful in a sample are expressed, and this is not describable just by sampling. This fact is coherent with the fact that the $U$s differ.
+Plotting on the abscissa the size of samples and on the ordinate the number of genes expressed, one point per sample, it is possible to obtain the so-called Heaps's law~\cite{Heaps:1978:IRC:539986}. In figure~\ref{fig:structure/heaps_null} the Heaps' law is presented compared to the one obtained by sampling. Again the curves differ and the null model is not enough to explain the trend. Note that each data point shares the abscissa with a sampling point (figures~\ref{fig:structure/sizeDistr_null} are nothing but the histograms of the abscissas of figure~\ref{fig:structure/heaps_null}). Moreover, it is interesting that the ordinate does not start from zero. This happens because there are a lot of genes that express everywhere, the core. It happens that the sampling curve is translated above the data's one. This means that to build a sample of size $M$ just by sampling it is necessary to use a greater number of different genes than the number of different genes actually expressed in nature. In other words in the real world only the genes that are really useful in a sample are expressed, and this is not describable just by a sampling model. This fact is coherent with the fact that the $U$s differ.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering
@@ -79,7 +78,7 @@ Plotting on the abscissa the size of samples and on the ordinate the number of g
 \label{fig:structure/heaps_null}
 \end{figure}
 \FloatBarrier
-Another way to see this is by looking at the histograms of the number of different genes expressed, actually the distribution of the~\ref{fig:structure/heaps_null} y-axis. Figure~\ref{fig:structure/diffwordsDistr_null} shows that these distributions are completely different if one looks at the data and the sampling.
+Another way to see this is looking at the histograms of the number of different genes expressed, actually the distribution of the figure~\ref{fig:structure/heaps_null} y-axis. Figure~\ref{fig:structure/diffwordsDistr_null} shows that these distributions are completely different, if one looks at the data and the sampling.
 \begin{figure}[htb!]
 \begin{minipage}{0.5\textwidth}
     \centering

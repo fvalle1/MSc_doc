@@ -14,7 +14,7 @@ AgglomerativeClustering(
     )
 \end{lstlisting}
 note that the number of clusters is a free variable \texttt{\textbf{x}}: hierarchical clustering is not able to determine the ideal number of clusters. This was set from the output of the hierarchical Stochastic Block Model.
-In figure~\ref{fig:topic/hc} an example of hierarchical clustering. Note that nodes with short distance are linked firstly.
+In figure~\ref{fig:topic/hc} an example of hierarchical clustering. Note that close nodes (with the euclidean distance defining \textit{close}) are linked firstly.
 \begin{figure}[htb!]
 	\centering
 	\begin{minipage}{0.35\textwidth}
@@ -32,7 +32,7 @@ In figure~\ref{fig:topic/hc} an example of hierarchical clustering. Note that no
 Latent Dirichlet Allocation is the standard and well-known approach to topic models. It has got more restrictive priors than hierarchical Stochastic Block Model and needs some parameters to be set. It uses some different methods to maximize the posterior probability to observe some latent variables given the data.
 As well described in~\cite{Zhou2016} LDA is a generative model and can be summarized as follows:
 \begin{itemize}
-	\item set number of topic $K$ and parameters $\eta$ and $\alpha$
+	\item set the number of topics $K$ and the parameters $\eta$ and $\alpha$
 	\item for each topic $k$ generate $\beta_k\sim \text{Dirichlet}(\bullet |\eta)$
 	\item for each document $d$ generate $\theta_d\sim \text{Dirichlet}(\bullet|\alpha)$
 	\item for each word in $d$ 
@@ -53,12 +53,12 @@ P(w, z,\beta, \theta| \alpha, \eta)=\prod_{d=1}^N P(\theta_d | \alpha)\prod_{n=1
 \end{equation}
 where
 \begin{itemize}
-	\item $N$ is the number of documents
-	\item $K$ is the number of topics as set by the user
-	\item $w$ are words
-	\item $N_d$ is the number of words in document d
-	\item $\alpha$ and $\eta$ are parameters of the model (usually $\eta=0.01$ and $\alpha=50/K$)
-	\item $P(\theta | \alpha)$ and $P(\beta|\eta)$ are Dirichlet distributions
+	\item $N$ is the number of documents;
+	\item $K$ is the number of topics as set by the user;
+	\item $w$ are words;
+	\item $N_d$ is the number of words in document d;
+	\item $\alpha$ and $\eta$ are parameters of the model (usually $\eta=0.01$ and $\alpha=50/K$);
+	\item $P(\theta | \alpha)$ and $P(\beta|\eta)$ are Dirichlet distributions.
 \end{itemize}
-When $\beta$, $\theta$ and $z$ are estimated, the outputs are the topic distribution in documents $P(z|d)$ and the word distribution in topics $P(w|z)$.
+When the distributions $\beta$, $\theta$ and $z$ are estimated, the outputs are the topic distribution in documents $P(\theta|\alpha)$ and the word distribution in topics $P(\beta|\eta)$.
 Again the number of topics $K$ is not found by the model and needs to be set, this has been got from hierarchical Stochastic Block Model's output.

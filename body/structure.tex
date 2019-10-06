@@ -1,5 +1,15 @@
 \chapter{Data structure}\label{ch:structure}
-The data studied in this work can be represented as component systems. These component systems can be represented by a two-dimensional matrix in which rows represent components and columns are the possible realizations buildable given subset of the components. Entries of this matrix are the number of the components on the row needed during the realization of the column. In figure~\ref{fig:componetstable} an example of this kind of matrices.
+The data studied in this work can be represented as component systems. These component systems can be represented by a two-dimensional matrix in which rows represent components and columns are the possible realizations buildable given a subset of the components. Entries of this matrix are the number of the components on the row needed during the realization of the column. In figure~\ref{fig:componetstable} an example of this kind of matrices.
+\begin{figure}[htb!]
+	\centering
+	\begin{tabular}{cc}
+		&Realizations\\
+		\rotatebox[origin=c]{90}{Components}&
+		$\left(\begin{array}{ccccc}{n_{11}} & {n_{12}} & {n_{13}} & {\dots} & {n_{1 R}} \\ {n_{2 1}} & {n_{2 2}} & {n_{2 3}} & {\dots} & {n_{2 R}} \\ {\vdots} & {\vdots} & {\vdots} & {\ddots} & {\vdots} \\ {n_{N 1}} & {n_{N 2}} & {n_{N 3}} & {\dots} & {n_{N R}}\end{array}\right)$\\
+	\end{tabular}
+	\caption{Matrix representing component systems with $i=0\dots N$ rows and $j=0\dots R$ columns. The entry $n_{i j}$ represents the abundance of component $i$ in realization $j$.}
+	\label{fig:componetstable}
+\end{figure}
 
 %%data definitions
 \input{body/structure/datadefinitions.tex}
