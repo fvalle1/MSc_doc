@@ -2,7 +2,7 @@ TOREMOVE = *.toc *.aux *.bbl *.blg *.lof *.log *.lot *.out *.gz
 
 all: thesis
 
-thesis:
+thesis: thesis.tex
 	pdflatex $^
 	bibtex thesis
 	pdflatex $^
